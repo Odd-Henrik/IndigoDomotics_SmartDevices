@@ -8,7 +8,7 @@
 <MenuItems>
 	<MenuItem id="menuConfigure">
 		<Name>Configure...</Name>
-		<CallbackMethod>chageDebugMode</CallbackMethod>
+		<CallbackMethod>changeDebugMode</CallbackMethod>
 		<ButtonTitle>Save</ButtonTitle>
 		<ConfigUI>
 			<Field id="autoLabel1" type="label">
