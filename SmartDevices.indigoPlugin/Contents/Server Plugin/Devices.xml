@@ -52,7 +52,7 @@
 			</Field>
 			<Field id="primaryHeaterDevice" type="list">
 				<Label>Heater Device(s):</Label>
-				<List class="indigo.relay"/>
+				<List class="indigo.devices"  filter="indigo.relay"/>
 			</Field>
 			<Field id="clearHVACDevices"
 				type="button"

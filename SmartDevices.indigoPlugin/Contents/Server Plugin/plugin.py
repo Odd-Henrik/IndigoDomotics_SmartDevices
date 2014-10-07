@@ -220,6 +220,21 @@ class Plugin(indigo.PluginBase):
         self.debugLog(u"shutdown called")
 
     ########################################
+
+    def closedPrefsConfigUi (self, valuesDict, UserCancelled):
+        if UserCancelled is False:
+            logLevel = valuesDict["enableDebug"]
+
+            if logLevel:
+                self.debug = True
+                indigo.server.log("debug enabled")
+            else:
+                self.debug = False
+                indigo.server.log("debug disabled")
+
+            if self.debug: indigo.server.log ("Smart Devices plugin preferences have been updated.")
+
+
     def runConcurrentThread(self):
         try:
             while True:
