@@ -1,0 +1,447 @@
+<?xml version="1.0"?>
+<!-- If your plugin defines device types, you can define them here.
+
+	 Devices must specify their type (via the type attribute):
+
+		relay (ON/OFF/STATUS)
+		dimmer (ON/OFF/DIM/BRIGHTEN/SET BRIGHTNESS/STATUS)
+		speedcontrol (ON/OFF/SET SPEED LEVEL/SET SPEED INDEX/INCREASE/DECREASE/STATUS)
+		sensor (ON/OFF/STATUS)
+		thermostat
+		sprinkler (ACTIVE ZONE INDEX)
+		custom
+
+	 The first six inherit states, actions and events from Indigo. You can
+	 also specify your own custom actions and additional states, if needed.
+
+	 The Device example below specifies the thermostat type.
+	 
+	 Devices must also specify a unique typeID - so, for instance, if you define
+	 2 different thermostat type devices then your plugin can distinguish between
+	 the two by the typeID.
+-->
+
+<Devices>
+	<Device type="speedcontrol" id="virtualSpeedControl">
+		<Name>Virtual Speed Controller</Name>
+		<ConfigUI>
+			<Field id="autoLabel11" type="label">
+				<Label>Select Fan/Ventilator/Dehumidifyer device(s)</Label>
+			</Field>
+			<Field id="fanDevice" type="list">
+				<Label>Dimmable switch:</Label>
+				<List class="indigo.devices" filter="indigo.dimmer"/>
+			</Field>
+		</ConfigUI>
+		<States>
+		</States>
+	</Device>
+	<!-- This device illustrates how a plugin can inherit Indigo's thermostat
+	device behavior including thermostat device states, thermostat actions,
+	and will support Indigo and Indigo Touch's native UI for thermostat type
+	devices.
+	-->
+	<Device type="thermostat" id="myThermoType">
+		<Name>Virtual Thermostat</Name>
+		<ConfigUI>
+			<!-- The ConfigUI here is just an example of the type of device
+			specific UI that might be needed. Here you might specify a text
+			field for an IP address, a serial port popup, or other device
+			specific options.
+			-->
+			<Field id="autoLabel1" type="label">
+				<Label>Select HVAC device(s)</Label>
+			</Field>
+			<Field id="primaryHeaterDevice" type="menu">
+				<Label>Primary Heater Device:</Label>
+				<List class="indigo.devices"/>
+			</Field>
+			<Field id="secondaryHeaterDevice" type="menu">
+				<Label>Secondary Heater Device:</Label>
+				<List class="indigo.devices"/>
+			</Field>
+			<Field id="acHeatPumpDevice" type="menu">
+				<Label>Air Condition/Heat Pump Device:</Label>
+				<List class="indigo.devices"/>
+			</Field>
+			<Field id="ventilationDevice" type="menu">
+				<Label>Ventilation/Dehumidifier Device:</Label>
+				<List class="indigo.devices"/>
+			</Field>
+			<Field id="clearHVACDevices"
+				type="button"
+				tooltip="This will reset HVAC Device selections">
+				<Label></Label>
+				<Title>Clear HVAC Device selections</Title>
+				<CallbackMethod>ClearHVACDevicesPressed</CallbackMethod>
+			</Field>
+			<Field id="simpleSeparator1" type="separator"/>
+			<Field id="autoLabel2" type="label">
+				<Label>Select temperatur sensor(s):</Label>
+			</Field>
+			<Field id="ambientTemperatureSensor" type="menu">
+				<Label>Ambient temperature sensor:</Label>
+				<List class="indigo.devices" filter="indigo.sensor"/>
+			</Field>
+			<Field id="floorTemperatureSensor" type="menu">
+				<Label>Floor temperature sensor:</Label>
+				<List class="indigo.devices" filter="indigo.sensor"/>
+			</Field>
+			<Field id="outsideTemperatureSensor" type="menu">
+				<Label>Outside temperature sensor:</Label>
+				<List class="indigo.devices" filter="indigo.sensor"/>
+			</Field>
+			<Field id="clearTemperatureDevices"
+				type="button"
+				tooltip="This will reset Temperaturesensor Device selections">
+				<Label></Label>
+				<Title>Clear Temp. Device selections</Title>
+				<CallbackMethod>ClearTemperatureDevicesPressed</CallbackMethod>
+			</Field>
+			<Field id="simpleSeparator2" type="separator"/>
+				<Field id="autoLabel3" type="label">
+				<Label>Select humidity sensor(s):</Label>
+			</Field>
+			<Field id="ambientHumiditySensor" type="menu">
+				<Label>Ambient humidity sensor:</Label>
+				<List class="indigo.devices" filter="indigo.sensor"/>
+			</Field>
+			<Field id="outsideHumiditySensor" type="menu">
+				<Label>Outside humidity sensor:</Label>
+				<List class="indigo.devices" filter="indigo.sensor"/>
+			</Field>
+			<Field id="optionalHumiditySensor" type="menu">
+				<Label>Optional humidity sensor:</Label>
+				<List class="indigo.devices" filter="indigo.sensor"/>
+			</Field>
+			<Field id="clearHumidityDevices"
+				type="button"
+				tooltip="This will reset Humidity Device selections">
+				<Label></Label>
+				<Title>Clear Humidity Device selections</Title>
+				<CallbackMethod>ClearHumidityDevicesPressed</CallbackMethod>
+			</Field>
+			<Field id="simpleSeparator3" type="separator"/>
+			<Field id="autoLabel4" type="label">
+				<Label>Thermostat Configuration:</Label>
+			</Field>
+			<Field id="configMainThermostatMode" type="menu" defaultValue="floor">
+				<Label>Thermostat Primary Controll:</Label>
+				<List>
+					<Option value="floor">Floor</Option>
+					<Option value="ambient">Ambient</Option>
+				</List>
+			</Field>
+			<Field id="configPrimaryHeaterOverride" type="menu" defaultValue="normal">
+				<Label>Primary Heater Override:</Label>
+				<List>
+					<Option value="normal">Normal</Option>
+					<Option value="ambient">Secondary</Option>
+					<Option value="achp">ACHP</Option>
+				</List>
+			</Field>
+			<Field id="configTemperatureDelta" type="textfield" defaultValue="0.2">
+				<Label>Temperature delta:</Label>
+			</Field>
+			<Field id="configMaxAmbientTemperature" type="textfield" defaultValue="25.0">
+				<Label>Max Ambient Temperature:</Label>
+			</Field>
+			<Field id="configMinAmbientTemperature" type="textfield" defaultValue="22.0">
+				<Label>Min Ambient Temperature:</Label>
+			</Field>
+			<Field id="configMaxFloorTemperature" type="textfield" defaultValue="30">
+				<Label>Max Floor Temperature:</Label>
+			</Field>
+			<Field id="configMinFloorTemperature" type="textfield" defaultValue="20.0">
+				<Label>Min Floor Temperature:</Label>
+			</Field>
+			<Field id="configNoHeatOutsideTemperature" type="textfield" defaultValue="25.0">
+				<Label>Max Outside Temperature For Heating:</Label>
+			</Field>
+			<Field id="configNoCoolOutsideTemperature" type="textfield" defaultValue="18.0">
+				<Label>Min Outside Temperature For Cooling:</Label>
+			</Field>
+			<Field id="configOutsideTempCompFactor" type="textfield" defaultValue="0.0">
+				<Label>Outside Temperature Compensation Factor:</Label>
+			</Field>
+			<Field id="simpleSeparator4" type="separator"/>
+			<Field id="autoLabel5" type="label">
+				<Label>Ventilator/Dehumidifyer Configuration:</Label>
+			</Field>
+			<Field id="configPrimaryVentilationMode" type="menu" defaultValue="dehum">
+				<Label>Primary Ventilation Mode:</Label>
+				<List>
+					<Option value="dehum">Dehumidify</Option>
+					<Option value="cooling">Cooling</Option>
+					<Option value="both">Both</Option>
+				</List>
+			</Field>
+			<Field type="checkbox" id="configDimmableVentilator" defaultValue="true">
+				<Label>Ventilator Is Dimmable:</Label>
+			</Field>
+			<Field id="configHumidityOff" type="textfield" defaultValue="50">
+				<Label>Fan Off Humidity:</Label>
+			</Field>
+			<Field type="checkbox" id="configConsiderOutsideHumFanOff" defaultValue="false">
+				<Label>Consider Outside Humidity For Fan Off:</Label>
+			</Field>
+			<Field id="configHumidityStep1" type="textfield" defaultValue="60">
+				<Label>Fan Step 1 Humidity:</Label>
+			</Field>
+			<Field id="configHumidityStep2" type="textfield" defaultValue="70">
+				<Label>Fan Step 2 Humidity:</Label>
+			</Field>
+			<Field id="configHumidityStep3" type="textfield" defaultValue="80">
+				<Label>Fan Step 3 Humidity:</Label>
+			</Field>
+			<Field id="configHumidityStep4" type="textfield" defaultValue="90">
+				<Label>Fan Step 4 Humidity:</Label>
+			</Field>
+			<Field id="configFanSpeedStep1" type="textfield" defaultValue="10">
+				<Label>Ventilator Fanspeed Step 1:</Label>
+			</Field>
+			<Field id="configFanSpeedStep2" type="textfield" defaultValue="30">
+				<Label>Ventilator Fanspeed Step 2:</Label>
+			</Field>
+			<Field id="configFanSpeedStep3" type="textfield" defaultValue="70">
+				<Label>Ventilator Fanspeed Step 3:</Label>
+			</Field>
+			<Field id="configFanSpeedStep4" type="textfield" defaultValue="100">
+				<Label>Ventilator Fanspeed Step 4:</Label>
+			</Field>
+
+			<!-- By default thermostat type devices automatically inherit these
+			device properties which describe the characteristics of a specific
+			thermostat instance:
+
+				NumTemperatureInputs:			should range between 1 and 3
+				NumHumidityInputs:				should range between 0 and 3
+				SupportsHeatSetpoint:			True or False
+				SupportsCoolSetpoint:			True or False
+				SupportsHvacOperationMode:		True or False
+				SupportsHvacFanMode:			True or False
+				ShowCoolHeatEquipmentStateUI:	True or False
+			
+			Plugins can update these properties either in device ConfigUI
+			(like below), or can update them from python by using the
+			dev.replacePluginPropsOnServer() method, most likely inside your
+			deviceStartComm method. Both will trigger the Indigo Server to
+			automatically rebuild the device's states list based on the needed
+			changes. Since most entry-level thermostats have 1 temp sensor and
+			0 humidity sensors, those are the default values. If your
+			thermostat supports those, you don't need to change anything.
+			-->
+			<!--<Field type="separator" id="simpleSeparator4" />
+			<Field type="menu" id="NumTemperatureInputs" defaultValue="1">
+				<Label>Number of temperature sensors:</Label>
+				<List>
+					<Option value="0">None</Option>
+					<Option value="1">1</Option>
+					<Option value="2">2</Option>
+					<Option value="3">3</Option>
+				</List>
+			</Field>
+			<Field type="menu" id="NumHumidityInputs" defaultValue="1">
+				<Label>Number of humidity sensors:</Label>
+				<List>
+					<Option value="0">None</Option>
+					<Option value="1">1</Option>
+					<Option value="2">2</Option>
+					<Option value="3">3</Option>
+				</List>
+			</Field>-->
+			<!--<Field type="checkbox" id="SupportsHeatSetpoint" defaultValue="true">
+				<Label>Supports heat setpoint:</Label>
+				<Description>Show heat setpoint controls in UI</Description>
+			</Field>
+			<Field type="checkbox" id="SupportsCoolSetpoint" defaultValue="true">
+				<Label>Supports cool setpoint:</Label>
+				<Description>Show cool setpoint controls in UI</Description>
+			</Field>
+			<Field type="checkbox" id="SupportsHvacOperationMode" defaultValue="true">
+				<Label>Supports thermostat modes:</Label>
+				<Description>Show thermostat mode controls (heat/cool/auto) in UI</Description>
+			</Field>
+			<Field type="checkbox" id="SupportsHvacFanMode" defaultValue="true">
+				<Label>Supports fan modes:</Label>
+				<Description>Show fan mode controls (auto/always on) in UI</Description>
+			</Field>
+			<Field type="checkbox" id="ShowCoolHeatEquipmentStateUI" defaultValue="true">
+				<Label>Supports compressor/furnace feedback:</Label>
+				<Description>Show compressor/furnace states in UI</Description>
+			</Field>-->
+		</ConfigUI>
+		<States>
+			<!-- By default thermostat type devices automatically inherit these
+			read-only states:
+
+				temperatureInputsAll, humidityInputsAll,
+				hvacOperationModeIsOff, hvacOperationModeIsHeat, hvacOperationModeIsCool,
+				hvacOperationModeIsAuto, hvacOperationModeIsProgramHeat, hvacOperationModeIsProgramCool,
+				hvacOperationModeIsProgramAuto,
+				hvacFanModeIsAuto, hvacFanModeIsAlwaysOn.
+			
+			Additionally, the following writable states are inherited:
+
+				temperatureInput1, temperatureInput2, temperatureInput3,
+				humidityInput1, humidityInput2, humidityInput3,
+				setpointHeat, setpointCool,
+				hvacOperationMode, hvacFanMode,
+				hvacCoolerIsOn, hvacHeaterIsOn, hvacFanIsOn
+			
+			The Indigo Server automatically updates some of the read-only states when
+			a writable state is updated. For example, if your plugin updates the
+			temperatureInput1 state then the temperatureInputsAll state is automatically
+			updated for you. Likewise, if you update the hvacOperationMode state to
+			indigo.kHvacMode.Heat then the read-only state hvacOperationModeIsHeat will
+			be set to True and all of the other hvacOperationModeIs* states will be set
+			to False.
+
+			The plugin can specify additional custom states and custom
+			actions (in Actions.xml) to modify custom states. As an example
+			here, we define a new custom state, backlightBrightness, which
+			is used to control the brightness of the backlit display of
+			the thermostat.
+			-->
+			<State id="backlightBrightness">
+				<ValueType>Integer</ValueType>
+				<TriggerLabel>Backlight Brightness</TriggerLabel>
+				<ControlPageLabel>Backlight Brightness</ControlPageLabel>
+			</State>
+			<State id="mainThermostatMode">
+				<ValueType>
+					<List>
+						<Option value="floor">Floor</Option>
+						<Option value="ambient">Ambient</Option>
+					</List>
+				</ValueType>
+				<TriggerLabel>Thermostate Mode Changed</TriggerLabel>
+				<TriggerLabelPrefix>Mode Changed to</TriggerLabelPrefix>
+				<ControlPageLabel>Current Mode</ControlPageLabel>
+				<ControlPageLabelPrefix>Mode is</ControlPageLabelPrefix>
+			</State>
+			<State id="primaryHeaterOverride">
+				<ValueType>
+					<List>
+						<Option value="normal">Normal</Option>
+						<Option value="ambient">Secondary</Option>
+						<Option value="achp">ACHP</Option>
+					</List>
+				</ValueType>
+				<TriggerLabel>Thermostate Mode Changed</TriggerLabel>
+				<TriggerLabelPrefix>Mode Changed to</TriggerLabelPrefix>
+				<ControlPageLabel>Current Mode</ControlPageLabel>
+				<ControlPageLabelPrefix>Mode is</ControlPageLabelPrefix>
+			</State>
+
+			<State id="temperatureDelta">
+				<ValueType>Float</ValueType>
+				<TriggerLabel>Temperature Delta</TriggerLabel>
+				<ControlPageLabel>Temperature Delta</ControlPageLabel>
+			</State>
+			<State id="maxAmbientTemperature">
+				<ValueType>Float</ValueType>
+				<TriggerLabel>Temperature Delta</TriggerLabel>
+				<ControlPageLabel>Temperature Delta</ControlPageLabel>
+			</State>
+			<State id="minAmbientTemperature">
+				<ValueType>Float</ValueType>
+				<TriggerLabel>Temperature Delta</TriggerLabel>
+				<ControlPageLabel>Temperature Delta</ControlPageLabel>
+			</State>
+			<State id="maxFloorTemperature">
+				<ValueType>Float</ValueType>
+				<TriggerLabel>Temperature Delta</TriggerLabel>
+				<ControlPageLabel>Temperature Delta</ControlPageLabel>
+			</State>
+			<State id="minFloorTemperature">
+				<ValueType>Float</ValueType>
+				<TriggerLabel>Temperature Delta</TriggerLabel>
+				<ControlPageLabel>Temperature Delta</ControlPageLabel>
+			</State>
+			<State id="noHeatOutsideTemperature">
+				<ValueType>Float</ValueType>
+				<TriggerLabel>Temperature Delta</TriggerLabel>
+				<ControlPageLabel>Temperature Delta</ControlPageLabel>
+			</State>
+			<State id="noCoolOutsideTemperature">
+				<ValueType>Float</ValueType>
+				<TriggerLabel>Temperature Delta</TriggerLabel>
+				<ControlPageLabel>Temperature Delta</ControlPageLabel>
+			</State>
+			<State id="outsideTempCompFactor">
+				<ValueType>Float</ValueType>
+				<TriggerLabel>Outside Temperature Compensation Factor</TriggerLabel>
+				<ControlPageLabel>Outside Temperature Compensation Factor</ControlPageLabel>
+			</State>
+			<State id="primaryVentilationMode">
+				<ValueType>
+					<List>
+						<Option value="dehum">Dehumidify</Option>
+						<Option value="cooling">Cooling</Option>
+						<Option value="both">Both</Option>
+					</List>
+				</ValueType>
+				<TriggerLabel>Ventilationmode Changed</TriggerLabel>
+				<TriggerLabelPrefix>Ventilationmode Changed to</TriggerLabelPrefix>
+				<ControlPageLabel>Current Ventilationmode</ControlPageLabel>
+				<ControlPageLabelPrefix>Ventilationmode is</ControlPageLabelPrefix>
+			</State>
+			<State id="dimmableVentilator">
+				<ValueType>Boolean</ValueType>
+				<TriggerLabel>Ventilator Is Dimmable</TriggerLabel>
+				<ControlPageLabel>Ventilator Is Dimmabl</ControlPageLabel>
+			</State>
+			<State id="considerOutsideHumFanOff">
+				<ValueType>Boolean</ValueType>
+				<TriggerLabel>Consider Outside Humidity For Fan Off</TriggerLabel>
+				<ControlPageLabel>Consider Outside Humidity For Fan Off</ControlPageLabel>
+			</State>
+			<State id="humidityOff">
+				<ValueType>Integer</ValueType>
+				<TriggerLabel>Humidity For Ventilator Off</TriggerLabel>
+				<ControlPageLabel>Humidity For Ventilator Off</ControlPageLabel>
+			</State>
+			<State id="humidityStep1">
+				<ValueType>Integer</ValueType>
+				<TriggerLabel>Humidity For Ventilator Step 1</TriggerLabel>
+				<ControlPageLabel>Humidity For Ventilator Step 1</ControlPageLabel>
+			</State>
+			<State id="humidityStep2">
+				<ValueType>Integer</ValueType>
+				<TriggerLabel>Humidity For Ventilator Step 2</TriggerLabel>
+				<ControlPageLabel>Humidity For Ventilator Step 2</ControlPageLabel>
+			</State>
+			<State id="humidityStep3">
+				<ValueType>Integer</ValueType>
+				<TriggerLabel>Humidity For Ventilator Step 3</TriggerLabel>
+				<ControlPageLabel>Humidity For Ventilator Step 3</ControlPageLabel>
+			</State>
+			<State id="humidityStep4">
+				<ValueType>Integer</ValueType>
+				<TriggerLabel>Humidity For Ventilator Step 4</TriggerLabel>
+				<ControlPageLabel>Humidity For Ventilator Step 4</ControlPageLabel>
+			</State>
+			<State id="fanSpeedStep1">
+				<ValueType>Integer</ValueType>
+				<TriggerLabel>Ventilator Fanspeed Step 1</TriggerLabel>
+				<ControlPageLabel>Ventilator Fanspeed Step 1</ControlPageLabel>
+			</State>
+			<State id="fanSpeedStep2">
+				<ValueType>Integer</ValueType>
+				<TriggerLabel>Ventilator Fanspeed Step 2</TriggerLabel>
+				<ControlPageLabel>Ventilator Fanspeed Step 2</ControlPageLabel>
+			</State>
+			<State id="fanSpeedStep3">
+				<ValueType>Integer</ValueType>
+				<TriggerLabel>Ventilator Fanspeed Step 3</TriggerLabel>
+				<ControlPageLabel>Ventilator Fanspeed Step 3</ControlPageLabel>
+			</State>
+			<State id="fanSpeedStep4">
+				<ValueType>Integer</ValueType>
+				<TriggerLabel>Ventilator Fanspeed Step 4</TriggerLabel>
+				<ControlPageLabel>Ventilator Fanspeed Step 4</ControlPageLabel>
+			</State>
+		</States>
+	</Device>
+</Devices>
