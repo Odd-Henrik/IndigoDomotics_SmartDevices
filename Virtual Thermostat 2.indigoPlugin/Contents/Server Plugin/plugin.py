@@ -46,7 +46,7 @@ class Plugin(indigo.PluginBase):
 			indigo.server.log("debug enabled")
 		else:
 			self.debug = False
-			indigo.server.log("debug disabled changed OH")
+			indigo.server.log("debug disabled changed OH1")
 		
 		self.debugLog("debug: " + str(self.debug))
 		self.simulateTempChanges = False		# Every few seconds update to random temperature values
