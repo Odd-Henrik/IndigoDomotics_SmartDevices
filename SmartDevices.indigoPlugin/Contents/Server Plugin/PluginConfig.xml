@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<PluginConfig>	
+	<Field id="topLabel" type="label">
+        <Label>
+            Configure Smart Devices...
+        </Label>
+	</Field>
+	
+	<Field id='sep1' type='separator' />
+	
+	<Field id="midLabel" type="label">
+		<Label>
+		    Set the level of information recorded to the Indigo log.
+        </Label>
+	</Field>
+	
+	<Field type="checkbox" id="enableDebug" defaultValue="false">
+	    <Label>Enable Debugging:</Label>
+	</Field>
+
+	<Field id="v3" type="label" visibleBindingId="enableDebug" visibleBindingValue="true">
+		<Label>
+            If you are having problems with the plugin (or you are
+		    instructed by support), you can enable debugging Use with
+		    caution.
+        </Label>
+	</Field>
+</PluginConfig>

@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 ####################
-# Copyright (c) 2014, Perceptive Automation, LLC. All rights reserved.
-# http://www.indigodomo.com
+# Copyright (c) 2014, Odd-Henrik Aasen. All rights reserved.
+# http://www.odd-henrik.com
 
 # noinspection PyUnresolvedReferences
 import indigo
@@ -53,8 +53,6 @@ class Plugin(indigo.PluginBase):
             indigo.server.log("debug disabled")
 
         self.debugLog("debug: " + str(self.debug))
-        self.simulateTempChanges = False		# Every few seconds update to random temperature values
-        self.simulateHumidityChanges = False	# Every few seconds update to random humidity values
 
     def __del__(self):
         indigo.PluginBase.__del__(self)
@@ -108,27 +106,9 @@ class Plugin(indigo.PluginBase):
     # Poll all of the states from the thermostat and pass new values to
     # Indigo Server.
     def _refreshStatesFromHardware(self, dev, logRefresh, commJustStarted):
+        pass
         # As an example here we update the temperature and humidity
         # sensor states to random values.
-        if self.simulateTempChanges:
-            # Simulate changing temperature values coming in from the
-            # hardware by updating all temp values randomly:
-            numTemps = self._getTempSensorCount(dev)
-            for index in range(1, numTemps + 1):
-                exampleTemp = random.randint(62, 88)
-                self._changeTempSensorValue(dev, index, exampleTemp)
-                if logRefresh:
-                    indigo.server.log(u"received \"%s\" temperature%d update to %.1f°" % (dev.name, index, exampleTemp))
-        if self.simulateHumidityChanges:
-            # Simulate changing humidity values coming in from the
-            # hardware by updating all humidity values randomly:
-            numSensors = self._getHumiditySensorCount(dev)
-            for index in range(1, numSensors + 1):
-                exampleHumidity = random.randint(15, 90)
-                self._changeHumiditySensorValue(dev, index, exampleHumidity)
-                if logRefresh:
-                    indigo.server.log(u"received \"%s\" humidity%d update to %.0f%%" % (dev.name, index, exampleHumidity))
-
         #	Other states that should also be updated:
         # ** IMPLEMENT ME **
         # dev.updateStateOnServer("setpointHeat", floating number here)
@@ -138,27 +118,28 @@ class Plugin(indigo.PluginBase):
         # dev.updateStateOnServer("hvacCoolerIsOn", True or False here)
         # dev.updateStateOnServer("hvacHeaterIsOn", True or False here)
         # dev.updateStateOnServer("hvacFanIsOn", True or False here)
-        if commJustStarted:
+
+        #if commJustStarted:
             # As an example, we force these thermostat states to specific values.
-            if "setpointHeat" in dev.states:
-                dev.updateStateOnServer("setpointHeat", 66.5, uiValue="66.5 °F")
-            if "setpointCool" in dev.states:
-                dev.updateStateOnServer("setpointCool", 77.5, uiValue="77.5 °F")
-            if "hvacOperationMode" in dev.states:
-                dev.updateStateOnServer("hvacOperationMode", indigo.kHvacMode.HeatCool)
-            if "hvacFanMode" in dev.states:
-                dev.updateStateOnServer("hvacFanMode", indigo.kFanMode.Auto)
-            dev.updateStateOnServer("backlightBrightness", 85, uiValue="85%")
-        if logRefresh:
-            if "setpointHeat" in dev.states:
-                indigo.server.log(u"received \"%s\" cool setpoint update to %.1f°" % (dev.name, dev.states["setpointHeat"]))
-            if "setpointCool" in dev.states:
-                indigo.server.log(u"received \"%s\" heat setpoint update to %.1f°" % (dev.name, dev.states["setpointCool"]))
-            if "hvacOperationMode" in dev.states:
-                indigo.server.log(u"received \"%s\" main mode update to %s" % (dev.name, _lookupActionStrFromHvacMode(dev.states["hvacOperationMode"])))
-            if "hvacFanMode" in dev.states:
-                indigo.server.log(u"received \"%s\" fan mode update to %s" % (dev.name, _lookupActionStrFromFanMode(dev.states["hvacFanMode"])))
-            indigo.server.log(u"received \"%s\" backlight brightness update to %d%%" % (dev.name, dev.states["backlightBrightness"]))
+        #     if "setpointHeat" in dev.states:
+        #         dev.updateStateOnServer("setpointHeat", 66.5, uiValue="66.5 °F")
+        #     if "setpointCool" in dev.states:
+        #         dev.updateStateOnServer("setpointCool", 77.5, uiValue="77.5 °F")
+        #     if "hvacOperationMode" in dev.states:
+        #         dev.updateStateOnServer("hvacOperationMode", indigo.kHvacMode.HeatCool)
+        #     if "hvacFanMode" in dev.states:
+        #         dev.updateStateOnServer("hvacFanMode", indigo.kFanMode.Auto)
+        #     dev.updateStateOnServer("backlightBrightness", 85, uiValue="85%")
+        # if logRefresh:
+        #     if "setpointHeat" in dev.states:
+        #         indigo.server.log(u"received \"%s\" cool setpoint update to %.1f°" % (dev.name, dev.states["setpointHeat"]))
+        #     if "setpointCool" in dev.states:
+        #         indigo.server.log(u"received \"%s\" heat setpoint update to %.1f°" % (dev.name, dev.states["setpointCool"]))
+        #     if "hvacOperationMode" in dev.states:
+        #         indigo.server.log(u"received \"%s\" main mode update to %s" % (dev.name, _lookupActionStrFromHvacMode(dev.states["hvacOperationMode"])))
+        #     if "hvacFanMode" in dev.states:
+        #         indigo.server.log(u"received \"%s\" fan mode update to %s" % (dev.name, _lookupActionStrFromFanMode(dev.states["hvacFanMode"])))
+        #     indigo.server.log(u"received \"%s\" backlight brightness update to %d%%" % (dev.name, dev.states["backlightBrightness"]))
 
     ######################
     # Process action request from Indigo Server to change main thermostat's main mode.
@@ -284,7 +265,7 @@ class Plugin(indigo.PluginBase):
         self.debugLog(str(len(newProps["primaryHeaterDevice"])))
 
         # Check to see if we are using any devices that supports HVAC opMode and Need Epuipment status
-        if len(newProps["primaryHeaterDevice"]) > 0 or len(newProps["secondaryHeaterDevice"]) > 0 or len(newProps["acHeatPumpDevice"]) > 0 or len(newProps["ventilationDevice"]):
+        if len(newProps["primaryHeaterDevice"]) > 0 or len(newProps["secondaryHeaterDevice"]) > 0 or len(newProps["acHeatPumpDevice"]) > 0 or len(newProps["ventilationDevice"]) or len(newProps["heaterDevice"]) > 0:
             newProps["SupportsHvacOperationMode"] = True
             newProps["ShowCoolHeatEquipmentStateUI"] = True
         else:
@@ -292,7 +273,7 @@ class Plugin(indigo.PluginBase):
             newProps["ShowCoolHeatEquipmentStateUI"] = False
 
         # Check to se if we support Heat Set Point
-        if len(newProps["primaryHeaterDevice"]) > 0 or len(newProps["secondaryHeaterDevice"]) > 0:
+        if len(newProps["primaryHeaterDevice"]) > 0 or len(newProps["secondaryHeaterDevice"]) > 0 or len(newProps["heaterDevice"]) > 0:
             newProps["SupportsHeatSetpoint"] = True
         else:
             newProps["SupportsHeatSetpoint"] = False
@@ -342,6 +323,8 @@ class Plugin(indigo.PluginBase):
         if dev.pluginProps["ambientHumiditySensor"]:
             sensorDevices.append(int(dev.pluginProps["ambientHumiditySensor"]))
 
+        if dev.pluginProps["temperatureSensor"]:
+            sensorDevices.append(int(dev.pluginProps["temperatureSensor"]))
 
         #self.debugLog(u"Sensor Device List: " + str(sensorDevices))
         return sensorDevices
@@ -372,6 +355,9 @@ class Plugin(indigo.PluginBase):
 
         if dev.pluginProps["outsideTemperatureSensor"]:
             sensorDevices.append(int(dev.pluginProps["outsideTemperatureSensor"]))
+
+        if dev.pluginProps["temperatureSensor"]:
+            sensorDevices.append(int(dev.pluginProps["temperatureSensor"]))
 
         #self.debugLog(u"Sensor Device List: " + str(sensorDevices))
         return sensorDevices
@@ -417,6 +403,11 @@ class Plugin(indigo.PluginBase):
                 humInputIndex = self._getHumiditySensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["ambientHumiditySensor"])) + 1
                 thermostatDev.updateStateOnServer(u"humidityInput" + str(humInputIndex), sensorDev.sensorValue, uiValue="%d" % sensorDev.sensorValue)
 
+        if thermostatDev.pluginProps["temperatureSensor"]:
+            if sensorDev.id == int(thermostatDev.pluginProps["temperatureSensor"]):
+                humInputIndex = self._getHumiditySensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["temperatureSensor"])) + 1
+                thermostatDev.updateStateOnServer(u"humidityInput" + str(humInputIndex), sensorDev.sensorValue, uiValue="%d" % sensorDev.sensorValue)
+
 
 
     def deviceUpdated(self, origDev, newDev):
@@ -444,6 +435,7 @@ class Plugin(indigo.PluginBase):
         ambientTemperatureSensor = False
         floorTemperatureSensor = False
         outsideTemperatureSensor = False
+        temperatureSensor = False
 
         if virDev.pluginProps["ambientTemperatureSensor"]:
             ambientTemperatureSensor = indigo.devices[int(virDev.pluginProps["ambientTemperatureSensor"])]
@@ -455,6 +447,10 @@ class Plugin(indigo.PluginBase):
 
         if virDev.pluginProps["outsideTemperatureSensor"]:
             outsideTemperatureSensor = indigo.devices[int(virDev.pluginProps["outsideTemperatureSensor"])]
+            self.debugLog(outsideTemperatureSensor.name)
+
+        if virDev.pluginProps["temperatureSensor"]:
+            outsideTemperatureSensor = indigo.devices[int(virDev.pluginProps["temperatureSensor"])]
             self.debugLog(outsideTemperatureSensor.name)
 
         # Humidity sensors
@@ -519,6 +515,7 @@ class Plugin(indigo.PluginBase):
             pass
         elif virDev.hvacMode == indigo.kHvacMode.Heat:
             self._heat(virDev, primaryHeaterDevice, secondaryHeaterDevice, ambientTemperatureSensor, floorTemperatureSensor, outsideTemperatureSensor)
+            self._heat(virDev, temperatureSensor)
         elif virDev.hvacMode == indigo.kHvacMode.HeatCool:
             pass
 
@@ -533,6 +530,46 @@ class Plugin(indigo.PluginBase):
             #indigo.kHvacMode.ProgramHeat		: u"program heat",
             #indigo.kHvacMode.ProgramCool		: u"program cool",
             #indigo.kHvacMode.ProgramHeatCool
+
+    def _heat(self, virDev, primaryHeaterDevice):
+        # Heater logic
+        heater = primaryHeaterDevice
+        sensorTemp = floorTemperatureSensor.sensorValue
+        setTemp = virDev.heatSetpoint
+        deltaTemp = float(virDev.pluginProps["configTemperatureDelta"])
+
+        self.debugLog("********* Heat Logic Run for: " + virDev.name)
+        self.debugLog("Heater: " + heater.name)
+        self.debugLog("sensorTemp: " + str(sensorTemp))
+        self.debugLog("Set Temp: " + str(setTemp))
+        self.debugLog("Delta Temp: " + str(deltaTemp))
+
+        if (sensorTemp < (setTemp - deltaTemp)) and not heater.onState:
+            indigo.device.turnOn(heater)
+            self.debugLog("Heater On")
+            virDev.updateStateOnServer("hvacHeaterIsOn", True)
+        elif (sensorTemp > (setTemp + deltaTemp)) and heater.onState:
+            indigo.device.turnOff(heater)
+            self.debugLog("Heater Off")
+            virDev.updateStateOnServer("hvacHeaterIsOn", False)
+        else:
+            #indigo.device.turnOff(heater)
+            self.debugLog("In delta or set")
+            if heater.onState:
+                virDev.updateStateOnServer("hvacHeaterIsOn", True)
+            else:
+                virDev.updateStateOnServer("hvacHeaterIsOn", False)
+
+        if sensorTemp > (setTemp + deltaTemp + 1):
+            self.debugLog("Too warm, turning off heater")
+            indigo.device.turnOff(heater)
+            self.debugLog("Heater Off")
+            virDev.updateStateOnServer("hvacHeaterIsOn", False)
+        elif sensorTemp < (setTemp - deltaTemp - 1):
+            self.debugLog("Too cold, turning on heater")
+            indigo.device.turnOn(heater)
+            self.debugLog("Heater On")
+            virDev.updateStateOnServer("hvacHeaterIsOn", True)
 
     def _heat(self, virDev, primaryHeaterDevice, secondaryHeaterDevice, ambientTemperatureSensor, floorTemperatureSensor, outsideTemperatureSensor):
         # Heater logic
@@ -588,6 +625,10 @@ class Plugin(indigo.PluginBase):
         if virDev.pluginProps["secondaryHeaterDevice"]:
             secondaryHeaterDevice = indigo.devices[int(virDev.pluginProps["secondaryHeaterDevice"])]
             indigo.device.turnOff(secondaryHeaterDevice)
+
+        if virDev.pluginProps["ventilationDevice"]:
+            ventilationDevice = indigo.devices[int(virDev.pluginProps["ventilationDevice"])]
+            indigo.device.turnOff(ventilationDevice)
 
         if virDev.pluginProps["ventilationDevice"]:
             ventilationDevice = indigo.devices[int(virDev.pluginProps["ventilationDevice"])]
@@ -682,88 +723,37 @@ class Plugin(indigo.PluginBase):
     # Custom Plugin Action callbacks (defined in Actions.xml)
     ######################
 
-    def testButtonPressed(self, pluginAction, dev):
-        pass
-
-    def setBacklightBrightness(self, pluginAction, dev):
-        try:
-            newBrightness = int(pluginAction.props.get(u"brightness", 100))
-        except ValueError:
-            # The int() cast above might fail if the user didn't enter a number:
-            indigo.server.log(u"set backlight brightness action to device \"%s\" -- invalid brightness value" % (dev.name,), isError=True)
-            return
-
-        # Command hardware module (dev) to set backlight brightness here:
-        # ** IMPLEMENT ME **
-        sendSuccess = True		# Set to False if it failed.
-
-        if sendSuccess:
-            # If success then log that the command was successfully sent.
-            indigo.server.log(u"sent \"%s\" %s to %d" % (dev.name, "set backlight brightness", newBrightness))
-
-            # And then tell the Indigo Server to update the state:
-            dev.updateStateOnServer("backlightBrightness", newBrightness, uiValue="%d%%" % newBrightness)
-        else:
-            # Else log failure but do NOT update state on Indigo Server.
-            indigo.server.log(u"send \"%s\" %s to %d failed" % (dev.name, "set backlight brightness", newBrightness), isError=True)
-
-    ########################################
-    # Actions defined in MenuItems.xml. In this case we just use these menu actions to
-    # simulate different thermostat configurations (how many temperature and humidity
-    # sensors they have).
-    ####################
-
     #setEnableDebugUi
     #getActionConfigUiValues
-    def getMenuActionConfigUiValues(self, menuId):
-        indigo.server.log("getActionConfigUI")
-        valuesDict = indigo.Dict()
-        errorMsgDict = indigo.Dict()
-        if menuId == "menuConfigure":
-            if self.pluginPrefs["enableDebug"]:
-                valuesDict["enableDebug"] = self.pluginPrefs["enableDebug"]
+    # def getMenuActionConfigUiValues(self, menuId):
+    #     indigo.server.log("getActionConfigUI")
+    #     valuesDict = indigo.Dict()
+    #     errorMsgDict = indigo.Dict()
+    #     if menuId == "menuConfigure":
+    #         if self.pluginPrefs["enableDebug"]:
+    #             valuesDict["enableDebug"] = self.pluginPrefs["enableDebug"]
+    #
+    #         else:
+    #             valuesDict["enableDebug"] = False
+    #
+    #     return valuesDict, errorMsgDict
+    #
+    # def changeDebugMode(self, valuesDict, TypeID):
+    #     indigo.server.log("debug change to: " + str(valuesDict["enableDebug"]))
+    #
+    #     indigo.server.log("enableDebug UI: " + str(valuesDict["enableDebug"]))
+    #     if valuesDict["enableDebug"]:
+    #         self.debug = True
+    #         indigo.server.log("debug true")
+    #         self.pluginPrefs["enableDebug"] = True
+    #     else:
+    #         self.debug = False
+    #         indigo.server.log("debug false")
+    #         self.pluginPrefs["enableDebug"] = False
+    #
+    #     return True
 
-            else:
-                valuesDict["enableDebug"] = False
 
-        return valuesDict, errorMsgDict
-
-    def changeDebugMode(self, valuesDict, TypeID):
-        indigo.server.log("debug change to: " + str(valuesDict["enableDebug"]))
-
-        indigo.server.log("enableDebug UI: " + str(valuesDict["enableDebug"]))
-        if valuesDict["enableDebug"]:
-            self.debug = True
-            indigo.server.log("debug true")
-            self.pluginPrefs["enableDebug"] = True
-        else:
-            self.debug = False
-            indigo.server.log("debug false")
-            self.pluginPrefs["enableDebug"] = False
-
-        return True
-
-
-    def changeTempSensorCountTo1(self):
-        self._changeAllTempSensorCounts(1)
-
-    def changeTempSensorCountTo2(self):
-        self._changeAllTempSensorCounts(2)
-
-    def changeTempSensorCountTo3(self):
-        self._changeAllTempSensorCounts(3)
-
-    def changeHumiditySensorCountTo0(self):
-        self._changeAllHumiditySensorCounts(0)
-
-    def changeHumiditySensorCountTo1(self):
-        self._changeAllHumiditySensorCounts(1)
-
-    def changeHumiditySensorCountTo2(self):
-        self._changeAllHumiditySensorCounts(2)
-
-    def changeHumiditySensorCountTo3(self):
-        self._changeAllHumiditySensorCounts(3)
 
     #################################################
     # Config button callback methods
@@ -783,6 +773,7 @@ class Plugin(indigo.PluginBase):
         valuesDict["ambientTemperatureSensor"] = ""
         valuesDict["floorTemperatureSensor"] = ""
         valuesDict["outsideTemperatureSensor"] = ""
+        valuesDict["temperatureSensor"] = ""
         return valuesDict
 
     def ClearHumidityDevicesPressed(self, valuesDict, typeId, devId):

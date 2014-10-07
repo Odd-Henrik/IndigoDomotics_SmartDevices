@@ -21,9 +21,10 @@
 	 the two by the typeID.
 -->
 
+<!--suppress XmlUnboundNsPrefix, XmlUnboundNsPrefix, CheckTagEmptyBody, CheckTagEmptyBody, CheckTagEmptyBody, CheckTagEmptyBody, CheckTagEmptyBody -->
 <Devices>
-	<Device type="speedcontrol" id="virtualSpeedControl">
-		<Name>Virtual Speed Controller</Name>
+	<Device type="speedcontrol" id="simpleSmartFan">
+      	<Name>Simple SmartFan</Name>
 		<ConfigUI>
 			<Field id="autoLabel11" type="label">
 				<Label>Select Fan/Ventilator/Dehumidifyer device(s)</Label>
@@ -34,15 +35,71 @@
 			</Field>
 		</ConfigUI>
 		<States>
+              <!--
+            onOffState	boolean	onState	indicates whether the device is on - use dev.onState property as a shortcut
+            speedIndex	boolean	speedIndex	indicates the current speed index for devices that support some fixed # of speeds - use dev.speedIndex property as a shortcut
+            speedIndex.ui	boolean	n/a	a more user friendly name for the current index (e.g. high, medium, low, off)
+            speedLevel	boolean	speedLevel	indicates the level the device is set to (0-100) - use dev.speedLevel property as a shortcut
+            -->
 		</States>
 	</Device>
+
+    	<Device type="thermostat" id="simpleSmartThermostat">
+		<Name>Simple Smart Thermostat</Name>
+		<ConfigUI>
+			<Field id="autoLabel21" type="label">
+				<Label>Select Heater device(s)</Label>
+			</Field>
+			<Field id="primaryHeaterDevice" type="list">
+				<Label>Heater Device(s):</Label>
+				<List class="indigo.relay"/>
+			</Field>
+			<Field id="clearHVACDevices"
+				type="button"
+				tooltip="This will reset Heater Device selections">
+				<Label></Label>
+				<Title>Clear Heater Device selections</Title>
+				<CallbackMethod>ClearHVACDevicesPressed</CallbackMethod>
+			</Field>
+			<Field id="simpleSeparator21" type="separator"/>
+			<Field id="autoLabel22" type="label">
+				<Label>Select temperature sensor(s):</Label>
+			</Field>
+			<Field id="temperatureSensor" type="list">
+				<Label>Temperature sensor(s):</Label>
+				<List class="indigo.devices" filter="indigo.sensor"/>
+			</Field>
+			<Field id="clearTemperatureDevices"
+				type="button"
+				tooltip="This will reset Temperaturesensor Device selection">
+				<Label></Label>
+				<Title>Clear Temp. Device selections</Title>
+				<CallbackMethod>ClearTemperatureDevicesPressed</CallbackMethod>
+			</Field>
+			<Field id="simpleSeparator23" type="separator"/>
+			<Field id="autoLabel24" type="label">
+				<Label>Thermostat Configuration:</Label>
+			</Field>
+			<Field id="configTemperatureDelta" type="textfield" defaultValue="0.2">
+				<Label>Temperature delta:</Label>
+			</Field>
+		</ConfigUI>
+		<States>
+			<State id="temperatureDelta">
+				<ValueType>Float</ValueType>
+				<TriggerLabel>Temperature Delta</TriggerLabel>
+				<ControlPageLabel>Temperature Delta</ControlPageLabel>
+			</State>
+		</States>
+	</Device>
+
 	<!-- This device illustrates how a plugin can inherit Indigo's thermostat
 	device behavior including thermostat device states, thermostat actions,
 	and will support Indigo and Indigo Touch's native UI for thermostat type
 	devices.
 	-->
-	<Device type="thermostat" id="myThermoType">
-		<Name>Virtual Thermostat</Name>
+	<Device type="thermostat" id="climateController">
+		<Name>Climate Controller</Name>
 		<ConfigUI>
 			<!-- The ConfigUI here is just an example of the type of device
 			specific UI that might be needed. Here you might specify a text
@@ -77,7 +134,7 @@
 			</Field>
 			<Field id="simpleSeparator1" type="separator"/>
 			<Field id="autoLabel2" type="label">
-				<Label>Select temperatur sensor(s):</Label>
+				<Label>Select temperature sensor(s):</Label>
 			</Field>
 			<Field id="ambientTemperatureSensor" type="menu">
 				<Label>Ambient temperature sensor:</Label>
@@ -126,7 +183,7 @@
 				<Label>Thermostat Configuration:</Label>
 			</Field>
 			<Field id="configMainThermostatMode" type="menu" defaultValue="floor">
-				<Label>Thermostat Primary Controll:</Label>
+				<Label>Thermostat Primary Control:</Label>
 				<List>
 					<Option value="floor">Floor</Option>
 					<Option value="ambient">Ambient</Option>
@@ -315,7 +372,7 @@
 						<Option value="ambient">Ambient</Option>
 					</List>
 				</ValueType>
-				<TriggerLabel>Thermostate Mode Changed</TriggerLabel>
+				<TriggerLabel>Thermostat Mode Changed</TriggerLabel>
 				<TriggerLabelPrefix>Mode Changed to</TriggerLabelPrefix>
 				<ControlPageLabel>Current Mode</ControlPageLabel>
 				<ControlPageLabelPrefix>Mode is</ControlPageLabelPrefix>
@@ -328,7 +385,7 @@
 						<Option value="achp">ACHP</Option>
 					</List>
 				</ValueType>
-				<TriggerLabel>Thermostate Mode Changed</TriggerLabel>
+				<TriggerLabel>Thermostat Mode Changed</TriggerLabel>
 				<TriggerLabelPrefix>Mode Changed to</TriggerLabelPrefix>
 				<ControlPageLabel>Current Mode</ControlPageLabel>
 				<ControlPageLabelPrefix>Mode is</ControlPageLabelPrefix>
@@ -382,15 +439,15 @@
 						<Option value="both">Both</Option>
 					</List>
 				</ValueType>
-				<TriggerLabel>Ventilationmode Changed</TriggerLabel>
-				<TriggerLabelPrefix>Ventilationmode Changed to</TriggerLabelPrefix>
-				<ControlPageLabel>Current Ventilationmode</ControlPageLabel>
-				<ControlPageLabelPrefix>Ventilationmode is</ControlPageLabelPrefix>
+				<TriggerLabel>Ventilation mode Changed</TriggerLabel>
+				<TriggerLabelPrefix>Ventilation mode Changed to</TriggerLabelPrefix>
+				<ControlPageLabel>Current Ventilation mode</ControlPageLabel>
+				<ControlPageLabelPrefix>Ventilation mode is</ControlPageLabelPrefix>
 			</State>
 			<State id="dimmableVentilator">
 				<ValueType>Boolean</ValueType>
 				<TriggerLabel>Ventilator Is Dimmable</TriggerLabel>
-				<ControlPageLabel>Ventilator Is Dimmabl</ControlPageLabel>
+				<ControlPageLabel>Ventilator Is Dimmable</ControlPageLabel>
 			</State>
 			<State id="considerOutsideHumFanOff">
 				<ValueType>Boolean</ValueType>

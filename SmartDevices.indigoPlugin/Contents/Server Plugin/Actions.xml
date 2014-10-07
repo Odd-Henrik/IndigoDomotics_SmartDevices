@@ -9,7 +9,7 @@
 	 backlightBrightness state added to Devices.xml.
 -->
 <Actions>
-	<Action id="setBacklightBrightness" deviceFilter="self">
+<!--	<Action id="setBacklightBrightness" deviceFilter="self">
 		<Name>Set Backlight Brightness</Name>
 		<CallbackMethod>setBacklightBrightness</CallbackMethod>
 		<ConfigUI>
@@ -17,5 +17,5 @@
 				<Label>Backlight Brightness:</Label>
 			</Field>
 		</ConfigUI>
-	</Action>
+	</Action>-->
 </Actions>

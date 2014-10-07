@@ -6,7 +6,7 @@
 	 back to the user you can post information into the Event Log.
 -->
 <MenuItems>
-	<MenuItem id="menuConfigure">
+	<!--<MenuItem id="menuConfigure">
 		<Name>Configure...</Name>
 		<CallbackMethod>changeDebugMode</CallbackMethod>
 		<ButtonTitle>Save</ButtonTitle>
@@ -18,7 +18,7 @@
 				<Label>Enable Debugging:</Label>
 			</Field>
 		</ConfigUI>
-	</MenuItem>
+	</MenuItem>-->
 	
 	
 <!--	<MenuItem id="menu1">
