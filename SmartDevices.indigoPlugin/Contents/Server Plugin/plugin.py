@@ -452,8 +452,9 @@ class Plugin(indigo.PluginBase):
         temperatureSensor = False
 
         if virDev.pluginProps.get("primaryTemperatureSensors", ""):
-            primaryTemperatureSensors = indigo.devices[int(virDev.pluginProps["primaryTemperatureSensors"])]
-            self.debugLog(primaryTemperatureSensors.name)
+            for sens in (virDev.pluginProps["primaryTemperatureSensors"]):
+                primaryTemperatureSensors.append(int(sens))
+                self.debugLog(sens.name)
 
         if virDev.pluginProps.get("floorTemperatureSensor", ""):
             floorTemperatureSensor = indigo.devices[int(virDev.pluginProps["floorTemperatureSensor"])]
@@ -546,21 +547,21 @@ class Plugin(indigo.PluginBase):
               floorTemperatureSensor, outsideTemperatureSensor):
         # Heater logic
         heater = primaryHeaterDevice
-        sensorTemp = primaryTemperatureSensors.sensorValue
+        sensorAvgTemp = _avgSensorValues(primaryTemperatureSensors)
         setTemp = virDev.heatSetpoint
         deltaTemp = float(virDev.pluginProps["configTemperatureDelta"])
 
         self.debugLog("********* Heat Logic Run for: " + virDev.name)
         self.debugLog("Heater: " + heater.name)
-        self.debugLog("sensorTemp: " + str(sensorTemp))
+        self.debugLog("sensorAvgTemp: " + str(sensorAvgTemp))
         self.debugLog("Set Temp: " + str(setTemp))
         self.debugLog("Delta Temp: " + str(deltaTemp))
 
-        if (sensorTemp < (setTemp - deltaTemp)) and not heater.onState:
+        if (sensorAvgTemp < (setTemp - deltaTemp)) and not heater.onState:
             indigo.device.turnOn(heater)
             self.debugLog("Heater On")
             virDev.updateStateOnServer("hvacHeaterIsOn", True)
-        elif (sensorTemp > (setTemp + deltaTemp)) and heater.onState:
+        elif (sensorAvgTemp > (setTemp + deltaTemp)) and heater.onState:
             indigo.device.turnOff(heater)
             self.debugLog("Heater Off")
             virDev.updateStateOnServer("hvacHeaterIsOn", False)
@@ -572,18 +573,26 @@ class Plugin(indigo.PluginBase):
             else:
                 virDev.updateStateOnServer("hvacHeaterIsOn", False)
 
-        if sensorTemp > (setTemp + deltaTemp + 1):
+        if sensorAvgTemp > (setTemp + deltaTemp + 1):
             self.debugLog("Too warm, turning off heater")
             indigo.device.turnOff(heater)
             self.debugLog("Heater Off")
             virDev.updateStateOnServer("hvacHeaterIsOn", False)
-        elif sensorTemp < (setTemp - deltaTemp - 1):
+        elif sensorAvgTemp < (setTemp - deltaTemp - 1):
             self.debugLog("Too cold, turning on heater")
             indigo.device.turnOn(heater)
             self.debugLog("Heater On")
             virDev.updateStateOnServer("hvacHeaterIsOn", True)
 
+    def _avgSensorValues(self, sensors):
+        count = 0
+        totalTemp = 0
 
+        for sens in sensors:
+            count += 1
+            totalTemp = totalTemp + sens.sensorValue
+
+        return totalTemp/count
 
     def _turnOffAllHVACDevices(self, virDev):
         if virDev.pluginProps.get("acHeatPumpDevice", ""):
