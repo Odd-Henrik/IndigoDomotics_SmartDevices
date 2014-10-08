@@ -320,7 +320,8 @@ class Plugin(indigo.PluginBase):
     def _getSensorsIdsInVirtualDevice(self, dev):
         sensorDevices = indigo.List()
 
-        if dev.pluginProps["ambientTemperatureSensor"]:
+        #if dev.pluginProps["ambientTemperatureSensor"]:
+        if dev.pluginProps.get("ambientTemperatureSensor", ""):
             sensorDevices.append(int(dev.pluginProps["ambientTemperatureSensor"]))
 
         if dev.pluginProps["floorTemperatureSensor"]:
