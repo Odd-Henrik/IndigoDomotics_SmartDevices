@@ -448,15 +448,15 @@ class Plugin(indigo.PluginBase):
         outsideTemperatureSensor = False
         temperatureSensor = False
 
-        if virDev.pluginProps["primaryTemperatureSensors"]:
+        if virDev.pluginProps.get("primaryTemperatureSensors", ""):
             primaryTemperatureSensors = indigo.devices[int(virDev.pluginProps["primaryTemperatureSensors"])]
             self.debugLog(primaryTemperatureSensors.name)
 
-        if virDev.pluginProps["floorTemperatureSensor"]:
+        if virDev.pluginProps.get("floorTemperatureSensor", ""):
             floorTemperatureSensor = indigo.devices[int(virDev.pluginProps["floorTemperatureSensor"])]
             self.debugLog(floorTemperatureSensor.name)
 
-        if virDev.pluginProps["outsideTemperatureSensor"]:
+        if virDev.pluginProps.get("outsideTemperatureSensor", ""):
             outsideTemperatureSensor = indigo.devices[int(virDev.pluginProps["outsideTemperatureSensor"])]
             self.debugLog(outsideTemperatureSensor.name)
 
@@ -466,15 +466,15 @@ class Plugin(indigo.PluginBase):
         ambientHumiditySensor = False
 
         self.debugLog("Humidity Sensors:")
-        if virDev.pluginProps["outsideHumiditySensor"]:
+        if virDev.pluginProps.get("outsideHumiditySensor", ""):
             outsideHumiditySensor = indigo.devices[int(virDev.pluginProps["outsideHumiditySensor"])]
             self.debugLog(outsideHumiditySensor.name)
 
-        if virDev.pluginProps["optionalHumiditySensor"]:
+        if virDev.pluginProps.get("optionalHumiditySensor", ""):
             optionalHumiditySensor = indigo.devices[int(virDev.pluginProps["optionalHumiditySensor"])]
             self.debugLog(optionalHumiditySensor.name)
 
-        if virDev.pluginProps["ambientHumiditySensor"]:
+        if virDev.pluginProps.get("ambientHumiditySensor", ""):
             ambientHumiditySensor = indigo.devices[int(virDev.pluginProps["ambientHumiditySensor"])]
             self.debugLog(ambientHumiditySensor.name)
 
@@ -485,26 +485,26 @@ class Plugin(indigo.PluginBase):
         ventilationDevice = False
 
         self.debugLog("HVAC Devices:")
-        if virDev.pluginProps["acHeatPumpDevice"]:
+        if virDev.pluginProps.get("acHeatPumpDevice", ""):
             acHeatPumpDevice = indigo.devices[int(virDev.pluginProps["acHeatPumpDevice"])]
             self.debugLog(acHeatPumpDevice.name)
 
-        if virDev.pluginProps["primaryHeaterDevice"]:
+        if virDev.pluginProps.get("primaryHeaterDevice", ""):
             primaryHeaterDevice = indigo.devices[int(virDev.pluginProps["primaryHeaterDevice"])]
             self.debugLog(primaryHeaterDevice.name)
 
-        if virDev.pluginProps["secondaryHeaterDevice"]:
+        if virDev.pluginProps.get("secondaryHeaterDevice", ""):
             secondaryHeaterDevice = indigo.devices[int(virDev.pluginProps["secondaryHeaterDevice"])]
             self.debugLog(ambientHumiditySensor.name)
 
-        if virDev.pluginProps["ventilationDevice"]:
+        if virDev.pluginProps.get("ventilationDevice", ""):
             ventilationDevice = indigo.devices[int(virDev.pluginProps["ventilationDevice"])]
             self.debugLog(ventilationDevice.name)
 
         # Settings
         configTemperatureDelta = False
         self.debugLog("Settings:")
-        if virDev.pluginProps["configTemperatureDelta"]:
+        if virDev.pluginProps.get("configTemperatureDelta", ""):
             configTemperatureDelta = float(virDev.pluginProps["configTemperatureDelta"])
             self.debugLog("configTemperatureDelta: " + str(configTemperatureDelta))
 
@@ -583,23 +583,23 @@ class Plugin(indigo.PluginBase):
 
 
     def _turnOffAllHVACDevices(self, virDev):
-        if virDev.pluginProps["acHeatPumpDevice"]:
+        if virDev.pluginProps.get("acHeatPumpDevice", ""):
             acHeatPumpDevice = indigo.devices[int(virDev.pluginProps["acHeatPumpDevice"])]
             indigo.device.turnOff(acHeatPumpDevice)
 
-        if virDev.pluginProps["primaryHeaterDevice"]:
+        if virDev.pluginProps.get("primaryHeaterDevice", ""):
             primaryHeaterDevice = indigo.devices[int(virDev.pluginProps["primaryHeaterDevice"])]
             indigo.device.turnOff(primaryHeaterDevice)
 
-        if virDev.pluginProps["secondaryHeaterDevice"]:
+        if virDev.pluginProps.get("secondaryHeaterDevice", ""):
             secondaryHeaterDevice = indigo.devices[int(virDev.pluginProps["secondaryHeaterDevice"])]
             indigo.device.turnOff(secondaryHeaterDevice)
 
-        if virDev.pluginProps["ventilationDevice"]:
+        if virDev.pluginProps.get("ventilationDevice", ""):
             ventilationDevice = indigo.devices[int(virDev.pluginProps["ventilationDevice"])]
             indigo.device.turnOff(ventilationDevice)
 
-        if virDev.pluginProps["ventilationDevice"]:
+        if virDev.pluginProps.get("ventilationDevice", ""):
             ventilationDevice = indigo.devices[int(virDev.pluginProps["ventilationDevice"])]
             indigo.device.turnOff(ventilationDevice)
 
