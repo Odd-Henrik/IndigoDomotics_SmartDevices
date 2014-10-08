@@ -446,10 +446,10 @@ class Plugin(indigo.PluginBase):
         self.debugLog("Getting all the devices")
         self.debugLog("Temperature Sensors:")
         # Temperature sensors
-        primaryTemperatureSensors = False
-        floorTemperatureSensor = False
-        outsideTemperatureSensor = False
-        temperatureSensor = False
+        primaryTemperatureSensors = None
+        floorTemperatureSensor = None
+        outsideTemperatureSensor = None
+        temperatureSensor = None
 
         if virDev.pluginProps.get("primaryTemperatureSensors", ""):
             for sens in (virDev.pluginProps["primaryTemperatureSensors"]):
@@ -465,9 +465,9 @@ class Plugin(indigo.PluginBase):
             self.debugLog(outsideTemperatureSensor.name)
 
         # Humidity sensors
-        outsideHumiditySensor = False
-        optionalHumiditySensor = False
-        ambientHumiditySensor = False
+        outsideHumiditySensor = None
+        optionalHumiditySensor = None
+        ambientHumiditySensor = None
 
         self.debugLog("Humidity Sensors:")
         if virDev.pluginProps.get("outsideHumiditySensor", ""):
@@ -483,10 +483,10 @@ class Plugin(indigo.PluginBase):
             self.debugLog(ambientHumiditySensor.name)
 
         # HVAC Devices
-        acHeatPumpDevice = False
-        primaryHeaterDevice = False
-        secondaryHeaterDevice = False
-        ventilationDevice = False
+        acHeatPumpDevice = None
+        primaryHeaterDevice = None
+        secondaryHeaterDevice = None
+        ventilationDevice = None
 
         self.debugLog("HVAC Devices:")
         if virDev.pluginProps.get("acHeatPumpDevice", ""):
