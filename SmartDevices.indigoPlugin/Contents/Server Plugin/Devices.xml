@@ -65,7 +65,7 @@
 			<Field id="autoLabel22" type="label">
 				<Label>Select temperature sensor(s):</Label>
 			</Field>
-			<Field id="temperatureSensor" type="list">
+			<Field id="primaryTemperatureSensors" type="list">
 				<Label>Temperature sensor(s):</Label>
 				<List class="indigo.devices" filter="indigo.sensor"/>
 			</Field>
@@ -136,7 +136,7 @@
 			<Field id="autoLabel2" type="label">
 				<Label>Select temperature sensor(s):</Label>
 			</Field>
-			<Field id="ambientTemperatureSensor" type="menu">
+			<Field id="primaryTemperatureSensors" type="menu">
 				<Label>Ambient temperature sensor:</Label>
 				<List class="indigo.devices" filter="indigo.sensor"/>
 			</Field>

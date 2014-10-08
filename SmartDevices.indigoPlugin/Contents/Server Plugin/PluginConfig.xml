@@ -20,9 +20,7 @@
 
 	<Field id="v3" type="label" visibleBindingId="enableDebug" visibleBindingValue="true">
 		<Label>
-            If you are having problems with the plugin (or you are
-		    instructed by support), you can enable debugging Use with
-		    caution.
+            If you are having problems with the plugin (or you are instructed by support), you can enable debugging Use with caution.
         </Label>
 	</Field>
 </PluginConfig>
