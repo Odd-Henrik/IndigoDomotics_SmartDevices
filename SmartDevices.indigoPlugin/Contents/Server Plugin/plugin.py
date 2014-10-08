@@ -321,25 +321,26 @@ class Plugin(indigo.PluginBase):
         sensorDevices = indigo.List()
 
         #if dev.pluginProps["ambientTemperatureSensor"]:
+        self.debugLog("test2")
         if dev.pluginProps.get("ambientTemperatureSensor", ""):
             sensorDevices.append(int(dev.pluginProps["ambientTemperatureSensor"]))
 
-        if dev.pluginProps["floorTemperatureSensor"]:
+        if dev.pluginProps.get("floorTemperatureSensor"):
             sensorDevices.append(int(dev.pluginProps["floorTemperatureSensor"]))
 
-        if dev.pluginProps["outsideTemperatureSensor"]:
+        if dev.pluginProps.get("outsideTemperatureSensor"):
             sensorDevices.append(int(dev.pluginProps["outsideTemperatureSensor"]))
 
-        if dev.pluginProps["outsideHumiditySensor"]:
+        if dev.pluginProps.get("outsideHumiditySensor"):
             sensorDevices.append(int(dev.pluginProps["outsideHumiditySensor"]))
 
-        if dev.pluginProps["optionalHumiditySensor"]:
+        if dev.pluginProps.get("optionalHumiditySensor"):
             sensorDevices.append(int(dev.pluginProps["optionalHumiditySensor"]))
 
-        if dev.pluginProps["ambientHumiditySensor"]:
+        if dev.pluginProps.get("ambientHumiditySensor"):
             sensorDevices.append(int(dev.pluginProps["ambientHumiditySensor"]))
 
-        if dev.pluginProps["temperatureSensor"]:
+        if dev.pluginProps.get("temperatureSensor"):
             sensorDevices.append(int(dev.pluginProps["temperatureSensor"]))
 
         #self.debugLog(u"Sensor Device List: " + str(sensorDevices))
