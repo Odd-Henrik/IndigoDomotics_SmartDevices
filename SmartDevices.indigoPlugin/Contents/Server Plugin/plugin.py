@@ -277,10 +277,10 @@ class Plugin(indigo.PluginBase):
         #self._changeHumiditySensorCount(dev, len(self._getHumiditySensorsIdsInVirtualDevice(dev)))
         newProps["NumHumidityInputs"] = len(self._getHumiditySensorsIdsInVirtualDevice(dev))
 
-        self.debugLog(str(len(newProps["primaryHeaterDevice"])))
+        self.debugLog("Number of primary Heater Devices: " + str(len(newProps.get("primaryHeaterDevice", ""))))
 
         # Check to see if we are using any devices that supports HVAC opMode and Need Epuipment status
-        if len(newProps["primaryHeaterDevice"]) > 0 or len(newProps["secondaryHeaterDevice"]) > 0 or len(newProps["acHeatPumpDevice"]) > 0 or len(newProps["ventilationDevice"]) or len(newProps["heaterDevice"]) > 0:
+        if len(newProps.get("primaryHeaterDevice", "")) > 0 or len(newProps.get("secondaryHeaterDevice", "")) > 0 or len(newProps.get("acHeatPumpDevice", "")) > 0 or len(newProps.get("ventilationDevice", "")):
             newProps["SupportsHvacOperationMode"] = True
             newProps["ShowCoolHeatEquipmentStateUI"] = True
         else:
@@ -288,13 +288,13 @@ class Plugin(indigo.PluginBase):
             newProps["ShowCoolHeatEquipmentStateUI"] = False
 
         # Check to se if we support Heat Set Point
-        if len(newProps["primaryHeaterDevice"]) > 0 or len(newProps["secondaryHeaterDevice"]) > 0 or len(newProps["heaterDevice"]) > 0:
+        if len(newProps.get("primaryHeaterDevice", "")) > 0 or len(newProps.get("secondaryHeaterDevice", "")) > 0 or len(newProps.get("heaterDevice", "")) > 0:
             newProps["SupportsHeatSetpoint"] = True
         else:
             newProps["SupportsHeatSetpoint"] = False
 
         # Check to se if we support Cool Set Point and Fan mode
-        if len(newProps["acHeatPumpDevice"]) > 0 or len(newProps["ventilationDevice"]) > 0:
+        if len(newProps.get("acHeatPumpDevice", "")) > 0 or len(newProps.get("ventilationDevice", "")) > 0:
             newProps["SupportsCoolSetpoint"] = True
             newProps["SupportsHvacFanMode"] = True
         else:
