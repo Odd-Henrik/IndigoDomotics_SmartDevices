@@ -322,7 +322,7 @@ class Plugin(indigo.PluginBase):
 
         self.debugLog("test 6")
         if dev.pluginProps.get("primaryTemperatureSensors", ""):
-            for sens in (dev.dev.pluginProps["primaryTemperatureSensors"]):
+            for sens in (dev.pluginProps["primaryTemperatureSensors"]):
                 self.debugLog("TemperatureSensor ID: " + sens)
                 sensorDevices.append(int(sens))
 
