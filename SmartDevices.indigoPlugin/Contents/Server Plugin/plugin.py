@@ -265,7 +265,7 @@ class Plugin(indigo.PluginBase):
         # consider adding that to runConcurrentThread() above.
 
         #self._refreshStatesFromHardware(dev, True, True)
-        self.debugLog(u"-- deviceStartComm --")
+        self.debugLog(u"-- deviceStartComm V:1--")
 
         newProps = dev.pluginProps
 
@@ -320,10 +320,9 @@ class Plugin(indigo.PluginBase):
     def _getSensorsIdsInVirtualDevice(self, dev):
         sensorDevices = indigo.List()
 
-        self.debugLog("test 6")
         if dev.pluginProps.get("primaryTemperatureSensors", ""):
             for sens in (dev.pluginProps["primaryTemperatureSensors"]):
-                self.debugLog("TemperatureSensor ID: " + sens)
+                #self.debugLog("TemperatureSensor ID: " + sens)
                 sensorDevices.append(int(sens))
 
         if dev.pluginProps.get("floorTemperatureSensor", ""):
@@ -430,8 +429,8 @@ class Plugin(indigo.PluginBase):
             if not dev.enabled or not dev.configured:
                 continue
 
-            self.debugLog("DeviceUpdate for device:" + dev.name + " Of Type: " + dev.deviceTypeId)
             if newDev.id in  self._getSensorsIdsInVirtualDevice(dev):
+                self.debugLog("DeviceUpdate for device:" + dev.name + " Of Type: " + dev.deviceTypeId + " For Sensor: " + newDev.name + " With Value: " + newDev.sensorValue)
                 self._handleChangeTemperatureSensors(dev, newDev)
                 self._runHVACLogic(dev)
 
