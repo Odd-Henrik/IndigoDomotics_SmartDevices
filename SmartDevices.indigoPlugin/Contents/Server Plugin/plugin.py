@@ -570,7 +570,7 @@ class Plugin(indigo.PluginBase):
               floorTemperatureSensors, outsideTemperatureSensors):
         # Heater logic
         heaters = primaryHeaterDevices
-        sensorAvgTemp = _avgSensorValues(primaryTemperatureSensors)
+        sensorAvgTemp = self._avgSensorValues(primaryTemperatureSensors)
         setTemp = virDev.heatSetpoint
         deltaTemp = float(virDev.states["temperatureDelta"])
 
