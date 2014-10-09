@@ -321,8 +321,10 @@ class Plugin(indigo.PluginBase):
 
         self.debugLog("Update all States from Props")
 
-        dev.updateStateOnServer("temperatureDelta", props.get("configTemperatureDelta", ""))
-        dev.updateStateOnServer("mainThermostatMode", props.get("configMainThermostatMode", ""))
+        if dev.states["temperatureDelta"]:
+            dev.updateStateOnServer("temperatureDelta", props.get("configTemperatureDelta", ""))
+        if dev.states["mainThermostatMode"]:
+            dev.updateStateOnServer("mainThermostatMode", props.get("configMainThermostatMode", ""))
         dev.updateStateOnServer("primaryHeaterOverride", props.get("configPrimaryHeaterOverride", ""))
         dev.updateStateOnServer("maxAmbientTemperature", props.get("configMaxAmbientTemperature", ""))
         dev.updateStateOnServer("minAmbientTemperature", props.get("configMinAmbientTemperature", ""))
