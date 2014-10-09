@@ -318,33 +318,52 @@ class Plugin(indigo.PluginBase):
         pass
 
     def _updateStatesFromProps(self, dev, props):
-
         self.debugLog("Update all States from Props")
 
         if "temperatureDelta" in dev.states:
             dev.updateStateOnServer("temperatureDelta", props.get("configTemperatureDelta", ""))
         if "mainThermostatMode" in dev.states:
             dev.updateStateOnServer("mainThermostatMode", props.get("configMainThermostatMode", ""))
-        dev.updateStateOnServer("primaryHeaterOverride", props.get("configPrimaryHeaterOverride", ""))
-        dev.updateStateOnServer("maxAmbientTemperature", props.get("configMaxAmbientTemperature", ""))
-        dev.updateStateOnServer("minAmbientTemperature", props.get("configMinAmbientTemperature", ""))
-        dev.updateStateOnServer("maxFloorTemperature", props.get("configMaxFloorTemperature", ""))
-        dev.updateStateOnServer("minFloorTemperature", props.get("configMinFloorTemperature", ""))
-        dev.updateStateOnServer("noHeatOutsideTemperature", props.get("configNoHeatOutsideTemperature", ""))
-        dev.updateStateOnServer("noCoolOutsideTemperature", props.get("configNoCoolOutsideTemperature", ""))
-        dev.updateStateOnServer("outsideTempCompFactor", props.get("configOutsideTempCompFactor", ""))
-        dev.updateStateOnServer("primaryVentilationMode", props.get("configPrimaryVentilationMode", ""))
-        dev.updateStateOnServer("dimmableVentilator", props.get("configDimmableVentilator", ""))
-        dev.updateStateOnServer("considerOutsideHumFanOff", props.get("configConsiderOutsideHumFanOff", ""))
-        dev.updateStateOnServer("humidityOff", props.get("configHumidityOff", ""))
-        dev.updateStateOnServer("humidityStep1", props.get("configHumidityStep1", ""))
-        dev.updateStateOnServer("humidityStep2", props.get("configHumidityStep2", ""))
-        dev.updateStateOnServer("humidityStep3", props.get("configHumidityStep3", ""))
-        dev.updateStateOnServer("humidityStep4", props.get("configHumidityStep4", ""))
-        dev.updateStateOnServer("fanSpeedStep1", props.get("configFanSpeedStep1", ""))
-        dev.updateStateOnServer("fanSpeedStep2", props.get("configFanSpeedStep2", ""))
-        dev.updateStateOnServer("fanSpeedStep3", props.get("configFanSpeedStep3", ""))
-        dev.updateStateOnServer("fanSpeedStep4", props.get("configFanSpeedStep4", ""))
+        if "primaryHeaterOverride" in dev.states:
+            dev.updateStateOnServer("primaryHeaterOverride", props.get("configPrimaryHeaterOverride", ""))
+        if "maxAmbientTemperature" in dev.states:
+            dev.updateStateOnServer("maxAmbientTemperature", props.get("configMaxAmbientTemperature", ""))
+        if "minAmbientTemperature" in dev.states:
+            dev.updateStateOnServer("minAmbientTemperature", props.get("configMinAmbientTemperature", ""))
+        if "maxFloorTemperature" in dev.states:
+            dev.updateStateOnServer("maxFloorTemperature", props.get("configMaxFloorTemperature", ""))
+        if "minFloorTemperature" in dev.states:
+            dev.updateStateOnServer("minFloorTemperature", props.get("configMinFloorTemperature", ""))
+        if "noHeatOutsideTemperature" in dev.states:
+            dev.updateStateOnServer("noHeatOutsideTemperature", props.get("configNoHeatOutsideTemperature", ""))
+        if "noCoolOutsideTemperature" in dev.states:
+            dev.updateStateOnServer("noCoolOutsideTemperature", props.get("configNoCoolOutsideTemperature", ""))
+        if "outsideTempCompFactor" in dev.states:
+            dev.updateStateOnServer("outsideTempCompFactor", props.get("configOutsideTempCompFactor", ""))
+        if "primaryVentilationMode" in dev.states:
+            dev.updateStateOnServer("primaryVentilationMode", props.get("configPrimaryVentilationMode", ""))
+        if "dimmableVentilator" in dev.states:
+            dev.updateStateOnServer("dimmableVentilator", props.get("configDimmableVentilator", ""))
+        if "considerOutsideHumFanOff" in dev.states:
+            dev.updateStateOnServer("considerOutsideHumFanOff", props.get("configConsiderOutsideHumFanOff", ""))
+        if "humidityOff" in dev.states:
+            dev.updateStateOnServer("humidityOff", props.get("configHumidityOff", ""))
+        if "humidityStep1" in dev.states:
+            dev.updateStateOnServer("humidityStep1", props.get("configHumidityStep1", ""))
+        if "humidityStep2" in dev.states:
+            dev.updateStateOnServer("humidityStep2", props.get("configHumidityStep2", ""))
+        if "humidityStep3" in dev.states:
+            dev.updateStateOnServer("humidityStep3", props.get("configHumidityStep3", ""))
+        if "humidityStep4" in dev.states:
+            dev.updateStateOnServer("humidityStep4", props.get("configHumidityStep4", ""))
+        if "fanSpeedStep1" in dev.states:
+            dev.updateStateOnServer("fanSpeedStep1", props.get("configFanSpeedStep1", ""))
+        if "fanSpeedStep2" in dev.states:
+            dev.updateStateOnServer("fanSpeedStep2", props.get("configFanSpeedStep2", ""))
+        if "fanSpeedStep3" in dev.states:
+            dev.updateStateOnServer("fanSpeedStep3", props.get("configFanSpeedStep3", ""))
+        if "fanSpeedStep4" in dev.states:
+            dev.updateStateOnServer("fanSpeedStep4", props.get("configFanSpeedStep4", ""))
 
     def deviceStopComm(self, dev):
         # Called when communication with the hardware should be shutdown.
