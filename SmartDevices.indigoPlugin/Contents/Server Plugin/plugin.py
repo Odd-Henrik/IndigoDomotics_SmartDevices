@@ -430,7 +430,7 @@ class Plugin(indigo.PluginBase):
                 continue
 
             if newDev.id in  self._getSensorsIdsInVirtualDevice(dev):
-                self.debugLog("DeviceUpdate for device:" + dev.name + " Of Type: " + dev.deviceTypeId + " For Sensor: " + newDev.name + " With Value: " + newDev.sensorValue)
+                self.debugLog("DeviceUpdate for device:" + dev.name + " Of Type: " + dev.deviceTypeId + " For Sensor: " + newDev.name + " With Value: " + str(newDev.sensorValue))
                 self._handleChangeTemperatureSensors(dev, newDev)
                 self._runHVACLogic(dev)
 
@@ -587,7 +587,9 @@ class Plugin(indigo.PluginBase):
         count = 0
         totalTemp = 0
 
+        self.debugLog("Sensor Values to average:")
         for sens in sensors:
+            self.debugLog(str(indigo.devices[int(sens)].sensorValue))
             count += 1
             totalTemp = totalTemp + indigo.devices[int(sens)].sensorValue
 
