@@ -319,7 +319,7 @@ class Plugin(indigo.PluginBase):
 
     def _updateStatesFromProps(self, dev, props):
 
-        self.debuLog("Update all States from Props")
+        self.debugLog("Update all States from Props")
 
         dev.updateStateOnServer("temperatureDelta", props.get("configTemperatureDelta", ""))
         dev.updateStateOnServer("mainThermostatMode", props.get("configMainThermostatMode", ""))
@@ -511,7 +511,7 @@ class Plugin(indigo.PluginBase):
         configTemperatureDelta = False
         self.debugLog("Settings:")
         if virDev.pluginProps.get("configTemperatureDelta", ""):
-            configTemperatureDelta = float(virDev.state["temperatureDelta"])
+            configTemperatureDelta = float(virDev.states["temperatureDelta"])
             self.debugLog("TemperatureDelta: " + str(configTemperatureDelta))
 
         self.debugLog("Cool Set Point: " + str(virDev.coolSetpoint))
@@ -551,7 +551,7 @@ class Plugin(indigo.PluginBase):
         heaters = primaryHeaterDevices
         sensorAvgTemp = _avgSensorValues(primaryTemperatureSensors)
         setTemp = virDev.heatSetpoint
-        deltaTemp = float(virDev.state["temperatureDelta"])
+        deltaTemp = float(virDev.states["temperatureDelta"])
 
         self.debugLog("********* Heat Logic Run for: " + virDev.name)
         self.debugLog("Number of Heaters: " + str(len(heaters)))
