@@ -454,7 +454,7 @@ class Plugin(indigo.PluginBase):
         if virDev.pluginProps.get("primaryTemperatureSensors", ""):
             for sens in (virDev.pluginProps["primaryTemperatureSensors"]):
                 primaryTemperatureSensors.append(int(sens))
-                self.debugLog(sens.name)
+                self.debugLog(indigo.devices[sens].name)
 
         if virDev.pluginProps.get("floorTemperatureSensor", ""):
             floorTemperatureSensor = indigo.devices[int(virDev.pluginProps["floorTemperatureSensor"])]
@@ -590,7 +590,7 @@ class Plugin(indigo.PluginBase):
 
         for sens in sensors:
             count += 1
-            totalTemp = totalTemp + sens.sensorValue
+            totalTemp = totalTemp + indigo.devices[sens].sensorValue
 
         return totalTemp/count
 
