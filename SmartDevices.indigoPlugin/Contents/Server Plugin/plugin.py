@@ -386,7 +386,10 @@ class Plugin(indigo.PluginBase):
         self.debugLog(u"*************************** " + str(sensorDev.name) + u" **************************************")
         self.debugLog(u"Sensor Device update found, sensor value = " + str(sensorDev.sensorValue))
 
-
+        #Check first to see if we got a sensorValue
+        if sensorDev.sensorValue is None:
+            #No sensor value, error wrong or not sensor
+            self.errorLog(u"ERROR: Sensor: " + str(sensorDev.name) + u" has no sensor value. Please remove sensor from list.")
 
         # Temperature sensors
         if thermostatDev.pluginProps.get("primaryTemperatureSensors", ""):
