@@ -50,9 +50,9 @@
 			<Field id="autoLabel21" type="label">
 				<Label>Select Heater device(s)</Label>
 			</Field>
-			<Field id="primaryHeaterDevice" type="list">
+			<Field id="primaryHeaterDevices" type="list">
 				<Label>Heater Device(s):</Label>
-				<List class="indigo.devices"  filter="indigo.relay"/>
+				<List class="indigo.devices" filter="indigo.relay"/>
 			</Field>
 			<Field id="clearHVACDevices"
 				type="button"
@@ -109,21 +109,21 @@
 			<Field id="autoLabel1" type="label">
 				<Label>Select HVAC device(s)</Label>
 			</Field>
-			<Field id="primaryHeaterDevice" type="menu">
+			<Field id="primaryHeaterDevices" type="list">
 				<Label>Primary Heater Device:</Label>
-				<List class="indigo.devices"/>
+				<List class="indigo.devices" filter="indigo.relay"/>
 			</Field>
-			<Field id="secondaryHeaterDevice" type="menu">
+			<Field id="secondaryHeaterDevices" type="list">
 				<Label>Secondary Heater Device:</Label>
-				<List class="indigo.devices"/>
+				<List class="indigo.devices" filter="indigo.relay"/>
 			</Field>
-			<Field id="acHeatPumpDevice" type="menu">
+			<Field id="acHeatPumpDevices" type="list">
 				<Label>Air Condition/Heat Pump Device:</Label>
 				<List class="indigo.devices"/>
 			</Field>
-			<Field id="ventilationDevice" type="menu">
+			<Field id="ventilationDevices" type="list">
 				<Label>Ventilation/Dehumidifier Device:</Label>
-				<List class="indigo.devices"/>
+				<List class="indigo.devices" filter="indigo.dimmer"/>
 			</Field>
 			<Field id="clearHVACDevices"
 				type="button"
@@ -136,15 +136,15 @@
 			<Field id="autoLabel2" type="label">
 				<Label>Select temperature sensor(s):</Label>
 			</Field>
-			<Field id="primaryTemperatureSensors" type="menu">
+			<Field id="primaryTemperatureSensors" type="list">
 				<Label>Ambient temperature sensor:</Label>
 				<List class="indigo.devices" filter="indigo.sensor"/>
 			</Field>
-			<Field id="floorTemperatureSensor" type="menu">
+			<Field id="floorTemperatureSensors" type="list">
 				<Label>Floor temperature sensor:</Label>
 				<List class="indigo.devices" filter="indigo.sensor"/>
 			</Field>
-			<Field id="outsideTemperatureSensor" type="menu">
+			<Field id="outsideTemperatureSensors" type="list">
 				<Label>Outside temperature sensor:</Label>
 				<List class="indigo.devices" filter="indigo.sensor"/>
 			</Field>
@@ -159,15 +159,15 @@
 				<Field id="autoLabel3" type="label">
 				<Label>Select humidity sensor(s):</Label>
 			</Field>
-			<Field id="ambientHumiditySensor" type="menu">
+			<Field id="ambientHumiditySensors" type="list">
 				<Label>Ambient humidity sensor:</Label>
 				<List class="indigo.devices" filter="indigo.sensor"/>
 			</Field>
-			<Field id="outsideHumiditySensor" type="menu">
+			<Field id="outsideHumiditySensors" type="list">
 				<Label>Outside humidity sensor:</Label>
 				<List class="indigo.devices" filter="indigo.sensor"/>
 			</Field>
-			<Field id="optionalHumiditySensor" type="menu">
+			<Field id="optionalHumiditySensors" type="list">
 				<Label>Optional humidity sensor:</Label>
 				<List class="indigo.devices" filter="indigo.sensor"/>
 			</Field>
@@ -360,12 +360,7 @@
 			is used to control the brightness of the backlit display of
 			the thermostat.
 			-->
-			<State id="backlightBrightness">
-				<ValueType>Integer</ValueType>
-				<TriggerLabel>Backlight Brightness</TriggerLabel>
-				<ControlPageLabel>Backlight Brightness</ControlPageLabel>
-			</State>
-			<State id="mainThermostatMode">
+		    <State id="mainThermostatMode">
 				<ValueType>
 					<List>
 						<Option value="floor">Floor</Option>

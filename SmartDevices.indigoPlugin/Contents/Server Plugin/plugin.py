@@ -277,10 +277,10 @@ class Plugin(indigo.PluginBase):
         #self._changeHumiditySensorCount(dev, len(self._getHumiditySensorsIdsInVirtualDevice(dev)))
         newProps["NumHumidityInputs"] = len(self._getHumiditySensorsIdsInVirtualDevice(dev))
 
-        self.debugLog("Number of primary Heater Devices: " + str(len(newProps.get("primaryHeaterDevice", ""))))
+        self.debugLog("Number of primary Heater Devices: " + str(len(newProps.get("primaryHeaterDevices", ""))))
 
         # Check to see if we are using any devices that supports HVAC opMode and Need Epuipment status
-        if len(newProps.get("primaryHeaterDevice", "")) > 0 or len(newProps.get("secondaryHeaterDevice", "")) > 0 or len(newProps.get("acHeatPumpDevice", "")) > 0 or len(newProps.get("ventilationDevice", "")):
+        if len(newProps.get("primaryHeaterDevices", "")) > 0 or len(newProps.get("secondaryHeaterDevices", "")) > 0 or len(newProps.get("acHeatPumpDevices", "")) > 0 or len(newProps.get("ventilationDevices", "")):
             newProps["SupportsHvacOperationMode"] = True
             newProps["ShowCoolHeatEquipmentStateUI"] = True
         else:
@@ -288,13 +288,13 @@ class Plugin(indigo.PluginBase):
             newProps["ShowCoolHeatEquipmentStateUI"] = False
 
         # Check to se if we support Heat Set Point
-        if len(newProps.get("primaryHeaterDevice", "")) > 0 or len(newProps.get("secondaryHeaterDevice", "")) > 0 or len(newProps.get("heaterDevice", "")) > 0:
+        if len(newProps.get("primaryHeaterDevices", "")) > 0 or len(newProps.get("secondaryHeaterDevices", "")) > 0:
             newProps["SupportsHeatSetpoint"] = True
         else:
             newProps["SupportsHeatSetpoint"] = False
 
         # Check to se if we support Cool Set Point and Fan mode
-        if len(newProps.get("acHeatPumpDevice", "")) > 0 or len(newProps.get("ventilationDevice", "")) > 0:
+        if len(newProps.get("acHeatPumpDevices", "")) > 0 or len(newProps.get("ventilationDevices", "")) > 0:
             newProps["SupportsCoolSetpoint"] = True
             newProps["SupportsHvacFanMode"] = True
         else:
@@ -306,15 +306,43 @@ class Plugin(indigo.PluginBase):
         # This seems to have no effect, a bug?
         #self.debugLog("supportsStatusRequest: " + str(newProps["supportsStatusRequest"]))
 
-        if newProps.get("configTemperatureDelta", ""):
-            dev.updateStateOnServer("temperatureDelta", float(newProps.get("configTemperatureDelta")))
-
         dev.replacePluginPropsOnServer(newProps)
+
+#       if newProps.get("configTemperatureDelta", ""):
+#            dev.updateStateOnServer("temperatureDelta", float(newProps.get("configTemperatureDelta")))
+
+        self._updateStatesFromProps(dev, newProps)
 
         self._getAllSensorsValuesNow(dev)
         self._runHVACLogic(dev)
         pass
 
+    def _updateStatesFromProps(self, dev, props):
+
+        self.debuLog("Update all States from Props")
+
+        dev.updateStateOnServer("temperatureDelta", props.get("configTemperatureDelta", ""))
+        dev.updateStateOnServer("mainThermostatMode", props.get("configMainThermostatMode", ""))
+        dev.updateStateOnServer("primaryHeaterOverride", props.get("configPrimaryHeaterOverride", ""))
+        dev.updateStateOnServer("maxAmbientTemperature", props.get("configMaxAmbientTemperature", ""))
+        dev.updateStateOnServer("minAmbientTemperature", props.get("configMinAmbientTemperature", ""))
+        dev.updateStateOnServer("maxFloorTemperature", props.get("configMaxFloorTemperature", ""))
+        dev.updateStateOnServer("minFloorTemperature", props.get("configMinFloorTemperature", ""))
+        dev.updateStateOnServer("noHeatOutsideTemperature", props.get("configNoHeatOutsideTemperature", ""))
+        dev.updateStateOnServer("noCoolOutsideTemperature", props.get("configNoCoolOutsideTemperature", ""))
+        dev.updateStateOnServer("outsideTempCompFactor", props.get("configOutsideTempCompFactor", ""))
+        dev.updateStateOnServer("primaryVentilationMode", props.get("configPrimaryVentilationMode", ""))
+        dev.updateStateOnServer("dimmableVentilator", props.get("configDimmableVentilator", ""))
+        dev.updateStateOnServer("considerOutsideHumFanOff", props.get("configConsiderOutsideHumFanOff", ""))
+        dev.updateStateOnServer("humidityOff", props.get("configHumidityOff", ""))
+        dev.updateStateOnServer("humidityStep1", props.get("configHumidityStep1", ""))
+        dev.updateStateOnServer("humidityStep2", props.get("configHumidityStep2", ""))
+        dev.updateStateOnServer("humidityStep3", props.get("configHumidityStep3", ""))
+        dev.updateStateOnServer("humidityStep4", props.get("configHumidityStep4", ""))
+        dev.updateStateOnServer("fanSpeedStep1", props.get("configFanSpeedStep1", ""))
+        dev.updateStateOnServer("fanSpeedStep2", props.get("configFanSpeedStep2", ""))
+        dev.updateStateOnServer("fanSpeedStep3", props.get("configFanSpeedStep3", ""))
+        dev.updateStateOnServer("fanSpeedStep4", props.get("configFanSpeedStep4", ""))
 
     def deviceStopComm(self, dev):
         # Called when communication with the hardware should be shutdown.
@@ -328,20 +356,20 @@ class Plugin(indigo.PluginBase):
                 #self.debugLog("TemperatureSensor ID: " + sens)
                 sensorDevices.append(int(sens))
 
-        if dev.pluginProps.get("floorTemperatureSensor", ""):
-            sensorDevices.append(int(dev.pluginProps["floorTemperatureSensor"]))
+        if dev.pluginProps.get("floorTemperatureSensors", ""):
+            sensorDevices.append(int(dev.pluginProps["floorTemperatureSensors"]))
 
-        if dev.pluginProps.get("outsideTemperatureSensor", ""):
-            sensorDevices.append(int(dev.pluginProps["outsideTemperatureSensor"]))
+        if dev.pluginProps.get("outsideTemperatureSensors", ""):
+            sensorDevices.append(int(dev.pluginProps["outsideTemperatureSensors"]))
 
-        if dev.pluginProps.get("outsideHumiditySensor", ""):
-            sensorDevices.append(int(dev.pluginProps["outsideHumiditySensor"]))
+        if dev.pluginProps.get("outsideHumiditySensors", ""):
+            sensorDevices.append(int(dev.pluginProps["outsideHumiditySensors"]))
 
-        if dev.pluginProps.get("optionalHumiditySensor", ""):
-            sensorDevices.append(int(dev.pluginProps["optionalHumiditySensor"]))
+        if dev.pluginProps.get("optionalHumiditySensors", ""):
+            sensorDevices.append(int(dev.pluginProps["optionalHumiditySensors"]))
 
-        if dev.pluginProps.get("ambientHumiditySensor", ""):
-            sensorDevices.append(int(dev.pluginProps["ambientHumiditySensor"]))
+        if dev.pluginProps.get("ambientHumiditySensors", ""):
+            sensorDevices.append(int(dev.pluginProps["ambientHumiditySensors"]))
 
         #self.debugLog(u"Sensor Device List: " + str(sensorDevices))
         return sensorDevices
@@ -349,14 +377,14 @@ class Plugin(indigo.PluginBase):
     def _getHumiditySensorsIdsInVirtualDevice(self, dev):
         sensorDevices = indigo.List()
 
-        if dev.pluginProps.get("outsideHumiditySensor", ""):
-            sensorDevices.append(int(dev.pluginProps["outsideHumiditySensor"]))
+        if dev.pluginProps.get("outsideHumiditySensors", ""):
+            sensorDevices.append(int(dev.pluginProps["outsideHumiditySensors"]))
 
-        if dev.pluginProps.get("optionalHumiditySensor", ""):
-            sensorDevices.append(int(dev.pluginProps["optionalHumiditySensor"]))
+        if dev.pluginProps.get("optionalHumiditySensors", ""):
+            sensorDevices.append(int(dev.pluginProps["optionalHumiditySensors"]))
 
-        if dev.pluginProps.get("ambientHumiditySensor", ""):
-            sensorDevices.append(int(dev.pluginProps["ambientHumiditySensor"]))
+        if dev.pluginProps.get("ambientHumiditySensors", ""):
+            sensorDevices.append(int(dev.pluginProps["ambientHumiditySensors"]))
 
         #self.debugLog(u"Sensor Device List: " + str(sensorDevices))
         return sensorDevices
@@ -371,11 +399,11 @@ class Plugin(indigo.PluginBase):
                 sensorDevices.append(int(sens))
             #sensorDevices.append(int(dev.pluginProps["temperatureSensor"]))
 
-        if dev.pluginProps.get("floorTemperatureSensor", ""):
-            sensorDevices.append(int(dev.pluginProps["floorTemperatureSensor"]))
+        if dev.pluginProps.get("floorTemperatureSensors", ""):
+            sensorDevices.append(int(dev.pluginProps["floorTemperatureSensors"]))
 
-        if dev.pluginProps.get("outsideTemperatureSensor", ""):
-            sensorDevices.append(int(dev.pluginProps["outsideTemperatureSensor"]))
+        if dev.pluginProps.get("outsideTemperatureSensors", ""):
+            sensorDevices.append(int(dev.pluginProps["outsideTemperatureSensors"]))
 
 
 
@@ -402,30 +430,30 @@ class Plugin(indigo.PluginBase):
                     tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(sens)) + 1
                     thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.sensorValue, uiValue="%d °C" % sensorDev.sensorValue)
 
-        if thermostatDev.pluginProps.get("floorTemperatureSensor", ""):
-            if sensorDev.id == int(thermostatDev.pluginProps["floorTemperatureSensor"]):
-                tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["floorTemperatureSensor"])) + 1
+        if thermostatDev.pluginProps.get("floorTemperatureSensors", ""):
+            if sensorDev.id == int(thermostatDev.pluginProps["floorTemperatureSensors"]):
+                tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["floorTemperatureSensors"])) + 1
                 thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.sensorValue, uiValue="%d °C" % sensorDev.sensorValue)
 
-        if thermostatDev.pluginProps.get("outsideTemperatureSensor", ""):
-            if sensorDev.id == int(thermostatDev.pluginProps["outsideTemperatureSensor"]):
-                tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["outsideTemperatureSensor"])) + 1
+        if thermostatDev.pluginProps.get("outsideTemperatureSensors", ""):
+            if sensorDev.id == int(thermostatDev.pluginProps["outsideTemperatureSensors"]):
+                tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["outsideTemperatureSensors"])) + 1
                 thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.sensorValue, uiValue="%d °C" % sensorDev.sensorValue)
 
         # Humidity sensors
-        if thermostatDev.pluginProps.get("outsideHumiditySensor", ""):
-            if sensorDev.id == int(thermostatDev.pluginProps["outsideHumiditySensor"]):
-                humInputIndex = self._getHumiditySensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["outsideHumiditySensor"])) + 1
+        if thermostatDev.pluginProps.get("outsideHumiditySensors", ""):
+            if sensorDev.id == int(thermostatDev.pluginProps["outsideHumiditySensors"]):
+                humInputIndex = self._getHumiditySensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["outsideHumiditySensors"])) + 1
                 thermostatDev.updateStateOnServer(u"humidityInput" + str(humInputIndex), sensorDev.sensorValue, uiValue="%d" % sensorDev.sensorValue)
 
-        if thermostatDev.pluginProps.get("optionalHumiditySensor", ""):
-            if sensorDev.id == int(thermostatDev.pluginProps["optionalHumiditySensor"]):
-                humInputIndex = self._getHumiditySensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["optionalHumiditySensor"])) + 1
+        if thermostatDev.pluginProps.get("optionalHumiditySensors", ""):
+            if sensorDev.id == int(thermostatDev.pluginProps["optionalHumiditySensors"]):
+                humInputIndex = self._getHumiditySensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["optionalHumiditySensors"])) + 1
                 thermostatDev.updateStateOnServer(u"humidityInput" + str(humInputIndex), sensorDev.sensorValue, uiValue="%d" % sensorDev.sensorValue)
 
-        if thermostatDev.pluginProps.get("ambientHumiditySensor", ""):
-            if sensorDev.id == int(thermostatDev.pluginProps["ambientHumiditySensor"]):
-                humInputIndex = self._getHumiditySensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["ambientHumiditySensor"])) + 1
+        if thermostatDev.pluginProps.get("ambientHumiditySensors", ""):
+            if sensorDev.id == int(thermostatDev.pluginProps["ambientHumiditySensors"]):
+                humInputIndex = self._getHumiditySensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["ambientHumiditySensors"])) + 1
                 thermostatDev.updateStateOnServer(u"humidityInput" + str(humInputIndex), sensorDev.sensorValue, uiValue="%d" % sensorDev.sensorValue)
 
 
@@ -446,77 +474,45 @@ class Plugin(indigo.PluginBase):
             self._handleChangeTemperatureSensors(dev, indigo.devices[sensorId])
 
 
+    def _getDeviceIdListFromProp(self, deviceProp, virDev):
+        devList = []
+        if virDev.pluginProps.get(deviceProp, ""):
+            for sens in (virDev.pluginProps[deviceProp]):
+                devList.append(int(sens))
+                self.debugLog(indigo.devices[int(sens)].name)
+
+        return devList
+
     def _runHVACLogic(self, virDev):
         # Getting all the devices
         self.debugLog("=============== Running HVAC Logic ================")
         self.debugLog("Getting all the devices")
-        self.debugLog("Temperature Sensors:")
+
         # Temperature sensors
-        primaryTemperatureSensors = []
-        floorTemperatureSensor = False
-        outsideTemperatureSensor = False
-        temperatureSensor = False
-
-        if virDev.pluginProps.get("primaryTemperatureSensors", ""):
-            for sens in (virDev.pluginProps["primaryTemperatureSensors"]):
-                primaryTemperatureSensors.append(int(sens))
-                self.debugLog(indigo.devices[int(sens)].name)
-
-        if virDev.pluginProps.get("floorTemperatureSensor", ""):
-            floorTemperatureSensor = indigo.devices[int(virDev.pluginProps["floorTemperatureSensor"])]
-            self.debugLog(floorTemperatureSensor.name)
-
-        if virDev.pluginProps.get("outsideTemperatureSensor", ""):
-            outsideTemperatureSensor = indigo.devices[int(virDev.pluginProps["outsideTemperatureSensor"])]
-            self.debugLog(outsideTemperatureSensor.name)
+        self.debugLog("Temperature Sensors:")
+        primaryTemperatureSensors = self._getDeviceIdListFromProp("primaryTemperatureSensors", virDev)
+        floorTemperatureSensors = self._getDeviceIdListFromProp("floorTemperatureSensors", virDev)
+        outsideTemperatureSensors = self._getDeviceIdListFromProp("outsideTemperatureSensors", virDev)
 
         # Humidity sensors
-        outsideHumiditySensor = False
-        optionalHumiditySensor = False
-        ambientHumiditySensor = False
-
         self.debugLog("Humidity Sensors:")
-        if virDev.pluginProps.get("outsideHumiditySensor", ""):
-            outsideHumiditySensor = indigo.devices[int(virDev.pluginProps["outsideHumiditySensor"])]
-            self.debugLog(outsideHumiditySensor.name)
-
-        if virDev.pluginProps.get("optionalHumiditySensor", ""):
-            optionalHumiditySensor = indigo.devices[int(virDev.pluginProps["optionalHumiditySensor"])]
-            self.debugLog(optionalHumiditySensor.name)
-
-        if virDev.pluginProps.get("ambientHumiditySensor", ""):
-            ambientHumiditySensor = indigo.devices[int(virDev.pluginProps["ambientHumiditySensor"])]
-            self.debugLog(ambientHumiditySensor.name)
+        outsideHumiditySensors = self._getDeviceIdListFromProp("outsideHumiditySensors", virDev)
+        optionalHumiditySensors = self._getDeviceIdListFromProp("optionalHumiditySensors", virDev)
+        ambientHumiditySensors = self._getDeviceIdListFromProp("ambientHumiditySensors", virDev)
 
         # HVAC Devices
-        acHeatPumpDevice = False
-        primaryHeaterDevice = False
-        secondaryHeaterDevice = False
-        ventilationDevice = False
-
         self.debugLog("HVAC Devices:")
-        if virDev.pluginProps.get("acHeatPumpDevice", ""):
-            acHeatPumpDevice = indigo.devices[int(virDev.pluginProps["acHeatPumpDevice"])]
-            self.debugLog(acHeatPumpDevice.name)
-
-        if virDev.pluginProps.get("primaryHeaterDevice", ""):
-            primaryHeaterDevice = indigo.devices[int(virDev.pluginProps["primaryHeaterDevice"])]
-            self.debugLog(primaryHeaterDevice.name)
-
-        if virDev.pluginProps.get("secondaryHeaterDevice", ""):
-            secondaryHeaterDevice = indigo.devices[int(virDev.pluginProps["secondaryHeaterDevice"])]
-            self.debugLog(ambientHumiditySensor.name)
-
-        if virDev.pluginProps.get("ventilationDevice", ""):
-            ventilationDevice = indigo.devices[int(virDev.pluginProps["ventilationDevice"])]
-            self.debugLog(ventilationDevice.name)
+        acHeatPumpDevices = self._getDeviceIdListFromProp("acHeatPumpDevices", virDev)
+        primaryHeaterDevices = self._getDeviceIdListFromProp("primaryHeaterDevices", virDev)
+        secondaryHeaterDevices = self._getDeviceIdListFromProp("secondaryHeaterDevices", virDev)
+        ventilationDevices = self._getDeviceIdListFromProp("ventilationDevices", virDev)
 
         # Settings
         configTemperatureDelta = False
         self.debugLog("Settings:")
         if virDev.pluginProps.get("configTemperatureDelta", ""):
-            configTemperatureDelta = float(virDev.pluginProps["configTemperatureDelta"])
-            self.debugLog("configTemperatureDelta: " + str(configTemperatureDelta))
+            configTemperatureDelta = float(virDev.state["temperatureDelta"])
+            self.debugLog("TemperatureDelta: " + str(configTemperatureDelta))
 
         self.debugLog("Cool Set Point: " + str(virDev.coolSetpoint))
         self.debugLog("Heat Set Point: " + str(virDev.heatSetpoint))
@@ -524,16 +520,16 @@ class Plugin(indigo.PluginBase):
     #		self.debugLog("hvacOperationMode: " + str(virDev.states["hvacOperationMode"]))
         self.debugLog("hvacOperationMode: " + str(virDev.hvacMode))
         self.debugLog("fanMode: " + str(virDev.fanMode))
-        self.debugLog("=============== Done Getting Devices ================")
+        self.debugLog("=============== Done Getting Devices and Settings ================")
 
         if virDev.hvacMode == indigo.kHvacMode.Off:
             self._turnOffAllHVACDevices(virDev)
         elif virDev.hvacMode == indigo.kHvacMode.Cool:
             pass
         elif virDev.hvacMode == indigo.kHvacMode.Heat:
-            self._heat(virDev, primaryHeaterDevice, primaryTemperatureSensors, secondaryHeaterDevice,
-                       floorTemperatureSensor, outsideTemperatureSensor)
-            #self._heat(virDev, primaryHeaterDevice, temperatureSensor, None, None, None)
+            self._heat(virDev, primaryHeaterDevices, primaryTemperatureSensors, secondaryHeaterDevices,
+                       floorTemperatureSensors, outsideTemperatureSensors)
+            #self._heat(virDev, primaryHeaterDevices, temperatureSensor, None, None, None)
         elif virDev.hvacMode == indigo.kHvacMode.HeatCool:
             pass
 
@@ -549,45 +545,45 @@ class Plugin(indigo.PluginBase):
             #indigo.kHvacMode.ProgramCool		: u"program cool",
             #indigo.kHvacMode.ProgramHeatCool
 
-    def _heat(self, virDev, primaryHeaterDevice, primaryTemperatureSensors, secondaryHeaterDevice,
-              floorTemperatureSensor, outsideTemperatureSensor):
+    def _heat(self, virDev, primaryHeaterDevices, primaryTemperatureSensors, secondaryHeaterDevices,
+              floorTemperatureSensors, outsideTemperatureSensors):
         # Heater logic
-        heater = primaryHeaterDevice
+        heaters = primaryHeaterDevices
         sensorAvgTemp = _avgSensorValues(primaryTemperatureSensors)
         setTemp = virDev.heatSetpoint
-        deltaTemp = float(virDev.pluginProps["configTemperatureDelta"])
+        deltaTemp = float(virDev.state["temperatureDelta"])
 
         self.debugLog("********* Heat Logic Run for: " + virDev.name)
-        self.debugLog("Heater: " + heater.name)
+        self.debugLog("Number of Heaters: " + str(len(heaters)))
         self.debugLog("sensorAvgTemp: " + str(sensorAvgTemp))
         self.debugLog("Set Temp: " + str(setTemp))
         self.debugLog("Delta Temp: " + str(deltaTemp))
 
-        if (sensorAvgTemp < (setTemp - deltaTemp)) and not heater.onState:
-            indigo.device.turnOn(heater)
-            self.debugLog("Heater On")
+        if (sensorAvgTemp < (setTemp - deltaTemp)) and not self._isAllDevicesInDeviceIdListOn(heaters):
+            self._turnOnDevicesInDeviceIdList(heaters)
+            self.debugLog("Heaters On")
             virDev.updateStateOnServer("hvacHeaterIsOn", True)
-        elif (sensorAvgTemp > (setTemp + deltaTemp)) and heater.onState:
-            indigo.device.turnOff(heater)
-            self.debugLog("Heater Off")
+        elif (sensorAvgTemp > (setTemp + deltaTemp)) and self._isAllDevicesInDeviceIdListOn(heaters):
+            self._turnOffDevicesInDeviceIdList(heaters)
+            self.debugLog("Heaters Off")
             virDev.updateStateOnServer("hvacHeaterIsOn", False)
         else:
-            #indigo.device.turnOff(heater)
             self.debugLog("In delta or set")
-            if heater.onState:
+            if self._isAllDevicesInDeviceIdListOn(heaters):
                 virDev.updateStateOnServer("hvacHeaterIsOn", True)
             else:
                 virDev.updateStateOnServer("hvacHeaterIsOn", False)
 
+        #Saftey check
         if sensorAvgTemp > (setTemp + deltaTemp + 1):
-            self.debugLog("Too warm, turning off heater")
-            indigo.device.turnOff(heater)
-            self.debugLog("Heater Off")
+            self.debugLog("Too warm, turning off heaters")
+            self._turnOffDevicesInDeviceIdList(heaters)
+            self.debugLog("Heaters Off")
             virDev.updateStateOnServer("hvacHeaterIsOn", False)
         elif sensorAvgTemp < (setTemp - deltaTemp - 1):
-            self.debugLog("Too cold, turning on heater")
-            indigo.device.turnOn(heater)
-            self.debugLog("Heater On")
+            self.debugLog("Too cold, turning on heaters")
+            self._turnOnDevicesInDeviceIdList(heaters)
+            self.debugLog("Heaters On")
             virDev.updateStateOnServer("hvacHeaterIsOn", True)
 
     def _avgSensorValues(self, sensors):
@@ -602,28 +598,45 @@ class Plugin(indigo.PluginBase):
 
         return totalTemp/count
 
+    def _isAllDevicesInDeviceIdListOn(self, deviceIdList):
+        isOn = False
+        self.debugLog("Check if all dev in list is on:")
+
+        for dev in deviceIdList:
+            self.debugLog(indigo.devices[int(dev)].name + " On State: " + str(indigo.devices[int(dev)].onState))
+            if indigo.devices[int(dev)].onState:
+                isOn = True
+
+        return isOn
+
+    def _turnOffDevicesInDeviceIdList(self, deviceIdList):
+        self.debugLog("Turning Off:")
+
+        for dev in deviceIdList:
+            self.debugLog(indigo.devices[int(dev)].name)
+            indigo.device.turnOff(int(dev))
+
+
+    def _turnOnDevicesInDeviceIdList(self, deviceIdList):
+        self.debugLog("Turning On:")
+
+        for dev in deviceIdList:
+            self.debugLog(indigo.devices[int(dev)].name)
+            indigo.device.turnOn(int(dev))
+
+
     def _turnOffAllHVACDevices(self, virDev):
-        if virDev.pluginProps.get("acHeatPumpDevice", ""):
-            acHeatPumpDevice = indigo.devices[int(virDev.pluginProps["acHeatPumpDevice"])]
-            indigo.device.turnOff(acHeatPumpDevice)
+        if virDev.pluginProps.get("acHeatPumpDevices", ""):
+            self._turnOffDevicesInDeviceIdList(virDev.pluginProps.get("acHeatPumpDevices"))
+            
+        if virDev.pluginProps.get("primaryHeaterDevices", ""):
+             self._turnOffDevicesInDeviceIdList(virDev.pluginProps.get("primaryHeaterDevices"))
 
-        if virDev.pluginProps.get("primaryHeaterDevice", ""):
-            primaryHeaterDevice = indigo.devices[int(virDev.pluginProps["primaryHeaterDevice"])]
-            indigo.device.turnOff(primaryHeaterDevice)
+        if virDev.pluginProps.get("secondaryHeaterDevices", ""):
+           self._turnOffDevicesInDeviceIdList(virDev.pluginProps.get("secondaryHeaterDevices"))
 
-        if virDev.pluginProps.get("secondaryHeaterDevice", ""):
-            secondaryHeaterDevice = indigo.devices[int(virDev.pluginProps["secondaryHeaterDevice"])]
-            indigo.device.turnOff(secondaryHeaterDevice)
-
-        if virDev.pluginProps.get("ventilationDevice", ""):
-            ventilationDevice = indigo.devices[int(virDev.pluginProps["ventilationDevice"])]
-            indigo.device.turnOff(ventilationDevice)
-
-        if virDev.pluginProps.get("ventilationDevice", ""):
-            ventilationDevice = indigo.devices[int(virDev.pluginProps["ventilationDevice"])]
-            indigo.device.turnOff(ventilationDevice)
-
-
+        if virDev.pluginProps.get("ventilationDevices", ""):
+             self._turnOffDevicesInDeviceIdList(virDev.pluginProps.get("ventilationDevices"))
 
 
     ########################################
@@ -750,24 +763,24 @@ class Plugin(indigo.PluginBase):
 
     def ClearHVACDevicesPressed(self, valuesDict, typeId, devId):
         #self.debugLog(u"Values Dict: " + str(valuesDict))
-        valuesDict["primaryHeaterDevice"] = ""
-        valuesDict["secondaryHeaterDevice"] = ""
-        valuesDict["ventilationDevice"] = ""
-        valuesDict["acHeatPumpDevice"] = ""
+        valuesDict["primaryHeaterDevices"] = ""
+        valuesDict["secondaryHeaterDevices"] = ""
+        valuesDict["ventilationDevices"] = ""
+        valuesDict["acHeatPumpDevices"] = ""
         return valuesDict
 
 
     def ClearTemperatureDevicesPressed(self, valuesDict, typeId, devId):
         #self.debugLog(u"Values Dict: " + str(valuesDict))
         valuesDict["primaryTemperatureSensors"] = ""
-        valuesDict["floorTemperatureSensor"] = ""
-        valuesDict["outsideTemperatureSensor"] = ""
+        valuesDict["floorTemperatureSensors"] = ""
+        valuesDict["outsideTemperatureSensors"] = ""
         return valuesDict
 
     def ClearHumidityDevicesPressed(self, valuesDict, typeId, devId):
         #self.debugLog(u"Values Dict: " + str(valuesDict))
-        valuesDict["ambientHumiditySensor"] = ""
-        valuesDict["optionalHumiditySensor"] = ""
-        valuesDict["outsideHumiditySensor"] = ""
+        valuesDict["ambientHumiditySensors"] = ""
+        valuesDict["optionalHumiditySensors"] = ""
+        valuesDict["outsideHumiditySensors"] = ""
         return valuesDict
 
