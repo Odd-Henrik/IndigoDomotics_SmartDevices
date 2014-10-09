@@ -306,6 +306,9 @@ class Plugin(indigo.PluginBase):
         # This seems to have no effect, a bug?
         #self.debugLog("supportsStatusRequest: " + str(newProps["supportsStatusRequest"]))
 
+        if newProps.get("configTemperatureDelta", ""):
+            dev.updateStateOnServer("temperatureDelta", float(newProps.get("configTemperatureDelta")))
+
         dev.replacePluginPropsOnServer(newProps)
 
         self._getAllSensorsValuesNow(dev)
@@ -389,7 +392,7 @@ class Plugin(indigo.PluginBase):
         #Check first to see if we got a sensorValue
         if sensorDev.sensorValue is None:
             #No sensor value, error wrong or not sensor
-            self.errorLog(u"ERROR: Sensor: " + str(sensorDev.name) + u" has no sensor value. Please remove sensor from list.")
+            self.errorLog(u"ERROR: Sensor: " + str(sensorDev.name) + u" ,has no sensor value. Please remove sensor from list.")
             return
 
         # Temperature sensors
