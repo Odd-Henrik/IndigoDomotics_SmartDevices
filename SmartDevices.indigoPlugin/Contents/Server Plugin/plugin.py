@@ -572,6 +572,14 @@ class Plugin(indigo.PluginBase):
         # Heater logic
         heaters = primaryHeaterDevices
         sensorAvgTemp = self._avgSensorValues(primaryTemperatureSensors)
+
+        if not sensorAvgTemp:
+            # No valid sensor data, turning off all heaters
+            self._turnOffDevicesInDeviceIdList(heaters)
+            self.debugLog("Heaters Off")
+            return False
+
+
         setTemp = virDev.heatSetpoint
         deltaTemp = float(virDev.states["temperatureDelta"])
 
@@ -612,26 +620,30 @@ class Plugin(indigo.PluginBase):
         count = 0
         totalTemp = 0
 
-        #TODO: implement validation for sensor value. E.g is it valid or to old
-
-
         self.debugLog("Sensor Values to average:")
         for sens in sensors:
-            self._validateSensorValue(sens)
-            self.debugLog(str(indigo.devices[int(sens)].sensorValue))
-            count += 1
-            totalTemp = totalTemp + indigo.devices[int(sens)].sensorValue
+            if self._validateSensorValue(sens):
+                self.debugLog(str(indigo.devices[int(sens)].sensorValue))
+                count += 1
+                totalTemp = totalTemp + indigo.devices[int(sens)].sensorValue
 
-        return totalTemp/count
+        if count > 0:
+            return totalTemp/count
+        else:
+            return False
 
     def _validateSensorValue(self, sensorId):
         self.debugLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
         sensorLastChanged = indigo.devices[int(sensorId)].lastChanged
-        lastTwoHours = datetime.datetime.now() - datetime.timedelta(minutes = 120)
+        notOlderThenMinutes = 120
+        lastTwoHours = datetime.datetime.now() - datetime.timedelta(minutes = notOlderThenMinutes)
         self.debugLog(str(lastTwoHours))
 
+        #TODO: implement out of range check for sensor value. E.g is it grater then 100 or less then 100
+
         if sensorLastChanged < lastTwoHours:
-            self.debugLog("sensor last changed older then two hours =========***** BAD VALUE ********=======")
+            self.errorLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
+            self.errorLog("OLD Value! Sensor value is older then " + str(notOlderThenMinutes))
             return False
         else:
             self.debugLog("sensor last changed newer then two hours")
