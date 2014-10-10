@@ -624,8 +624,8 @@ class Plugin(indigo.PluginBase):
         return totalTemp/count
 
     def _validateSensorValue(self, sensorId):
-        self.debugLog(str(indigo.devices[int(sens)].name) + " Value: " + str(indigo.devices[int(sens)].sensorValue) + " Last changed:" + str(indigo.devices[int(sens)].lastChanged))
-        sensorLastChanged = indigo.devices[int(sens)].lastChanged
+        self.debugLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
+        sensorLastChanged = indigo.devices[int(sensorId)].lastChanged
         lastTwoHours = datetime.datetime.now() - datetime.timedelta(hours = 2)
         self.debugLog(str(lastTwoHours))
 
