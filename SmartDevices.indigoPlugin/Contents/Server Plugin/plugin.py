@@ -611,13 +611,30 @@ class Plugin(indigo.PluginBase):
         count = 0
         totalTemp = 0
 
+        #TODO: implement validation for sensor value. E.g is it valid or to old
+
+
         self.debugLog("Sensor Values to average:")
         for sens in sensors:
+            self._validateSensorValue(sens)
             self.debugLog(str(indigo.devices[int(sens)].sensorValue))
             count += 1
             totalTemp = totalTemp + indigo.devices[int(sens)].sensorValue
 
         return totalTemp/count
+
+    def _validateSensorValue(self, sensorId):
+        self.debugLog(str(indigo.devices[int(sens)].name) + " Value: " + str(indigo.devices[int(sens)].sensorValue) + " Last changed:" + str(indigo.devices[int(sens)].lastChanged))
+        sensorLastChanged = indigo.devices[int(sens)].lastChanged
+        lastTwoHours = datetime.datetime.now() - datetime.timedelta(hours = 2)
+        self.debugLog(str(lastTwoHours))
+
+        if sensorLastChanged > lastTwoHours:
+            self.debugLog("sensor last changed older then two hours =========***** BAD VALUE ********=======")
+            return false
+        else:
+            self.debugLog("sensor last changed newer then two hours")
+            return true
 
     def _isAllDevicesInDeviceIdListOn(self, deviceIdList):
         isOn = False
