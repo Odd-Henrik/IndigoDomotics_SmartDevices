@@ -3,7 +3,7 @@
 	<Field id="topLabel" type="label">
         <Label>
             Welcome to Smart Devices!
-            Most configuration is done in the Smart Devices you create and are related to that specific Smart Device.
+Most configuration is done in the Smart Devices you create and are related to that specific Smart Device.
         </Label>
 	</Field>
 	
@@ -23,7 +23,7 @@ If you are having problems, wants to closely monitor Smart Devices or you are in
 	<Field id="v3" type="label" visibleBindingId="enableDebug" visibleBindingValue="true">
 		<Label>
 
-    Debugging will use recourse's and clog up your Event Log window.
+    Debugging will use resource's and clog up your Event Log window.
     This is not recommended if you don't need it.
 
         </Label>

@@ -48,10 +48,11 @@
 		<Name>Simple Smart Thermostat</Name>
 		<ConfigUI>
 			<Field id="autoLabel21" type="label">
-				<Label>Select Heater device(s)</Label>
+				<Label>Heater device(s):
+                Select the devices you want to use for heating. The device must be an on/off device like a relay switch. All the devices selected will be turned On when heating is required and Off when temperature is adequate.</Label>
 			</Field>
 			<Field id="primaryHeaterDevices" type="list">
-				<Label>Heater Device(s):</Label>
+				<Label>Select Heater Device(s):</Label>
 				<List class="indigo.devices" filter="indigo.relay"/>
 			</Field>
 			<Field id="clearHVACDevices"
@@ -63,10 +64,13 @@
 			</Field>
 			<Field id="simpleSeparator21" type="separator"/>
 			<Field id="autoLabel22" type="label">
-				<Label>Select temperature sensor(s):</Label>
+				<Label>Temperature sensor(s):
+                Temperature sensor(s) will be used to control the heater device(s) selected above. You must make sure that you are selecting temperature sensor devices.
+                If you select multiple devices, these will be averaged when calculating heaters On/Off against the set point.
+                Multiple Temperature sensros can also complement each other if some of them fails or have old values.</Label>
 			</Field>
 			<Field id="primaryTemperatureSensors" type="list">
-				<Label>Temperature sensor(s):</Label>
+				<Label>Select Temperature sensor(s):</Label>
 				<List class="indigo.devices" filter="indigo.sensor"/>
 			</Field>
 			<Field id="clearTemperatureDevices"
@@ -82,6 +86,10 @@
 			</Field>
 			<Field id="configTemperatureDelta" type="textfield" defaultValue="0.2">
 				<Label>Temperature delta:</Label>
+			</Field>
+            <Field id="autoLabel25" type="label">
+				<Label>The simple thermostat logic works so that when the average of the temperature sensors falls below Heat Set Point - Temperature Delta, Heaters will turn On.
+                When the average temperature sensors is above Heat Set Point + Temperature Delta, Heaters will turn Off</Label>
 			</Field>
 		</ConfigUI>
 		<States>
