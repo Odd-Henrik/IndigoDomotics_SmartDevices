@@ -643,7 +643,7 @@ class Plugin(indigo.PluginBase):
 
         if sensorLastChanged < lastTwoHours:
             self.errorLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
-            self.errorLog("OLD Value! Sensor value is older then " + str(notOlderThenMinutes))
+            self.errorLog("OLD Value! Sensor value is older then " + str(notOlderThenMinutes) + " Minutes")
             return False
         else:
             self.debugLog("sensor last changed newer then two hours")
