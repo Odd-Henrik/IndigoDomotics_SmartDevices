@@ -8,6 +8,7 @@
 	 of the backlit display of the module, and to modify the custom
 	 backlightBrightness state added to Devices.xml.
 -->
+<!--suppress ALL -->
 <Actions>
 <!--	<Action id="setBacklightBrightness" deviceFilter="self">
 		<Name>Set Backlight Brightness</Name>

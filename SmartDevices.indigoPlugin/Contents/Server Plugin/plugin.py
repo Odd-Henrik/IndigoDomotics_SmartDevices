@@ -32,6 +32,7 @@ kFanModeEnumToStrMap = {
 }
 
 
+# noinspection PyPep8Naming
 def _lookupActionStrFromHvacMode(hvacMode):
     return kHvacModeEnumToStrMap.get(hvacMode, u"unknown")
 
@@ -40,7 +41,7 @@ def _lookupActionStrFromFanMode(fanMode):
     return kFanModeEnumToStrMap.get(fanMode, u"unknown")
 
 ################################################################################
-# noinspection PyUnusedLocal,PyMethodMayBeStatic,PyPep8
+# noinspection PyUnusedLocal,PyMethodMayBeStatic,PyPep8,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming
 class Plugin(indigo.PluginBase):
     ########################################
     def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
@@ -203,10 +204,11 @@ class Plugin(indigo.PluginBase):
         if sendSuccess:
             # If success then log that the command was successfully sent.
             indigo.server.log(u"sent \"%s\" %s to %.1f°" % (dev.name, logActionName, newSetpoint))
+            self._runHVACLogic(indigo.devices[dev.id])
 
             # And then tell the Indigo Server to update the state.
             if stateKey in dev.states:
-                dev.updateStateOnServer(stateKey, newSetpoint, uiValue="%.1f °F" % newSetpoint)
+                dev.updateStateOnServer(stateKey, newSetpoint, uiValue="%.1f °C" % newSetpoint)
         else:
             # Else log failure but do NOT update state on Indigo Server.
             indigo.server.log(u"send \"%s\" %s to %.1f° failed" % (dev.name, logActionName, newSetpoint), isError=True)
@@ -234,6 +236,8 @@ class Plugin(indigo.PluginBase):
                 indigo.server.log("debug disabled")
 
             if self.debug: indigo.server.log ("Smart Devices plugin preferences have been updated.")
+
+            #TODO Implement validation of out of bounds and timeout values
 
 
     def runConcurrentThread(self):
@@ -266,7 +270,7 @@ class Plugin(indigo.PluginBase):
         # consider adding that to runConcurrentThread() above.
 
         #self._refreshStatesFromHardware(dev, True, True)
-        self.debugLog(u"-- deviceStartComm V:1--")
+        self.debugLog(u"-- deviceStartComm V:3--")
 
         newProps = dev.pluginProps
 
@@ -546,14 +550,19 @@ class Plugin(indigo.PluginBase):
 
         if virDev.hvacMode == indigo.kHvacMode.Off:
             self._turnOffAllHVACDevices(virDev)
+            virDev.updateStateOnServer("hvacHeaterIsOn", False)
         elif virDev.hvacMode == indigo.kHvacMode.Cool:
-            pass
+            self._turnOffAllHVACDevices(virDev)
+            virDev.updateStateOnServer("hvacHeaterIsOn", False)
         elif virDev.hvacMode == indigo.kHvacMode.Heat:
+            self._turnOnDevicesInDeviceIdList(primaryHeaterDevices)
+            # TODO For booster functionality, must implement
+            #self._turnOnDevicesInDeviceIdList(secondaryHeaterDevices)
+            virDev.updateStateOnServer("hvacHeaterIsOn", True)
+        elif virDev.hvacMode == indigo.kHvacMode.HeatCool:
             self._heat(virDev, primaryHeaterDevices, primaryTemperatureSensors, secondaryHeaterDevices,
                        floorTemperatureSensors, outsideTemperatureSensors)
             #self._heat(virDev, primaryHeaterDevices, temperatureSensor, None, None, None)
-        elif virDev.hvacMode == indigo.kHvacMode.HeatCool:
-            pass
 
         return True
 
@@ -571,7 +580,7 @@ class Plugin(indigo.PluginBase):
               floorTemperatureSensors, outsideTemperatureSensors):
         # Heater logic
         heaters = primaryHeaterDevices
-        sensorAvgTemp = self._avgSensorValues(primaryTemperatureSensors)
+        sensorAvgTemp = self._avgSensorValues(virDev, primaryTemperatureSensors)
 
         if not sensorAvgTemp:
             # No valid sensor data, turning off all heaters'
@@ -617,7 +626,7 @@ class Plugin(indigo.PluginBase):
             self.debugLog("Heaters On")
             virDev.updateStateOnServer("hvacHeaterIsOn", True)
 
-    def _avgSensorValues(self, sensors):
+    def _avgSensorValues(self, virDev, sensors):
         count = 0
         totalTemp = 0
 
@@ -627,6 +636,11 @@ class Plugin(indigo.PluginBase):
                 self.debugLog(str(indigo.devices[int(sens)].sensorValue))
                 count += 1
                 totalTemp = totalTemp + indigo.devices[int(sens)].sensorValue
+            else:
+                #TODO Display Error in ui value, would be nice if it could be shown in red
+                #virDev.updateStateOnServer(u"temperatureInput" + str(count + 1), -1000.0, uiValue="* %d °C" % indigo.devices[int(sens)].sensorValue)
+                #virDev.updateStateOnServer(u"temperatureInput" + str(count + 1), indigo.devices[int(sens)].sensorValue, uiValue="* %d °C" % indigo.devices[int(sens)].sensorValue)
+                pass
 
         if count > 0:
             return totalTemp/count
@@ -637,6 +651,15 @@ class Plugin(indigo.PluginBase):
         self.debugLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
         sensorLastChanged = indigo.devices[int(sensorId)].lastChanged
         notOlderThenMinutes = 120
+        self.debugLog("ignoreValuesOlderThen: " + self.pluginPrefs.get("ignoreValuesOlderThen", ""))
+        if self.pluginPrefs.get("ignoreValuesOlderThen", ""):
+            try:
+                notOlderThenMinutes = int(self.pluginPrefs.get("ignoreValuesOlderThen", ""))
+            except Exception, err:
+                self.errorLog("ERROR in ignore Values Older Then: %s" % (str(err)))
+
+        self.debugLog("ignoreValuesOlderThen Set To: " + str(notOlderThenMinutes))
+
         lastTwoHours = datetime.datetime.now() - datetime.timedelta(minutes = notOlderThenMinutes)
         self.debugLog(str(lastTwoHours))
 

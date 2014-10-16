@@ -5,6 +5,7 @@
 	 menu item. Note - nothing will be returned to the client, so if you need to communicate
 	 back to the user you can post information into the Event Log.
 -->
+<!--suppress XmlUnboundNsPrefix -->
 <MenuItems>
 	<MenuItem id="menuConfigure">
 		<Name>Configure...</Name>

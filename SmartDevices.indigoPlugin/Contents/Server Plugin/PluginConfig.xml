@@ -1,17 +1,29 @@
 <?xml version="1.0"?>
-<PluginConfig>	
+<!--suppress XmlUnboundNsPrefix -->
+<PluginConfig>
 	<Field id="topLabel" type="label">
-        <Label>
-Welcome and thank you for using Smart Devices!
+        <Label>Welcome and thank you for using Smart Devices!
 Most configuration is done in the Smart Devices you create and are related to that specific Smart Device.
         </Label>
 	</Field>
-	
 	<Field id='sep1' type='separator' />
+	<Field id="ignoreLabel" type="label">
+        <Label>Some sensors, especially in battery operated devices, may fail to send up to date values or sometimes out of bounds values.
+        </Label>
+	</Field>
+    <Field id="ignoreValuesOlderThen" type="textfield" defaultValue="120">
+        <Label>Ignore Values Older Then (in minutes):</Label>
+    </Field>
+    <Field id="ignoreValuesLargerThen" type="textfield" defaultValue="60.0">
+        <Label>Ignore Values Larger Then (in degrees):</Label>
+    </Field>
+    <Field id="ignoreValuesLessThen" type="textfield" defaultValue="-40.0">
+        <Label>Ignore Values Less Then (in degrees):</Label>
+    </Field>
+	<Field id='sep2' type='separator' />
 	
 	<Field id="midLabel" type="label">
-		<Label>
-If you are having problems, wants to closely monitor Smart Devices or you are instructed by support, you can enable extra logging in the Event Log window by checking the button below.
+		<Label>If you are having problems, wants to closely monitor Smart Devices or you are instructed by support, you can enable extra logging in the Event Log window by checking the button below.
         </Label>
 	</Field>
 	
