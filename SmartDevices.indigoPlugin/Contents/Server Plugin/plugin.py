@@ -588,6 +588,7 @@ class Plugin(indigo.PluginBase):
             self.errorLog(virDev.name + ": NO VALID SENSOR DATA: Turning Off ALL Heaters!")
             self._turnOffDevicesInDeviceIdList(heaters)
             self.debugLog("Heaters Off")
+            virDev.updateStateOnServer("hvacHeaterIsOn", False)
             return False
 
 
@@ -720,7 +721,7 @@ class Plugin(indigo.PluginBase):
         #Validating min value boundary.
         if sensorValue < ignoreValuesLessThen:
             self.errorLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
-            self.errorLog("OUT OF BOUNDS Value! Sensor value is less then " + str(ignoreValuesLargerThen) + "!")
+            self.errorLog("OUT OF BOUNDS Value! Sensor value is less then " + str(ignoreValuesLessThen) + "!")
             minValueValidationOk = False
         else:
             self.debugLog("Sensor value is larger then minimum allowed value, Ok")

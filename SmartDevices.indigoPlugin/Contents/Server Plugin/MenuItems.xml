@@ -6,8 +6,8 @@
 	 back to the user you can post information into the Event Log.
 -->
 <!--suppress XmlUnboundNsPrefix -->
-<!--<MenuItems>
-	<MenuItem id="menuConfigure">
+<MenuItems>
+<!--	<MenuItem id="menuConfigure">
 		<Name>Configure...</Name>
 		<CallbackMethod>changeDebugMode</CallbackMethod>
 		<ButtonTitle>Save</ButtonTitle>
