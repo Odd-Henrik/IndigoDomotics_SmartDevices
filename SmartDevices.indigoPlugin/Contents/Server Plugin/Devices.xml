@@ -23,6 +23,7 @@
 
 <!--suppress XmlUnboundNsPrefix, XmlUnboundNsPrefix, CheckTagEmptyBody, CheckTagEmptyBody, CheckTagEmptyBody, CheckTagEmptyBody, CheckTagEmptyBody -->
 <Devices>
+<!-- ********* UNDER DEVELOPMENT *************
 	<Device type="speedcontrol" id="simpleSmartFan">
       	<Name>Simple SmartFan</Name>
 		<ConfigUI>
@@ -34,15 +35,15 @@
 				<List class="indigo.devices" filter="indigo.dimmer"/>
 			</Field>
 		</ConfigUI>
-		<States>
+		<States>********* UNDER DEVELOPMENT *************-->
               <!--
             onOffState	boolean	onState	indicates whether the device is on - use dev.onState property as a shortcut
             speedIndex	boolean	speedIndex	indicates the current speed index for devices that support some fixed # of speeds - use dev.speedIndex property as a shortcut
             speedIndex.ui	boolean	n/a	a more user friendly name for the current index (e.g. high, medium, low, off)
             speedLevel	boolean	speedLevel	indicates the level the device is set to (0-100) - use dev.speedLevel property as a shortcut
-            -->
+            --><!--********* UNDER DEVELOPMENT *************
 		</States>
-	</Device>
+	</Device>********* UNDER DEVELOPMENT *************-->
 
     	<Device type="thermostat" id="simpleSmartThermostat">
 		<Name>Simple Smart Thermostat</Name>
@@ -106,14 +107,15 @@ When the average temperature sensors is above (Heat Set Point + Temperature Delt
 	and will support Indigo and Indigo Touch's native UI for thermostat type
 	devices.
 	-->
+    <!-- ********* UNDER DEVELOPMENT *************
 	<Device type="thermostat" id="climateController">
 		<Name>Climate Controller</Name>
-		<ConfigUI>
+		<ConfigUI> ********* UNDER DEVELOPMENT *************-->
 			<!-- The ConfigUI here is just an example of the type of device
 			specific UI that might be needed. Here you might specify a text
 			field for an IP address, a serial port popup, or other device
 			specific options.
-			-->
+			--><!--********* UNDER DEVELOPMENT *************
 			<Field id="autoLabel1" type="label">
 				<Label>Select HVAC device(s)</Label>
 			</Field>
@@ -274,7 +276,7 @@ When the average temperature sensors is above (Heat Set Point + Temperature Delt
 			<Field id="configFanSpeedStep4" type="textfield" defaultValue="100">
 				<Label>Ventilator Fanspeed Step 4:</Label>
 			</Field>
-
+            ********* UNDER DEVELOPMENT *************-->
 			<!-- By default thermostat type devices automatically inherit these
 			device properties which describe the characteristics of a specific
 			thermostat instance:
@@ -335,8 +337,8 @@ When the average temperature sensors is above (Heat Set Point + Temperature Delt
 				<Label>Supports compressor/furnace feedback:</Label>
 				<Description>Show compressor/furnace states in UI</Description>
 			</Field>-->
-		</ConfigUI>
-		<States>
+		<!-- ********* UNDER DEVELOPMENT *************</ConfigUI>
+		<States> ********* UNDER DEVELOPMENT *************-->
 			<!-- By default thermostat type devices automatically inherit these
 			read-only states:
 
@@ -367,7 +369,7 @@ When the average temperature sensors is above (Heat Set Point + Temperature Delt
 			here, we define a new custom state, backlightBrightness, which
 			is used to control the brightness of the backlit display of
 			the thermostat.
-			-->
+			--><!--********* UNDER DEVELOPMENT *************
 		    <State id="mainThermostatMode">
 				<ValueType>
 					<List>
@@ -503,5 +505,5 @@ When the average temperature sensors is above (Heat Set Point + Temperature Delt
 				<ControlPageLabel>Ventilator Fanspeed Step 4</ControlPageLabel>
 			</State>
 		</States>
-	</Device>
+	</Device> ********* UNDER DEVELOPMENT ************* -->
 </Devices>

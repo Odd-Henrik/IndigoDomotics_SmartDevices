@@ -3,6 +3,7 @@
 ####################
 # Copyright (c) 2014, Odd-Henrik Aasen. All rights reserved.
 # http://www.odd-henrik.com
+# Thank you to Matt and Jay for making Indigo and Berkinet and other plugin developers for their work to follow and be inspired by.
 ##############
 
 # noinspection PyUnresolvedReferences
