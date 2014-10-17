@@ -584,6 +584,7 @@ class Plugin(indigo.PluginBase):
 
         if not sensorAvgTemp:
             # No valid sensor data, turning off all heaters'
+            # TODO: Notifications
             self.errorLog(virDev.name + ": NO VALID SENSOR DATA: Turning Off ALL Heaters!")
             self._turnOffDevicesInDeviceIdList(heaters)
             self.debugLog("Heaters Off")
@@ -648,30 +649,86 @@ class Plugin(indigo.PluginBase):
             return False
 
     def _validateSensorValue(self, sensorId):
+        timeoutValidationOk = False
+        maxValueValidationOk = False
+        minValueValidationOk = False
+
         self.debugLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
+        #Getting sensor values
         sensorLastChanged = indigo.devices[int(sensorId)].lastChanged
+        sensorValue = indigo.devices[int(sensorId)].sensorValue
+
+        self.debugLog("Sensor to validate last updated on: " + str(sensorLastChanged))
+        self.debugLog("Sensor to validate value: " + str(sensorValue))
+
+        #Defining validation variables with defaults
         notOlderThenMinutes = 120
-        self.debugLog("ignoreValuesOlderThen: " + self.pluginPrefs.get("ignoreValuesOlderThen", ""))
+        ignoreValuesLargerThen = 60.0
+        ignoreValuesLessThen = -40.0
+
+        #self.debugLog("ignoreValuesOlderThen: " + self.pluginPrefs.get("ignoreValuesOlderThen", ""))
+
+        #Getting timeout value from configuration prefs
         if self.pluginPrefs.get("ignoreValuesOlderThen", ""):
             try:
                 notOlderThenMinutes = int(self.pluginPrefs.get("ignoreValuesOlderThen", ""))
             except Exception, err:
-                self.errorLog("ERROR in ignore Values Older Then: %s" % (str(err)))
+                self.errorLog("ERROR in ignore Values Older Then: %s. Using defaults: %s" % (str(err), str(notOlderThenMinutes)))
 
         self.debugLog("ignoreValuesOlderThen Set To: " + str(notOlderThenMinutes))
 
-        lastTwoHours = datetime.datetime.now() - datetime.timedelta(minutes = notOlderThenMinutes)
-        self.debugLog(str(lastTwoHours))
+        lastChangedMaxAge = datetime.datetime.now() - datetime.timedelta(minutes = notOlderThenMinutes)
+        self.debugLog(str(lastChangedMaxAge))
 
-        #TODO: implement out of range check for sensor value. E.g is it grater then 100 or less then 100
-
-        if sensorLastChanged < lastTwoHours:
+        #Validating sensor last changed timeout.
+        if sensorLastChanged < lastChangedMaxAge:
             self.errorLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
             self.errorLog("OLD Value! Sensor value is older then " + str(notOlderThenMinutes) + " Minutes")
-            return False
+            timeoutValidationOk = False
         else:
             self.debugLog("sensor last changed newer then two hours")
-            return True
+            timeoutValidationOk = True
+
+        #Getting max value from configuration prefs
+        if self.pluginPrefs.get("ignoreValuesLargerThen", ""):
+            try:
+                ignoreValuesLargerThen = float(self.pluginPrefs.get("ignoreValuesLargerThen", ""))
+            except Exception, err:
+                self.errorLog("ERROR in ignore Values Larger Then: %s. Using defaults: %s" % (str(err), str(ignoreValuesLargerThen)))
+
+        self.debugLog("ignoreValuesLargerThen Set To: " + str(ignoreValuesLargerThen) )
+
+        #Validating max value boundary.
+        if sensorValue > ignoreValuesLargerThen:
+            self.errorLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
+            self.errorLog("OUT OF BOUNDS Value! Sensor value is larger then " + str(ignoreValuesLargerThen) + "!")
+            maxValueValidationOk = False
+        else:
+            self.debugLog("Sensor value is less then max allowed value, Ok")
+            maxValueValidationOk = True
+
+
+        #Getting min value from configuration prefs
+        if self.pluginPrefs.get("ignoreValuesLessThen", ""):
+            try:
+                ignoreValuesLessThen = float(self.pluginPrefs.get("ignoreValuesLessThen", ""))
+            except Exception, err:
+                self.errorLog("ERROR in ignore Values Less Then: %s. Using defaults: %s" % (str(err), str(ignoreValuesLessThen)))
+
+        self.debugLog("ignoreValuesLessThen Set To: " + str(ignoreValuesLessThen) )
+
+        #Validating min value boundary.
+        if sensorValue < ignoreValuesLessThen:
+            self.errorLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
+            self.errorLog("OUT OF BOUNDS Value! Sensor value is less then " + str(ignoreValuesLargerThen) + "!")
+            minValueValidationOk = False
+        else:
+            self.debugLog("Sensor value is larger then minimum allowed value, Ok")
+            minValueValidationOk = True
+
+        #TODO: Implement notifications on error such as these.
+
+        return  timeoutValidationOk and maxValueValidationOk and minValueValidationOk
 
     def _isAllDevicesInDeviceIdListOn(self, deviceIdList):
         isOn = False

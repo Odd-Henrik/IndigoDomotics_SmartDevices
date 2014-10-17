@@ -6,7 +6,7 @@
 	 back to the user you can post information into the Event Log.
 -->
 <!--suppress XmlUnboundNsPrefix -->
-<MenuItems>
+<!--<MenuItems>
 	<MenuItem id="menuConfigure">
 		<Name>Configure...</Name>
 		<CallbackMethod>changeDebugMode</CallbackMethod>
@@ -22,7 +22,7 @@
 	</MenuItem>
 	
 	
-<!--	<MenuItem id="menu1">
+	<MenuItem id="menu1">
 		<Name>Set All to 1 Temperature Sensor</Name>
 		<CallbackMethod>changeTempSensorCountTo1</CallbackMethod>
 	</MenuItem>
