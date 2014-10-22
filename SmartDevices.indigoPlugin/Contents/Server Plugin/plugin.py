@@ -273,7 +273,7 @@ class Plugin(indigo.PluginBase):
         # consider adding that to runConcurrentThread() above.
 
         #self._refreshStatesFromHardware(dev, True, True)
-        self.debugLog(u"-- deviceStartComm V:3--")
+        self.debugLog(u"-- deviceStartComm V:4--")
 
         newProps = dev.pluginProps
 
@@ -542,7 +542,7 @@ class Plugin(indigo.PluginBase):
             if newVar.id in self._getPrimaryTemperatureVariablesIdsInVirtualDevice(dev):
                 self.debugLog("VariableUpdate for device:" + dev.name + " Of Type: " + dev.deviceTypeId + " For variable: " + newVar.name + " With Value: " + str(newVar.value))
                 self._handleChangeTemperatureSensors(dev, newVar)
-                #self._runHVACLogic(dev)
+                self._runHVACLogic(dev)
 
     def _getPrimaryTemperatureVariablesIdsInVirtualDevice(self, dev):
         tempVariables = indigo.List()
@@ -581,7 +581,8 @@ class Plugin(indigo.PluginBase):
         # Temperature sensors
         self.debugLog("Temperature Sensors:")
         primaryTemperatureSensors = self._getDeviceIdListFromProp("primaryTemperatureSensors", virDev)
-        primaryTemperatureSensors.append(self._getDeviceIdListFromProp("primaryTemperatureVariables", virDev))
+        primaryTemperatureSensors += (self._getDeviceIdListFromProp("primaryTemperatureVariables", virDev))
+        self.debugLog(str(primaryTemperatureSensors))
 
         floorTemperatureSensors = self._getDeviceIdListFromProp("floorTemperatureSensors", virDev)
         outsideTemperatureSensors = self._getDeviceIdListFromProp("outsideTemperatureSensors", virDev)
@@ -704,11 +705,11 @@ class Plugin(indigo.PluginBase):
                 if int(sens) in indigo.devices:
                     self.debugLog(str(indigo.devices[int(sens)].sensorValue))
                     count += 1
-                    totalTemp = totalTemp + indigo.devices[int(sens)].sensorValue
+                    totalTemp += indigo.devices[int(sens)].sensorValue
                 if int(sens) in indigo.variables:
                     self.debugLog(str(indigo.variables[int(sens)].value))
                     count += 1
-                    totalTemp = totalTemp + indigo.variables[int(sens)].value
+                    totalTemp += float(indigo.variables[int(sens)].value)
             else:
                 #TODO Display Error in ui value, would be nice if it could be shown in red
                 #virDev.updateStateOnServer(u"temperatureInput" + str(count + 1), -1000.0, uiValue="* %d °C" % indigo.devices[int(sens)].sensorValue)
@@ -724,19 +725,27 @@ class Plugin(indigo.PluginBase):
         timeoutValidationOk = False
         maxValueValidationOk = False
         minValueValidationOk = False
+        sensorLastChanged = datetime.datetime.now()
+        sensorValue = False
+        sensorName = ""
 
-        if int(sensorId) in indigo.devices:
-            self.debugLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
+        self.debugLog(u"===============> sensorId=" + str(sensorId) + u" Type=" + str(type(sensorId)))
+
+        if sensorId in indigo.devices:
+            self.debugLog(str(indigo.devices[sensorId].name) + " Value: " + str(indigo.devices[sensorId].sensorValue) + " Last changed:" + str(indigo.devices[sensorId].lastChanged))
             #Getting sensor values
-            sensorLastChanged = indigo.devices[int(sensorId)].lastChanged
-            sensorValue = indigo.devices[int(sensorId)].sensorValue
+            sensorLastChanged = indigo.devices[sensorId].lastChanged
+            sensorValue = indigo.devices[sensorId].sensorValue
+            sensorName = str(indigo.devices[sensorId].name)
 
-        if int(sensorId) in indigo.variables:
-            self.debugLog(str(indigo.variables[int(sensorId)].name) + " Value: " + str(indigo.variables[int(sensorId)].value) + " Last changed:" + str(indigo.variables[int(sensorId)].lastChanged))
+        if sensorId in indigo.variables:
+            self.debugLog(str(indigo.variables[sensorId].name) + " Value: " + str(indigo.variables[sensorId].value) + " Last changed:" + "Variables DO NOT HAVE a last changed value!")
             #Getting sensor values
-            sensorLastChanged = indigo.variables[int(sensorId)].lastChanged
-            sensorValue = indigo.variables[int(sensorId)].value
-
+            #TODO: Document: Variables do not have a last changed value so cannot check this.
+            #NOTE: Variables do not have a last changed value so cannot check this.
+            sensorLastChanged = datetime.datetime.now() #indigo.variables[sensorId].lastChanged
+            sensorValue = float(indigo.variables[sensorId].value)
+            sensorName = str(indigo.variables[sensorId].name)
 
 
         self.debugLog("Sensor to validate last updated on: " + str(sensorLastChanged))
@@ -763,7 +772,7 @@ class Plugin(indigo.PluginBase):
 
         #Validating sensor last changed timeout.
         if sensorLastChanged < lastChangedMaxAge:
-            self.errorLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
+            self.errorLog(str(sensorName) + " Value: " + str(sensorValue) + " Last changed:" + str(sensorLastChanged))
             self.errorLog("OLD Value! Sensor value is older then " + str(notOlderThenMinutes) + " Minutes")
             timeoutValidationOk = False
         else:
@@ -781,7 +790,7 @@ class Plugin(indigo.PluginBase):
 
         #Validating max value boundary.
         if sensorValue > ignoreValuesLargerThen:
-            self.errorLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
+            self.errorLog(str(sensorName) + " Value: " + str(sensorValue) + " Last changed:" + str(sensorLastChanged))
             self.errorLog("OUT OF BOUNDS Value! Sensor value is larger then " + str(ignoreValuesLargerThen) + "!")
             maxValueValidationOk = False
         else:
@@ -800,13 +809,14 @@ class Plugin(indigo.PluginBase):
 
         #Validating min value boundary.
         if sensorValue < ignoreValuesLessThen:
-            self.errorLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
+            self.errorLog(str(sensorName) + " Value: " + str(sensorValue) + " Last changed:" + str(sensorLastChanged))
             self.errorLog("OUT OF BOUNDS Value! Sensor value is less then " + str(ignoreValuesLessThen) + "!")
             minValueValidationOk = False
         else:
             self.debugLog("Sensor value is larger then minimum allowed value, Ok")
             minValueValidationOk = True
 
+        #TODO: Implement comparison check. If one of multiple values is very different from the others, its probably wrong.
         #TODO: Implement notifications on error such as these.
 
         return  timeoutValidationOk and maxValueValidationOk and minValueValidationOk
