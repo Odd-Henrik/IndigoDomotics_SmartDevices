@@ -539,7 +539,7 @@ class Plugin(indigo.PluginBase):
             if not dev.enabled or not dev.configured:
                 continue
 
-            if newVar.id in  self._getPrimaryTemperatureVariablesIdsInVirtualDevice(dev):
+            if newVar.id in self._getPrimaryTemperatureVariablesIdsInVirtualDevice(dev):
                 self.debugLog("VariableUpdate for device:" + dev.name + " Of Type: " + dev.deviceTypeId + " For variable: " + newVar.name + " With Value: " + str(newVar.value))
                 self._handleChangeTemperatureSensors(dev, newVar)
                 #self._runHVACLogic(dev)
@@ -719,10 +719,19 @@ class Plugin(indigo.PluginBase):
         maxValueValidationOk = False
         minValueValidationOk = False
 
-        self.debugLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
-        #Getting sensor values
-        sensorLastChanged = indigo.devices[int(sensorId)].lastChanged
-        sensorValue = indigo.devices[int(sensorId)].sensorValue
+        if sensorId in indigo.devices:
+            self.debugLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
+            #Getting sensor values
+            sensorLastChanged = indigo.devices[int(sensorId)].lastChanged
+            sensorValue = indigo.devices[int(sensorId)].sensorValue
+
+        if sensorId in indigo.variables:
+            self.debugLog(str(indigo.variables[int(sensorId)].name) + " Value: " + str(indigo.variables[int(sensorId)].value) + " Last changed:" + str(indigo.variables[int(sensorId)].lastChanged))
+            #Getting sensor values
+            sensorLastChanged = indigo.variables[int(sensorId)].lastChanged
+            sensorValue = indigo.variables[int(sensorId)].value
+
+
 
         self.debugLog("Sensor to validate last updated on: " + str(sensorLastChanged))
         self.debugLog("Sensor to validate value: " + str(sensorValue))
