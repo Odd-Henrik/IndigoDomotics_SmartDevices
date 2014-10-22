@@ -568,7 +568,8 @@ class Plugin(indigo.PluginBase):
         if virDev.pluginProps.get(deviceProp, ""):
             for sens in (virDev.pluginProps[deviceProp]):
                 devList.append(int(sens))
-                self.debugLog(indigo.devices[int(sens)].name)
+                #TODO: can be var og dev!
+                #self.debugLog(indigo.devices[int(sens)].name)
 
         return devList
 
@@ -700,9 +701,14 @@ class Plugin(indigo.PluginBase):
         self.debugLog("Sensor Values to average:")
         for sens in sensors:
             if self._validateSensorValue(sens):
-                self.debugLog(str(indigo.devices[int(sens)].sensorValue))
-                count += 1
-                totalTemp = totalTemp + indigo.devices[int(sens)].sensorValue
+                if sens in indigo.devices:
+                    self.debugLog(str(indigo.devices[int(sens)].sensorValue))
+                    count += 1
+                    totalTemp = totalTemp + indigo.devices[int(sens)].sensorValue
+                if sens in indigo.variables:
+                    self.debugLog(str(indigo.variables[int(sens)].value))
+                    count += 1
+                    totalTemp = totalTemp + indigo.variables[int(sens)].value
             else:
                 #TODO Display Error in ui value, would be nice if it could be shown in red
                 #virDev.updateStateOnServer(u"temperatureInput" + str(count + 1), -1000.0, uiValue="* %d °C" % indigo.devices[int(sens)].sensorValue)
