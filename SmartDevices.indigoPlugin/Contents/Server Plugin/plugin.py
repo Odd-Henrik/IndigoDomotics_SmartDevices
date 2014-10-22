@@ -467,17 +467,19 @@ class Plugin(indigo.PluginBase):
         self.debugLog(u"************************** handleChangeTemperatureSensors *************************************")
         self.debugLog(u"*************************** " + str(sensorDev.name) + u" **************************************")
 
-        #Check first to see if we got a sensorValue
-        if sensorDev.sensorValue is None and sensorDev.value is None:
-            #No sensor value, error wrong or not sensor
-            self.errorLog(u"ERROR: Sensor: " + str(sensorDev.name) + u" ,has no sensor value. Please remove sensor from list.")
-            return
+        # #Check first to see if we got a sensorValue
+        # if sensorDev.sensorValue is None and sensorDev.value is None:
+        #     #No sensor value, error wrong or not sensor
+        #     self.errorLog(u"ERROR: Sensor: " + str(sensorDev.name) + u" ,has no sensor value. Please remove sensor from list.")
+        #     return
+        #
+        # if sensorDev.sensorValue is not None:
+        #     self.debugLog(u"Sensor Device update found, sensor value = " + str(sensorDev.sensorValue))
+        #
+        # if sensorDev.value is not None:
+        #     self.debugLog(u"Sensor Variable update found, variable value = " + str(sensorDev.value))
 
-        if sensorDev.sensorValue is not None:
-            self.debugLog(u"Sensor Device update found, sensor value = " + str(sensorDev.sensorValue))
-
-        if sensorDev.value is not None:
-            self.debugLog(u"Sensor Variable update found, variable value = " + str(sensorDev.value))
+        self.debugLog(u"Sensor is of type = " + str(type(sensorDev)))
 
         # Temperature sensors
         if thermostatDev.pluginProps.get("primaryTemperatureSensors", ""):
