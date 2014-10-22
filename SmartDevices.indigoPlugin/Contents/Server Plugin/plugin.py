@@ -493,7 +493,7 @@ class Plugin(indigo.PluginBase):
              for sens in (thermostatDev.pluginProps["primaryTemperatureVariables"]):
                 if sensorDev.id == int(sens):
                     tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(sens)) + 1
-                    thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.value, uiValue="%d °C" % sensorDev.value)
+                    thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.value, uiValue="%d °C" % float(sensorDev.value))
 
         if thermostatDev.pluginProps.get("floorTemperatureSensors", ""):
             if sensorDev.id == int(thermostatDev.pluginProps["floorTemperatureSensors"]):
