@@ -580,6 +580,8 @@ class Plugin(indigo.PluginBase):
         # Temperature sensors
         self.debugLog("Temperature Sensors:")
         primaryTemperatureSensors = self._getDeviceIdListFromProp("primaryTemperatureSensors", virDev)
+        primaryTemperatureSensors.append(self._getDeviceIdListFromProp("primaryTemperatureVariables", virDev))
+
         floorTemperatureSensors = self._getDeviceIdListFromProp("floorTemperatureSensors", virDev)
         outsideTemperatureSensors = self._getDeviceIdListFromProp("outsideTemperatureSensors", virDev)
 
