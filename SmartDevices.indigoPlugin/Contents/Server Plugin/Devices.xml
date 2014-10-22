@@ -42,19 +42,19 @@
 			</Field>
             <Field id="simpleSeparator15" type="separator"/>
             <Field id="autoLabel12" type="label">
-				<Label>Define 4 speed steps for your fan.</Label>
+				<Label>Define 4 speed steps for your fan:</Label>
 			</Field>
             <Field id="configFanSpeedStep1" type="textfield" defaultValue="10">
-				<Label>Ventilator Fanspeed Step 1:</Label>
+				<Label>Ventilator Fanspeed Step (%) 1:</Label>
 			</Field>
 			<Field id="configFanSpeedStep2" type="textfield" defaultValue="30">
-				<Label>Ventilator Fanspeed Step 2:</Label>
+				<Label>Ventilator Fanspeed Step (%) 2:</Label>
 			</Field>
 			<Field id="configFanSpeedStep3" type="textfield" defaultValue="70">
-				<Label>Ventilator Fanspeed Step 3:</Label>
+				<Label>Ventilator Fanspeed Step (%) 3:</Label>
 			</Field>
 			<Field id="configFanSpeedStep4" type="textfield" defaultValue="100">
-				<Label>Ventilator Fanspeed Step 4:</Label>
+				<Label>Ventilator Fanspeed Step (%)4:</Label>
 			</Field>
              <Field id="configPrimaryVentilationMode" type="menu" defaultValue="dehum">
 				<Label>Primary Ventilation Mode:</Label>
@@ -72,20 +72,20 @@
 				<Label>Define 4 humidity steps for your fan.</Label>
 			</Field>
 			<Field id="configHumidityStep1" type="textfield" defaultValue="60" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='dehum,both'>
-				<Label>Fan Step 1 Humidity:</Label>
+				<Label>Fan Step 1 Humidity (%):</Label>
 			</Field>
 			<Field id="configHumidityStep2" type="textfield" defaultValue="70" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='dehum,both'>
-				<Label>Fan Step 2 Humidity:</Label>
+				<Label>Fan Step 2 Humidity (%):</Label>
 			</Field>
 			<Field id="configHumidityStep3" type="textfield" defaultValue="80" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='dehum,both'>
-				<Label>Fan Step 3 Humidity:</Label>
+				<Label>Fan Step 3 Humidity (%):</Label>
 			</Field>
 			<Field id="configHumidityStep4" type="textfield" defaultValue="90" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='dehum,both'>
-				<Label>Fan Step 4 Humidity:</Label>
+				<Label>Fan Step 4 Humidity (%):</Label>
 			</Field>
             <Field id="simpleSeparator17" type="separator" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='cooling,both'/>
             <Field id="autoLabel14" type="label" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='cooling,both'>
-				<Label>Define 4 temperature steps for your fan.</Label>
+				<Label>Define 4 temperature steps for your fan:</Label>
 			</Field>
             <Field id="configTempStep1" type="textfield" defaultValue="25" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='cooling,both'>
 				<Label>Fan Step 1 Temperature:</Label>
@@ -237,7 +237,7 @@ Multiple Temperature senors can also complement each other if some of them fails
 			</Field>
 			<Field id="clearTemperatureDevices"
 				type="button"
-				tooltip="This will reset Temperaturesensor Device selection">
+				tooltip="This will reset Temperaturesensor Device selection" visibleBindingId='sensorInputOptions' visibleBindingValue='0,2'>
 				<Label></Label>
 				<Title>Clear Temp. Device selections</Title>
 				<CallbackMethod>ClearTemperatureDevicesPressed</CallbackMethod>
@@ -249,7 +249,7 @@ Multiple Temperature senors can also complement each other if some of them fails
 			</Field>
 			<Field id="clearTemperatureVariables"
 				type="button"
-				tooltip="This will reset Temperature Variable selection">
+				tooltip="This will reset Temperature Variable selection" visibleBindingId='sensorInputOptions' visibleBindingValue='1,2'>
 				<Label></Label>
 				<Title>Clear Temp. Variables selections</Title>
 				<CallbackMethod>ClearTemperatureVariablesPressed</CallbackMethod>
@@ -260,7 +260,7 @@ Multiple Temperature senors can also complement each other if some of them fails
 			</Field>
 
             <Field id='useVariableSetPoint' type='checkbox' >
-				<Label>Use a Variable for Thermostat Set Point: </Label>
+				<Label>Use a Variable for Thermostat Setpoint: </Label>
 			</Field>
             <Field id="autoLabel23" type="label" visibleBindingId='useVariableSetPoint' visibleBindingValue='true'>
 				<Label>Value in selected variable will override the internal thermostat setpoint.</Label>
@@ -300,22 +300,22 @@ When the average temperature sensors is above (Heat Set Point + Temperature Delt
 			specific options.
 			-->
 			<Field id="autoLabel1" type="label">
-				<Label>Select HVAC device(s)</Label>
+				<Label>Select HVAC device(s):</Label>
 			</Field>
 			<Field id="primaryHeaterDevices" type="list">
-				<Label>Primary Heater Device:</Label>
+				<Label>Primary Heater Device(s):</Label>
 				<List class="indigo.devices" filter="indigo.relay"/>
 			</Field>
 			<Field id="secondaryHeaterDevices" type="list">
-				<Label>Secondary Heater Device:</Label>
+				<Label>Secondary Heater Device(s):</Label>
 				<List class="indigo.devices" filter="indigo.relay"/>
 			</Field>
 			<Field id="acHeatPumpDevices" type="list">
-				<Label>Air Condition/Heat Pump Device:</Label>
+				<Label>Air Condition/Heat Pump Device(s):</Label>
 				<List class="indigo.devices"/>
 			</Field>
 			<Field id="ventilationDevices" type="list">
-				<Label>Ventilation/Dehumidifier Device:</Label>
+				<Label>Ventilation/Dehumidifier Device(s):</Label>
 				<List class="indigo.devices" filter="indigo.dimmer"/>
 			</Field>
 			<Field id="clearHVACDevices"
@@ -330,15 +330,15 @@ When the average temperature sensors is above (Heat Set Point + Temperature Delt
 				<Label>Select temperature sensor(s):</Label>
 			</Field>
 			<Field id="primaryTemperatureSensors" type="list">
-				<Label>Ambient temperature sensor:</Label>
+				<Label>Ambient temperature sensor(s):</Label>
 				<List class="indigo.devices" filter="indigo.sensor"/>
 			</Field>
 			<Field id="floorTemperatureSensors" type="list">
-				<Label>Floor temperature sensor:</Label>
+				<Label>Floor temperature sensor(s):</Label>
 				<List class="indigo.devices" filter="indigo.sensor"/>
 			</Field>
 			<Field id="outsideTemperatureSensors" type="list">
-				<Label>Outside temperature sensor:</Label>
+				<Label>Outside temperature sensor(s):</Label>
 				<List class="indigo.devices" filter="indigo.sensor"/>
 			</Field>
 			<Field id="clearTemperatureDevices"
@@ -353,11 +353,11 @@ When the average temperature sensors is above (Heat Set Point + Temperature Delt
 				<Label>Select humidity sensor(s):</Label>
 			</Field>
 			<Field id="ambientHumiditySensors" type="list">
-				<Label>Ambient humidity sensor:</Label>
+				<Label>Ambient humidity sensor(s):</Label>
 				<List class="indigo.devices" filter="indigo.sensor"/>
 			</Field>
 			<Field id="outsideHumiditySensors" type="list">
-				<Label>Outside humidity sensor:</Label>
+				<Label>Outside humidity sensor(s):</Label>
 				<List class="indigo.devices" filter="indigo.sensor"/>
 			</Field>
 			<Field id="optionalHumiditySensors" type="list">
@@ -428,16 +428,16 @@ When the average temperature sensors is above (Heat Set Point + Temperature Delt
 				<Label>Consider Outside Humidity For Fan Off:</Label>
 			</Field>
             <Field id="configFanSpeedStep1" type="textfield" defaultValue="10">
-				<Label>Ventilator Fanspeed Step 1:</Label>
+				<Label>Ventilator Fanspeed Step (%) 1:</Label>
 			</Field>
 			<Field id="configFanSpeedStep2" type="textfield" defaultValue="30">
-				<Label>Ventilator Fanspeed Step 2:</Label>
+				<Label>Ventilator Fanspeed Step (%)2:</Label>
 			</Field>
 			<Field id="configFanSpeedStep3" type="textfield" defaultValue="70">
-				<Label>Ventilator Fanspeed Step 3:</Label>
+				<Label>Ventilator Fanspeed Step (%)3:</Label>
 			</Field>
 			<Field id="configFanSpeedStep4" type="textfield" defaultValue="100">
-				<Label>Ventilator Fanspeed Step 4:</Label>
+				<Label>Ventilator Fanspeed Step (%)4:</Label>
 			</Field>
             <Field id="configPrimaryVentilationMode" type="menu" defaultValue="dehum">
 				<Label>Primary Ventilation Mode:</Label>
@@ -452,23 +452,23 @@ When the average temperature sensors is above (Heat Set Point + Temperature Delt
 				<Label>Fan Off Humidity:</Label>
 			</Field>
             <Field id="autoLabel13" type="label" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='dehum,both'>
-				<Label>Define 4 humidity steps for your fan.</Label>
+				<Label>Define 4 humidity steps for your fan:</Label>
 			</Field>
 			<Field id="configHumidityStep1" type="textfield" defaultValue="60" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='dehum,both'>
-				<Label>Fan Step 1 Humidity:</Label>
+				<Label>Fan Step 1 Humidity(%):</Label>
 			</Field>
 			<Field id="configHumidityStep2" type="textfield" defaultValue="70" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='dehum,both'>
-				<Label>Fan Step 2 Humidity:</Label>
+				<Label>Fan Step 2 Humidity (%):</Label>
 			</Field>
 			<Field id="configHumidityStep3" type="textfield" defaultValue="80" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='dehum,both'>
-				<Label>Fan Step 3 Humidity:</Label>
+				<Label>Fan Step 3 Humidity (%):</Label>
 			</Field>
 			<Field id="configHumidityStep4" type="textfield" defaultValue="90" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='dehum,both'>
-				<Label>Fan Step 4 Humidity:</Label>
+				<Label>Fan Step 4 Humidity (%):</Label>
 			</Field>
             <Field id="simpleSeparator17" type="separator" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='cooling,both'/>
             <Field id="autoLabel14" type="label" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='cooling,both'>
-				<Label>Define 4 temperature steps for your fan.</Label>
+				<Label>Define 4 temperature steps for your fan(s):</Label>
 			</Field>
             <Field id="configTempStep1" type="textfield" defaultValue="25" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='cooling,both'>
 				<Label>Fan Step 1 Temperature:</Label>
