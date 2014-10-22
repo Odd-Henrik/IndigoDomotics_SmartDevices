@@ -219,6 +219,7 @@ class Plugin(indigo.PluginBase):
         self.debugLog(u"startup called")
         self.debugLog(u"Subscribing To Changes")
         indigo.devices.subscribeToChanges()
+        indigo.variables.subscribeToChanges()
 
     def shutdown(self):
         self.debugLog(u"shutdown called")
@@ -321,6 +322,7 @@ class Plugin(indigo.PluginBase):
         self._updateStatesFromProps(dev, newProps)
 
         self._getAllSensorsValuesNow(dev)
+        self._getPrimaryTemperatureVariablesIdsInVirtualDevice(dev)
         self._runHVACLogic(dev)
         pass
 
@@ -345,8 +347,10 @@ class Plugin(indigo.PluginBase):
             dev.updateStateOnServer("noHeatOutsideTemperature", props.get("configNoHeatOutsideTemperature", ""))
         if "noCoolOutsideTemperature" in dev.states:
             dev.updateStateOnServer("noCoolOutsideTemperature", props.get("configNoCoolOutsideTemperature", ""))
-        if "outsideTempCompFactor" in dev.states:
-            dev.updateStateOnServer("outsideTempCompFactor", props.get("configOutsideTempCompFactor", ""))
+        if "outsideTempComp" in dev.states:
+            dev.updateStateOnServer("outsideTempComp", props.get("configOutsideTempComp", ""))
+        if "outsideHumComp" in dev.states:
+            dev.updateStateOnServer("outsideHumComp", props.get("configOutsideHumComp", ""))
         if "primaryVentilationMode" in dev.states:
             dev.updateStateOnServer("primaryVentilationMode", props.get("configPrimaryVentilationMode", ""))
         if "dimmableVentilator" in dev.states:
@@ -363,6 +367,14 @@ class Plugin(indigo.PluginBase):
             dev.updateStateOnServer("humidityStep3", props.get("configHumidityStep3", ""))
         if "humidityStep4" in dev.states:
             dev.updateStateOnServer("humidityStep4", props.get("configHumidityStep4", ""))
+        if "tempStep1" in dev.states:
+            dev.updateStateOnServer("tempStep1", props.get("configTempStep1", ""))
+        if "tempStep2" in dev.states:
+            dev.updateStateOnServer("tempStep2", props.get("configTempStep2", ""))
+        if "tempStep3" in dev.states:
+            dev.updateStateOnServer("tempStep3", props.get("configTempStep3", ""))
+        if "tempStep4" in dev.states:
+            dev.updateStateOnServer("tempStep4", props.get("configTempStep4", ""))
         if "fanSpeedStep1" in dev.states:
             dev.updateStateOnServer("fanSpeedStep1", props.get("configFanSpeedStep1", ""))
         if "fanSpeedStep2" in dev.states:
@@ -496,6 +508,27 @@ class Plugin(indigo.PluginBase):
                 self.debugLog("DeviceUpdate for device:" + dev.name + " Of Type: " + dev.deviceTypeId + " For Sensor: " + newDev.name + " With Value: " + str(newDev.sensorValue))
                 self._handleChangeTemperatureSensors(dev, newDev)
                 self._runHVACLogic(dev)
+
+    def variableUpdated(self, origVar, newVar):
+         for dev in indigo.devices.iter("self"):
+            if not dev.enabled or not dev.configured:
+                continue
+
+            if newVar.id in  self._getPrimaryTemperatureVariablesIdsInVirtualDevice(dev):
+                self.debugLog("VariableUpdate for device:" + dev.name + " Of Type: " + dev.deviceTypeId + " For variable: " + newVar.name + " With Value: " + str(newVar.value))
+                #self._handleChangeTemperatureSensors(dev, newDev)
+                #self._runHVACLogic(dev)
+
+    def _getPrimaryTemperatureVariablesIdsInVirtualDevice(self, dev):
+        tempVariables = indigo.List()
+
+        self.debugLog(u"_________________------------------primaryTemperatureVariables ID--------------------________________")
+        if dev.pluginProps.get(u"primaryTemperatureVariables", ""):
+            for tempVariable in (dev.pluginProps["primaryTemperatureVariables"]):
+                self.debugLog(u"TemperatureVariable ID: " + str(tempVariable) + u" TemperatureVariable Value: " + str(tempVariable.value))
+                tempVariables.append(int(tempVariables))
+
+        return tempVariables
 
     def _getAllSensorsValuesNow(self, dev):
         for sensorId in self._getSensorsIdsInVirtualDevice(dev):
@@ -917,5 +950,15 @@ class Plugin(indigo.PluginBase):
         valuesDict["ambientHumiditySensors"] = ""
         valuesDict["optionalHumiditySensors"] = ""
         valuesDict["outsideHumiditySensors"] = ""
+        return valuesDict
+
+    def ClearTemperatureVariablesPressed(self, valuesDict, typeId, devId):
+        #self.debugLog(u"Values Dict: " + str(valuesDict))
+        valuesDict["primaryTemperatureVariables"] = ""
+        return valuesDict
+
+    def ClearFanDevicesPressed(self, valuesDict, typeId, devId):
+        #self.debugLog(u"Values Dict: " + str(valuesDict))
+        valuesDict["fanDevice"] = ""
         return valuesDict
 
