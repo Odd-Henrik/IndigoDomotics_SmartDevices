@@ -65,6 +65,36 @@
 				</List>
 			</Field>
             <Field id="simpleSeparator16" type="separator" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='dehum,both'/>
+             <Field id='humSensorInputOptions' type='menu' defaultValue="3" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='dehum,both'>
+				<Label>Humidity Sensor Input Sources:</Label>
+				<List>
+					<Option value="0">Device(s)</Option>
+					<Option value="1">Variable(s)</Option>
+					<Option value="2">Both</Option>
+				</List>
+			</Field>
+            <Field id="ambientHumiditySensors" type="list" visibleBindingId='humSensorInputOptions' visibleBindingValue='0,2'>
+				<Label>Select Ambient Humidity sensor(s):</Label>
+				<List class="indigo.devices" filter="indigo.sensor"/>
+			</Field>
+			<Field id="ClearHumidityDevicesPressed"
+				type="button"
+				tooltip="This will reset Ambient Humidity Device selection" visibleBindingId='humSensorInputOptions' visibleBindingValue='0,2'>
+				<Label></Label>
+				<Title>Clear Hum. Device selections</Title>
+				<CallbackMethod>ClearHumidityDevicesPressed</CallbackMethod>
+			</Field>
+            <Field id="ambientHumidityVariables" type="list" visibleBindingId='humSensorInputOptions' visibleBindingValue='1,2'>
+				<Label>Select Ambient Humidity Variables:</Label>
+				<List class="indigo.variables"/>
+			</Field>
+			<Field id="clearAmbientHumidityVariables"
+				type="button"
+				tooltip="This will reset Ambient Humidity Variable selection" visibleBindingId='humSensorInputOptions' visibleBindingValue='1,2'>
+				<Label></Label>
+				<Title>Clear Hum. Variables selections</Title>
+				<CallbackMethod>ClearHumidityVariablesPressed</CallbackMethod>
+			</Field>
             <Field id="configHumidityOff" type="textfield" defaultValue="50" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='dehum,both'>
 				<Label>Fan Off Humidity:</Label>
 			</Field>
@@ -84,6 +114,39 @@
 				<Label>Fan Step 4 Humidity (%):</Label>
 			</Field>
             <Field id="simpleSeparator17" type="separator" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='cooling,both'/>
+
+             <Field id='sensorInputOptions' type='menu' defaultValue="3">
+				<Label>Temperature Sensor Input Sources:</Label>
+				<List>
+					<Option value="0">Device(s)</Option>
+					<Option value="1">Variable(s)</Option>
+					<Option value="2">Both</Option>
+				</List>
+			</Field>
+			<Field id="primaryTemperatureSensors" type="list" visibleBindingId='sensorInputOptions' visibleBindingValue='0,2'>
+				<Label>Select Temperature sensor(s):</Label>
+				<List class="indigo.devices" filter="indigo.sensor"/>
+			</Field>
+			<Field id="clearTemperatureDevices"
+				type="button"
+				tooltip="This will reset Temperaturesensor Device selection" visibleBindingId='sensorInputOptions' visibleBindingValue='0,2'>
+				<Label></Label>
+				<Title>Clear Temp. Device selections</Title>
+				<CallbackMethod>ClearTemperatureDevicesPressed</CallbackMethod>
+			</Field>
+
+            <Field id="primaryTemperatureVariables" type="list" visibleBindingId='sensorInputOptions' visibleBindingValue='1,2'>
+				<Label>Select Temperature Variables:</Label>
+				<List class="indigo.variables"/>
+			</Field>
+			<Field id="clearTemperatureVariables"
+				type="button"
+				tooltip="This will reset Temperature Variable selection" visibleBindingId='sensorInputOptions' visibleBindingValue='1,2'>
+				<Label></Label>
+				<Title>Clear Temp. Variables selections</Title>
+				<CallbackMethod>ClearTemperatureVariablesPressed</CallbackMethod>
+			</Field>
+
             <Field id="autoLabel14" type="label" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='cooling,both'>
 				<Label>Define 4 temperature steps for your fan:</Label>
 			</Field>

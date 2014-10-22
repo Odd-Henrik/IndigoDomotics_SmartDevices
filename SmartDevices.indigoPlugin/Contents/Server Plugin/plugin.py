@@ -958,6 +958,11 @@ class Plugin(indigo.PluginBase):
         valuesDict["primaryTemperatureVariables"] = ""
         return valuesDict
 
+    def ClearHumidityVariablesPressed(self, valuesDict, typeId, devId):
+        #self.debugLog(u"Values Dict: " + str(valuesDict))
+        valuesDict["ambientHumidityVariables"] = ""
+        return valuesDict
+
     def ClearFanDevicesPressed(self, valuesDict, typeId, devId):
         #self.debugLog(u"Values Dict: " + str(valuesDict))
         valuesDict["fanDevice"] = ""
