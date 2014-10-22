@@ -238,7 +238,7 @@ class Plugin(indigo.PluginBase):
 
             if self.debug: indigo.server.log ("Smart Devices plugin preferences have been updated.")
 
-            #TODO Implement validation of out of bounds and timeout values
+            #TODO Implement validation of out of bounds and timeout values in Config Prefs Dialog
 
 
     def runConcurrentThread(self):
@@ -260,6 +260,7 @@ class Plugin(indigo.PluginBase):
 
     ########################################
     def validateDeviceConfigUi(self, valuesDict, typeId, devId):
+        #TODO: Implement validation of Device Configuration.
         return True, valuesDict
 
     ########################################
