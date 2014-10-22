@@ -546,14 +546,12 @@ class Plugin(indigo.PluginBase):
 
     def _getPrimaryTemperatureVariablesIdsInVirtualDevice(self, dev):
         tempVariables = indigo.List()
-
-        self.debugLog(u"_________________------------------primaryTemperatureVariables ID--------------------________________")
+        #self.debugLog(u"_________________------------------primaryTemperatureVariables ID--------------------________________")
         if dev.pluginProps.get(u"primaryTemperatureVariables", ""):
             for tempVariable in (dev.pluginProps["primaryTemperatureVariables"]):
-                var = indigo.variables[int(tempVariable)]
-                self.debugLog(u"TemperatureVariable ID: " + str(tempVariable) +  u" TemperatureVariable Name: " + str(var.name) + u" TemperatureVariable Value: " + str(var.value))
+                #var = indigo.variables[int(tempVariable)]
+                #self.debugLog(u"TemperatureVariable ID: " + str(tempVariable) +  u" TemperatureVariable Name: " + str(var.name) + u" TemperatureVariable Value: " + str(var.value))
                 tempVariables.append(int(tempVariable))
-
         return tempVariables
 
     def _getAllSensorsValuesNow(self, dev):
