@@ -71,6 +71,7 @@
 					<Option value="0">Device(s)</Option>
 					<Option value="1">Variable(s)</Option>
 					<Option value="2">Both</Option>
+                    <Option value="3">None</Option>
 				</List>
 			</Field>
             <Field id="ambientHumiditySensors" type="list" visibleBindingId='humSensorInputOptions' visibleBindingValue='0,2'>
@@ -115,12 +116,13 @@
 			</Field>
             <Field id="simpleSeparator17" type="separator" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='cooling,both'/>
 
-             <Field id='sensorInputOptions' type='menu' defaultValue="3">
+             <Field id='sensorInputOptions' type='menu' defaultValue="3" visibleBindingId='configPrimaryVentilationMode' visibleBindingValue='cooling,both'>
 				<Label>Temperature Sensor Input Sources:</Label>
 				<List>
 					<Option value="0">Device(s)</Option>
 					<Option value="1">Variable(s)</Option>
 					<Option value="2">Both</Option>
+                    <Option value="3">None</Option>
 				</List>
 			</Field>
 			<Field id="primaryTemperatureSensors" type="list" visibleBindingId='sensorInputOptions' visibleBindingValue='0,2'>
