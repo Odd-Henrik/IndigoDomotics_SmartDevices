@@ -701,11 +701,11 @@ class Plugin(indigo.PluginBase):
         self.debugLog("Sensor Values to average:")
         for sens in sensors:
             if self._validateSensorValue(sens):
-                if sens in indigo.devices:
+                if int(sens) in indigo.devices:
                     self.debugLog(str(indigo.devices[int(sens)].sensorValue))
                     count += 1
                     totalTemp = totalTemp + indigo.devices[int(sens)].sensorValue
-                if sens in indigo.variables:
+                if int(sens) in indigo.variables:
                     self.debugLog(str(indigo.variables[int(sens)].value))
                     count += 1
                     totalTemp = totalTemp + indigo.variables[int(sens)].value
@@ -725,13 +725,13 @@ class Plugin(indigo.PluginBase):
         maxValueValidationOk = False
         minValueValidationOk = False
 
-        if sensorId in indigo.devices:
+        if int(sensorId) in indigo.devices:
             self.debugLog(str(indigo.devices[int(sensorId)].name) + " Value: " + str(indigo.devices[int(sensorId)].sensorValue) + " Last changed:" + str(indigo.devices[int(sensorId)].lastChanged))
             #Getting sensor values
             sensorLastChanged = indigo.devices[int(sensorId)].lastChanged
             sensorValue = indigo.devices[int(sensorId)].sensorValue
 
-        if sensorId in indigo.variables:
+        if int(sensorId) in indigo.variables:
             self.debugLog(str(indigo.variables[int(sensorId)].name) + " Value: " + str(indigo.variables[int(sensorId)].value) + " Last changed:" + str(indigo.variables[int(sensorId)].lastChanged))
             #Getting sensor values
             sensorLastChanged = indigo.variables[int(sensorId)].lastChanged
