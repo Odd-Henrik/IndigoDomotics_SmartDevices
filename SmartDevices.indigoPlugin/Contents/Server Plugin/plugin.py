@@ -525,7 +525,8 @@ class Plugin(indigo.PluginBase):
         self.debugLog(u"_________________------------------primaryTemperatureVariables ID--------------------________________")
         if dev.pluginProps.get(u"primaryTemperatureVariables", ""):
             for tempVariable in (dev.pluginProps["primaryTemperatureVariables"]):
-                self.debugLog(u"TemperatureVariable ID: " + str(tempVariable) + u" TemperatureVariable Value: " + str(tempVariable.value))
+                var = indigo.variables[int(tempVariable)]
+                self.debugLog(u"TemperatureVariable ID: " + str(tempVariable) +  u" TemperatureVariable Name: " + str(var.name) + u" TemperatureVariable Value: " + str(var.value))
                 tempVariables.append(int(tempVariables))
 
         return tempVariables
