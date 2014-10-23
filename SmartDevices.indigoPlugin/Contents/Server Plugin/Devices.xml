@@ -325,13 +325,13 @@ Multiple Temperature senors can also complement each other if some of them fails
 			</Field>
 
             <Field id='useVariableSetPoint' type='checkbox' >
-				<Label>Use a Variable for Thermostat Setpoint: </Label>
+				<Label>Link Thermostat Setpoint with Variable: </Label>
 			</Field>
             <Field id="autoLabel23" type="label" visibleBindingId='useVariableSetPoint' visibleBindingValue='true'>
-				<Label>Value in selected variable will override the internal thermostat setpoint.</Label>
+				<Label>The thermostat setpoint will be linked with the selected variable. Updates in setpoint will update the variable, and updates in variable will update the setpoint</Label>
 			</Field>
             <Field id="SetPointVariable" type="menu" visibleBindingId='useVariableSetPoint' visibleBindingValue='true'>
-				<Label>Select Setpoint Variable:</Label>
+				<Label>Select Setpoint Link Variable:</Label>
 				<List class="indigo.variables"/>
 			</Field>
 			<Field id="configTemperatureDelta" type="textfield" defaultValue="0.2">

@@ -205,11 +205,20 @@ class Plugin(indigo.PluginBase):
         if sendSuccess:
             # If success then log that the command was successfully sent.
             indigo.server.log(u"sent \"%s\" %s to %.1f°" % (dev.name, logActionName, newSetpoint))
-            self._runHVACLogic(indigo.devices[dev.id])
 
             # And then tell the Indigo Server to update the state.
             if stateKey in dev.states:
                 dev.updateStateOnServer(stateKey, newSetpoint, uiValue="%.1f °C" % newSetpoint)
+
+                #Syncing with variable if configures so
+                if dev.pluginProps.get(u"useVariableSetPoint", "") == true and dev.pluginProps.get(u"SetPointVariable", ""):
+                    setpointVariableValue = float(indigo.variables[newVar.id].value)
+                    if newSetpoint != setpointVariableValue:
+                        setpointVariable = indigo.variables[newVar.id]
+                        indigo.variable.updateValue(setpointVariable, str(newSetpoint))
+                        setpointVariable.refreshFromServer()
+
+                self._runHVACLogic(indigo.devices[dev.id])
         else:
             # Else log failure but do NOT update state on Indigo Server.
             indigo.server.log(u"send \"%s\" %s to %.1f° failed" % (dev.name, logActionName, newSetpoint), isError=True)
@@ -543,6 +552,13 @@ class Plugin(indigo.PluginBase):
                 self.debugLog("VariableUpdate for device:" + dev.name + " Of Type: " + dev.deviceTypeId + " For variable: " + newVar.name + " With Value: " + str(newVar.value))
                 self._handleChangeTemperatureSensors(dev, newVar)
                 self._runHVACLogic(dev)
+
+            if dev.pluginProps.get(u"useVariableSetPoint", "") == true and dev.pluginProps.get(u"SetPointVariable", ""):
+                self.debugLog("Use variable setpoint link is true and variable selected")
+                if newVar.id == int(dev.pluginProps.get(u"SetPointVariable", "")):
+                    newSetpoint = float(indigo.variables[newVar.id].value)
+                    self._handleChangeSetpointAction(dev, newSetpoint, u"set heat setpoint from variable", u"setpointHeat")
+
 
     def _getPrimaryTemperatureVariablesIdsInVirtualDevice(self, dev):
         tempVariables = indigo.List()
