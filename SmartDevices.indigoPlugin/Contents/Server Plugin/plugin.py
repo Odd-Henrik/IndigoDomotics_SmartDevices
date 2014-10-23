@@ -211,10 +211,11 @@ class Plugin(indigo.PluginBase):
                 dev.updateStateOnServer(stateKey, newSetpoint, uiValue="%.1f °C" % newSetpoint)
 
                 #Syncing with variable if configures so
-                if dev.pluginProps.get(u"useVariableSetPoint", "") == true and dev.pluginProps.get(u"SetPointVariable", ""):
-                    setpointVariableValue = float(indigo.variables[newVar.id].value)
+                #if dev.pluginProps.get(u"useVariableSetPoint", "") and dev.pluginProps.get(u"SetPointVariable", ""):
+                if self._validateAndGetSetPointVariable(dev):
+                    setpointVariable = self._validateAndGetSetPointVariable(dev) #indigo.variables[int(dev.pluginProps.get(u"SetPointVariable", ""))]
+                    setpointVariableValue = float(setpointVariable.value)
                     if newSetpoint != setpointVariableValue:
-                        setpointVariable = indigo.variables[newVar.id]
                         indigo.variable.updateValue(setpointVariable, str(newSetpoint))
                         setpointVariable.refreshFromServer()
 
@@ -470,6 +471,19 @@ class Plugin(indigo.PluginBase):
         #self.debugLog(u"Sensor Device List: " + str(sensorDevices))
         return sensorDevices
 
+    def _validateAndGetSetPointVariable(self, dev):
+        if dev.pluginProps.get(u"useVariableSetPoint", "") and dev.pluginProps.get(u"SetPointVariable", ""):
+            self.debugLog("Use variable setpoint link is true and variable selected")
+            setpointVariable = indigo.variables[int(dev.pluginProps.get(u"SetPointVariable", ""))]
+            try:
+                value = float(setpointVariable.value)
+                return setpointVariable
+            except Exception, err:
+                self.errorLog(u'Set Point Variable is not valid! Turning OFF Thermostat')
+                indigo.thermostat.setHvacMode(dev, value=indigo.kHvacMode.Off)
+                return False
+        else:
+            return False
 
 
     def _handleChangeTemperatureSensors(self, thermostatDev, sensorDev):
@@ -501,8 +515,13 @@ class Plugin(indigo.PluginBase):
         if thermostatDev.pluginProps.get("primaryTemperatureVariables", ""):
              for sens in (thermostatDev.pluginProps["primaryTemperatureVariables"]):
                 if sensorDev.id == int(sens):
-                    tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(sens)) + 1
-                    thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.value, uiValue="%d °C" % float(sensorDev.value))
+                    try:
+                        tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(sens)) + 1
+                        thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.value, uiValue="%d °C" % float(sensorDev.value))
+                    except Exception, err:
+                        self.errorLog(u'Temperature Variable is not valid! Ignoring value')
+                        tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(sens)) + 1
+                        thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), -9999, uiValue="%d °C" % float(-9999))
 
         if thermostatDev.pluginProps.get("floorTemperatureSensors", ""):
             if sensorDev.id == int(thermostatDev.pluginProps["floorTemperatureSensors"]):
@@ -553,10 +572,15 @@ class Plugin(indigo.PluginBase):
                 self._handleChangeTemperatureSensors(dev, newVar)
                 self._runHVACLogic(dev)
 
-            if dev.pluginProps.get(u"useVariableSetPoint", "") == true and dev.pluginProps.get(u"SetPointVariable", ""):
+            self.debugLog(u"useVariableSetPoint: " + str(dev.pluginProps.get(u"useVariableSetPoint", "")))
+            self.debugLog(u"SetPointVariable: " + str(dev.pluginProps.get(u"SetPointVariable", "")))
+
+            if self._validateAndGetSetPointVariable(dev):
+            #if dev.pluginProps.get(u"useVariableSetPoint", "") and dev.pluginProps.get(u"SetPointVariable", ""):
                 self.debugLog("Use variable setpoint link is true and variable selected")
-                if newVar.id == int(dev.pluginProps.get(u"SetPointVariable", "")):
-                    newSetpoint = float(indigo.variables[newVar.id].value)
+                setpointVar = self._validateAndGetSetPointVariable(dev)
+                if newVar.id == setpointVar.id: #int(dev.pluginProps.get(u"SetPointVariable", "")):
+                    newSetpoint = float(setpointVar.value)
                     self._handleChangeSetpointAction(dev, newSetpoint, u"set heat setpoint from variable", u"setpointHeat")
 
 
@@ -760,7 +784,12 @@ class Plugin(indigo.PluginBase):
             #TODO: Document: Variables do not have a last changed value so cannot check this.
             #NOTE: Variables do not have a last changed value so cannot check this.
             sensorLastChanged = datetime.datetime.now() #indigo.variables[sensorId].lastChanged
-            sensorValue = float(indigo.variables[sensorId].value)
+            try:
+                sensorValue = float(indigo.variables[sensorId].value)
+            except Exception, err:
+                self.errorLog(u'Temperature Variable is not valid!')
+                return False
+
             sensorName = str(indigo.variables[sensorId].name)
 
 
