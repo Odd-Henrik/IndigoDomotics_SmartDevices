@@ -42,7 +42,7 @@ def _lookupActionStrFromFanMode(fanMode):
     return kFanModeEnumToStrMap.get(fanMode, u"unknown")
 
 ################################################################################
-# noinspection PyUnusedLocal,PyMethodMayBeStatic,PyPep8,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming
+# noinspection PyUnusedLocal,PyMethodMayBeStatic,PyPep8,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyPep8Naming,PyBroadException
 class Plugin(indigo.PluginBase):
     ########################################
     def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
@@ -332,7 +332,11 @@ class Plugin(indigo.PluginBase):
         self._updateStatesFromProps(dev, newProps)
 
         self._getAllSensorsValuesNow(dev)
-        self._getPrimaryTemperatureVariablesIdsInVirtualDevice(dev)
+        #self._getPrimaryTemperatureVariablesIdsInVirtualDevice(dev)
+        if self._validateAndGetSetPointVariable(dev):
+            self.debugLog("Use variable setpoint link is true and variable selected")
+            self._handleChangeSetpointAction(dev, float(self._validateAndGetSetPointVariable(dev).value), u"set heat setpoint from variable", u"setpointHeat")
+                
         self._runHVACLogic(dev)
         pass
 
@@ -406,7 +410,7 @@ class Plugin(indigo.PluginBase):
                 #self.debugLog("TemperatureSensor ID: " + sens)
                 sensorDevices.append(int(sens))
 
-        if dev.pluginProps.get("primaryTemperatureVariables", ""):
+        if self._usePrimaryTemperatureVariable(dev):
             for sens in (dev.pluginProps["primaryTemperatureVariables"]):
                 #self.debugLog("TemperatureSensor ID: " + sens)
                 sensorDevices.append(int(sens))
@@ -454,7 +458,7 @@ class Plugin(indigo.PluginBase):
                 sensorDevices.append(int(sens))
             #sensorDevices.append(int(dev.pluginProps["temperatureSensor"]))
 
-        if dev.pluginProps.get("primaryTemperatureVariables", ""):
+        if self._usePrimaryTemperatureVariable(thermostatDev):
             for sens in (dev.pluginProps["primaryTemperatureVariables"]):
                 #self.debugLog("TemperatureSensor ID: " + sens)
                 sensorDevices.append(int(sens))
@@ -485,6 +489,12 @@ class Plugin(indigo.PluginBase):
         else:
             return False
 
+    def _usePrimaryTemperatureVariable(self, dev):
+        if dev.pluginProps.get("primaryTemperatureVariables", "") and dev.pluginProps.get("sensorInputOptions", "") != 0:
+            return True
+        else:
+            return False
+
 
     def _handleChangeTemperatureSensors(self, thermostatDev, sensorDev):
         self.debugLog(u"************************** handleChangeTemperatureSensors *************************************")
@@ -512,8 +522,8 @@ class Plugin(indigo.PluginBase):
                     thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.sensorValue, uiValue="%d °C" % sensorDev.sensorValue)
 
         # Temperature Variable
-        if thermostatDev.pluginProps.get("primaryTemperatureVariables", ""):
-             for sens in (thermostatDev.pluginProps["primaryTemperatureVariables"]):
+        if self._usePrimaryTemperatureVariable(thermostatDev):
+            for sens in (thermostatDev.pluginProps["primaryTemperatureVariables"]):
                 if sensorDev.id == int(sens):
                     try:
                         tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(sens)) + 1
@@ -587,7 +597,7 @@ class Plugin(indigo.PluginBase):
     def _getPrimaryTemperatureVariablesIdsInVirtualDevice(self, dev):
         tempVariables = indigo.List()
         #self.debugLog(u"_________________------------------primaryTemperatureVariables ID--------------------________________")
-        if dev.pluginProps.get(u"primaryTemperatureVariables", ""):
+        if self._usePrimaryTemperatureVariable(thermostatDev):
             for tempVariable in (dev.pluginProps["primaryTemperatureVariables"]):
                 #var = indigo.variables[int(tempVariable)]
                 #self.debugLog(u"TemperatureVariable ID: " + str(tempVariable) +  u" TemperatureVariable Name: " + str(var.name) + u" TemperatureVariable Value: " + str(var.value))
@@ -621,7 +631,9 @@ class Plugin(indigo.PluginBase):
         # Temperature sensors
         self.debugLog("Temperature Sensors:")
         primaryTemperatureSensors = self._getDeviceIdListFromProp("primaryTemperatureSensors", virDev)
-        primaryTemperatureSensors += (self._getDeviceIdListFromProp("primaryTemperatureVariables", virDev))
+        if self._usePrimaryTemperatureVariable(thermostatDev):
+            primaryTemperatureSensors += (self._getDeviceIdListFromProp("primaryTemperatureVariables", virDev))
+
         self.debugLog(str(primaryTemperatureSensors))
 
         floorTemperatureSensors = self._getDeviceIdListFromProp("floorTemperatureSensors", virDev)
