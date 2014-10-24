@@ -597,7 +597,7 @@ class Plugin(indigo.PluginBase):
     def _getPrimaryTemperatureVariablesIdsInVirtualDevice(self, dev):
         tempVariables = indigo.List()
         #self.debugLog(u"_________________------------------primaryTemperatureVariables ID--------------------________________")
-        if self._usePrimaryTemperatureVariable(thermostatDev):
+        if self._usePrimaryTemperatureVariable(dev):
             for tempVariable in (dev.pluginProps["primaryTemperatureVariables"]):
                 #var = indigo.variables[int(tempVariable)]
                 #self.debugLog(u"TemperatureVariable ID: " + str(tempVariable) +  u" TemperatureVariable Name: " + str(var.name) + u" TemperatureVariable Value: " + str(var.value))
@@ -631,7 +631,7 @@ class Plugin(indigo.PluginBase):
         # Temperature sensors
         self.debugLog("Temperature Sensors:")
         primaryTemperatureSensors = self._getDeviceIdListFromProp("primaryTemperatureSensors", virDev)
-        if self._usePrimaryTemperatureVariable(thermostatDev):
+        if self._usePrimaryTemperatureVariable(virDev):
             primaryTemperatureSensors += (self._getDeviceIdListFromProp("primaryTemperatureVariables", virDev))
 
         self.debugLog(str(primaryTemperatureSensors))
