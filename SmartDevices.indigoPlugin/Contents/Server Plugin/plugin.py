@@ -458,7 +458,7 @@ class Plugin(indigo.PluginBase):
                 sensorDevices.append(int(sens))
             #sensorDevices.append(int(dev.pluginProps["temperatureSensor"]))
 
-        if self._usePrimaryTemperatureVariable(thermostatDev):
+        if self._usePrimaryTemperatureVariable(dev):
             for sens in (dev.pluginProps["primaryTemperatureVariables"]):
                 #self.debugLog("TemperatureSensor ID: " + sens)
                 sensorDevices.append(int(sens))
