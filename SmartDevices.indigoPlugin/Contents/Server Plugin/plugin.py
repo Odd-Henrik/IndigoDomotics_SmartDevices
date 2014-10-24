@@ -487,7 +487,8 @@ class Plugin(indigo.PluginBase):
             except Exception, err:
                 self.errorLog(u'Set Point Variable is not valid! Turning OFF Thermostat')
                 indigo.thermostat.setHvacMode(dev, value=indigo.kHvacMode.Off)
-                self._handleChangeSetpointAction(dev, 0.0, u"set heat setpoint ERROR variable", u"setpointHeat")
+                #This leads to infinite loop condition: self._handleChangeSetpointAction(dev, 0.0, u"set heat setpoint ERROR variable", u"setpointHeat")
+                dev.updateStateOnServer(u"setpointHeat", 0.0, uiValue="%.1f °C" % 0.0)
                 return False
         else:
             return False
