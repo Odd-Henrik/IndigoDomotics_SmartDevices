@@ -272,6 +272,8 @@ class Plugin(indigo.PluginBase):
     ########################################
     def validateDeviceConfigUi(self, valuesDict, typeId, devId):
         #TODO: Implement validation of Device Configuration.
+        #TODO: Count heaters, at least one must be selected
+
         return True, valuesDict
 
     ########################################
@@ -337,7 +339,7 @@ class Plugin(indigo.PluginBase):
             self.debugLog("Use variable setpoint link is true and variable selected")
             self._handleChangeSetpointAction(dev, float(self._validateAndGetSetPointVariable(dev).value), u"set heat setpoint from variable", u"setpointHeat")
                 
-        self._runHVACLogic(dev)
+        self._runHVACLogic(indigo.devices[dev.id])
         pass
 
     def _updateStatesFromProps(self, dev, props):
@@ -704,10 +706,12 @@ class Plugin(indigo.PluginBase):
         if not sensorAvgTemp:
             # No valid sensor data, turning off all heaters'
             # TODO: Notifications
-            self.errorLog(virDev.name + ": NO VALID SENSOR DATA: Turning Off ALL Heaters!")
+            self.errorLog(virDev.name + ": NO VALID SENSOR DATA: Turning Off ALL Heaters and Thermostat!")
             self._turnOffDevicesInDeviceIdList(heaters)
             self.debugLog("Heaters Off")
+
             virDev.updateStateOnServer("hvacHeaterIsOn", False)
+            indigo.thermostat.setHvacMode(virDev, value=indigo.kHvacMode.Off)
             return False
 
 
