@@ -286,7 +286,8 @@ Select the devices you want to use for heating. The device must be an On/Off dev
 				<Label>Temperature sensor(s):
 Temperature sensor(s) will be used to control the heater device(s) selected above. You must make sure that you are selecting temperature sensor devices.
 If you select multiple devices, these will be averaged when calculating heaters On/Off against the set point.
-Multiple Temperature senors can also complement each other if some of them fails or have old values.You can use both Devices and Variables to collect temperature sensor values.</Label>
+Multiple Temperature senors can also complement each other if some of them fails or have old values.You can use both Devices and Variables to collect temperature sensor values.
+When using Variables, NOTE that these do not have an updated timestamp so there is no check if the value is old.</Label>
 			</Field>
             <Field id='sensorInputOptions' type='menu' defaultValue="0">
 				<Label>Temperature Sensor Input Sources:</Label>
