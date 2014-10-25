@@ -769,7 +769,7 @@ class Plugin(indigo.PluginBase):
                     count += 1
                     totalTemp += float(indigo.variables[int(sens)].value)
             else:
-                #TODO Display Error in ui value, would be nice if it could be shown in red
+                #TODO Display Error in ui value, would be nice if it could be shown in red, NO: http://forums.indigodomo.com/viewtopic.php?f=108&t=12752
                 #virDev.updateStateOnServer(u"temperatureInput" + str(count + 1), -1000.0, uiValue="* %d °C" % indigo.devices[int(sens)].sensorValue)
                 #virDev.updateStateOnServer(u"temperatureInput" + str(count + 1), indigo.devices[int(sens)].sensorValue, uiValue="* %d °C" % indigo.devices[int(sens)].sensorValue)
                 pass
