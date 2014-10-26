@@ -272,9 +272,19 @@ class Plugin(indigo.PluginBase):
     ########################################
     def validateDeviceConfigUi(self, valuesDict, typeId, devId):
         #TODO: Implement validation of Device Configuration.
-        #TODO: Count heaters, at least one must be selected
+        validatedOk = True
+        errorsDict = indigo.Dict()
 
-        return True, valuesDict
+        indigo.server.log("Number of primaryHeaterDevices selected: " + str(len(valuesDict["primaryHeaterDevices"])))
+        if len(valuesDict["primaryHeaterDevices"]) < 1:
+            errorsDict["primaryHeaterDevices"] = "You have to select minimum one heater"
+            validatedOk = False
+
+        if validatedOk:
+            return True, valuesDict
+        else:
+            return (False, valuesDict, errorsDict)
+
 
     ########################################
     def deviceStartComm(self, dev):
