@@ -9,6 +9,7 @@ Most configuration is done in the Smart Devices you create and are related to th
 	<Field id='sep1' type='separator' />
 	<Field id="ignoreLabel" type="label">
         <Label>Some sensors, especially in battery operated devices, may fail to send up to date values or sometimes out of bounds values.
+Invalid values will be displayed as -999 and ignored.
         </Label>
 	</Field>
     <Field id="ignoreValuesOlderThen" type="textfield" defaultValue="120">
@@ -20,8 +21,11 @@ Most configuration is done in the Smart Devices you create and are related to th
     <Field id="ignoreValuesLessThen" type="textfield" defaultValue="-40.0">
         <Label>Ignore Values Less Then (in degrees):</Label>
     </Field>
+    <Field id="ignoreLabel2" type="label">
+        <Label>
+Note that if you use variables to collect sensor data: Older Then check is not possible and will be ignored. </Label>
+	</Field>
 	<Field id='sep2' type='separator' />
-	
 	<Field id="midLabel" type="label">
 		<Label>If you are having problems, wants to closely monitor Smart Devices or you are instructed by support, you can enable extra logging in the Event Log window by checking the button below.
         </Label>
