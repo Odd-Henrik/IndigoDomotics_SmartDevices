@@ -95,15 +95,15 @@ class Plugin(indigo.PluginBase):
         # Update the temperature value at index. If index is greater than the "NumTemperatureInputs"
         # an error will be displayed in the Event Log "temperature index out-of-range"
         stateKey = u"temperatureInput" + str(index)
-        dev.updateStateOnServer(stateKey, value, uiValue="%d °F" % value)
-        self.debugLog(u"\"%s\" called update %s %d" % (dev.name, stateKey, value))
+        dev.updateStateOnServer(stateKey, value, uiValue="%.1f°" % value)
+        self.debugLog(u"\"%s\" called update %s %.1f°" % (dev.name, stateKey, value))
 
     def _changeHumiditySensorValue(self, dev, index, value):
         # Update the humidity value at index. If index is greater than the "NumHumidityInputs"
         # an error will be displayed in the Event Log "humidity index out-of-range"
         stateKey = u"humidityInput" + str(index)
-        dev.updateStateOnServer(stateKey, value, uiValue="%d °F" % value)
-        self.debugLog(u"\"%s\" called update %s %d" % (dev.name, stateKey, value))
+        dev.updateStateOnServer(stateKey, value, uiValue="%.1f°" % value)
+        self.debugLog(u"\"%s\" called update %s %.1f°" % (dev.name, stateKey, value))
 
     ######################
     # Poll all of the states from the thermostat and pass new values to
@@ -208,7 +208,7 @@ class Plugin(indigo.PluginBase):
 
             # And then tell the Indigo Server to update the state.
             if stateKey in dev.states:
-                dev.updateStateOnServer(stateKey, newSetpoint, uiValue="%.1f °C" % newSetpoint)
+                dev.updateStateOnServer(stateKey, newSetpoint, uiValue="SetP: %.1f°" % newSetpoint)
 
                 #Syncing with variable if configures so
                 #if dev.pluginProps.get(u"useVariableSetPoint", "") and dev.pluginProps.get(u"SetPointVariable", ""):
@@ -272,9 +272,19 @@ class Plugin(indigo.PluginBase):
     ########################################
     def validateDeviceConfigUi(self, valuesDict, typeId, devId):
         #TODO: Implement validation of Device Configuration.
-        #TODO: Count heaters, at least one must be selected
+        validatedOk = True
+        errorsDict = indigo.Dict()
 
-        return True, valuesDict
+        indigo.server.log("Number of primaryHeaterDevices selected: " + str(len(valuesDict["primaryHeaterDevices"])))
+        if len(valuesDict["primaryHeaterDevices"]) < 1:
+            errorsDict["primaryHeaterDevices"] = "You have to select minimum one heater"
+            validatedOk = False
+
+        if validatedOk:
+            return True, valuesDict
+        else:
+            return (False, valuesDict, errorsDict)
+
 
     ########################################
     def deviceStartComm(self, dev):
@@ -285,9 +295,16 @@ class Plugin(indigo.PluginBase):
         # consider adding that to runConcurrentThread() above.
 
         #self._refreshStatesFromHardware(dev, True, True)
-        self.debugLog(u"-- deviceStartComm V:4--")
+        self.debugLog(u"-- deviceStartComm V:002.1--")
 
         newProps = dev.pluginProps
+
+        #Handling backwards compatibility setting new prop to default: Devices.
+        try:
+            test = int(newProps.get("sensorInputOptions", ""))
+        except Exception, err:
+            newProps["sensorInputOptions"] = 0
+            dev.replacePluginPropsOnServer(newProps)
 
         self.debugLog(u"Number of temperature sensors: " + str(len(self._getTemperatureSensorsIdsInVirtualDevice(dev))))
         #self._changeTempSensorCount(dev, len(self._getTemperatureSensorsIdsInVirtualDevice(dev)))
@@ -407,7 +424,7 @@ class Plugin(indigo.PluginBase):
     def _getSensorsIdsInVirtualDevice(self, dev):
         sensorDevices = indigo.List()
 
-        if dev.pluginProps.get("primaryTemperatureSensors", ""):
+        if self._usePrimaryTemperatureSensors(dev): #dev.pluginProps.get("primaryTemperatureSensors", ""):
             for sens in (dev.pluginProps["primaryTemperatureSensors"]):
                 #self.debugLog("TemperatureSensor ID: " + sens)
                 sensorDevices.append(int(sens))
@@ -454,7 +471,7 @@ class Plugin(indigo.PluginBase):
         sensorDevices = indigo.List()
 
 
-        if dev.pluginProps.get("primaryTemperatureSensors", ""):
+        if self._usePrimaryTemperatureSensors(dev): #dev.pluginProps.get("primaryTemperatureSensors", ""):
             for sens in (dev.pluginProps["primaryTemperatureSensors"]):
                 self.debugLog("TemperatureSensor ID: " + sens)
                 sensorDevices.append(int(sens))
@@ -488,13 +505,20 @@ class Plugin(indigo.PluginBase):
                 self.errorLog(u'Set Point Variable is not valid! Turning OFF Thermostat')
                 indigo.thermostat.setHvacMode(dev, value=indigo.kHvacMode.Off)
                 #This leads to infinite loop condition: self._handleChangeSetpointAction(dev, 0.0, u"set heat setpoint ERROR variable", u"setpointHeat")
-                dev.updateStateOnServer(u"setpointHeat", 0.0, uiValue="%.1f °C" % 0.0)
+                dev.updateStateOnServer(u"setpointHeat", 0.0, uiValue="%.1f°" % 0.0)
                 return False
         else:
             return False
 
     def _usePrimaryTemperatureVariable(self, dev):
-        if dev.pluginProps.get("primaryTemperatureVariables", "") and dev.pluginProps.get("sensorInputOptions", "") != 0:
+        if dev.pluginProps.get("primaryTemperatureVariables", "") and int(dev.pluginProps.get("sensorInputOptions", "")) != 0:
+            return True
+        else:
+            return False
+
+
+    def _usePrimaryTemperatureSensors(self, dev):
+        if dev.pluginProps.get("primaryTemperatureSensors", "") and int(dev.pluginProps.get("sensorInputOptions", "")) != 1:
             return True
         else:
             return False
@@ -519,11 +543,11 @@ class Plugin(indigo.PluginBase):
                 return
 
         # Temperature sensors
-        if thermostatDev.pluginProps.get("primaryTemperatureSensors", ""):
+        if self._usePrimaryTemperatureSensors(thermostatDev): #thermostatDev.pluginProps.get("primaryTemperatureSensors", ""):
              for sens in (thermostatDev.pluginProps["primaryTemperatureSensors"]):
                 if sensorDev.id == int(sens):
                     tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(sens)) + 1
-                    thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.sensorValue, uiValue="%d °C" % sensorDev.sensorValue)
+                    thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.sensorValue, uiValue="%.1f°" % sensorDev.sensorValue)
 
         # Temperature Variable
         if self._usePrimaryTemperatureVariable(thermostatDev):
@@ -531,37 +555,37 @@ class Plugin(indigo.PluginBase):
                 if sensorDev.id == int(sens):
                     try:
                         tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(sens)) + 1
-                        thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.value, uiValue="%d °C" % float(sensorDev.value))
+                        thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.value, uiValue="%.1f°" % float(sensorDev.value))
                     except Exception, err:
                         self.errorLog(u'Temperature Variable is not valid! Ignoring value')
                         tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(sens)) + 1
-                        thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), -9999, uiValue="%d °C" % float(-9999))
+                        thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), -999, uiValue="%.1f°" % float(-999))
 
         if thermostatDev.pluginProps.get("floorTemperatureSensors", ""):
             if sensorDev.id == int(thermostatDev.pluginProps["floorTemperatureSensors"]):
                 tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["floorTemperatureSensors"])) + 1
-                thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.sensorValue, uiValue="%d °C" % sensorDev.sensorValue)
+                thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.sensorValue, uiValue="%.1f°" % sensorDev.sensorValue)
 
         if thermostatDev.pluginProps.get("outsideTemperatureSensors", ""):
             if sensorDev.id == int(thermostatDev.pluginProps["outsideTemperatureSensors"]):
                 tempInputIndex = self._getTemperatureSensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["outsideTemperatureSensors"])) + 1
-                thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.sensorValue, uiValue="%d °C" % sensorDev.sensorValue)
+                thermostatDev.updateStateOnServer(u"temperatureInput" + str(tempInputIndex), sensorDev.sensorValue, uiValue="%.1f°" % sensorDev.sensorValue)
 
         # Humidity sensors
         if thermostatDev.pluginProps.get("outsideHumiditySensors", ""):
             if sensorDev.id == int(thermostatDev.pluginProps["outsideHumiditySensors"]):
                 humInputIndex = self._getHumiditySensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["outsideHumiditySensors"])) + 1
-                thermostatDev.updateStateOnServer(u"humidityInput" + str(humInputIndex), sensorDev.sensorValue, uiValue="%d" % sensorDev.sensorValue)
+                thermostatDev.updateStateOnServer(u"humidityInput" + str(humInputIndex), sensorDev.sensorValue, uiValue="%.1f°" % sensorDev.sensorValue)
 
         if thermostatDev.pluginProps.get("optionalHumiditySensors", ""):
             if sensorDev.id == int(thermostatDev.pluginProps["optionalHumiditySensors"]):
                 humInputIndex = self._getHumiditySensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["optionalHumiditySensors"])) + 1
-                thermostatDev.updateStateOnServer(u"humidityInput" + str(humInputIndex), sensorDev.sensorValue, uiValue="%d" % sensorDev.sensorValue)
+                thermostatDev.updateStateOnServer(u"humidityInput" + str(humInputIndex), sensorDev.sensorValue, uiValue="%.1f°" % sensorDev.sensorValue)
 
         if thermostatDev.pluginProps.get("ambientHumiditySensors", ""):
             if sensorDev.id == int(thermostatDev.pluginProps["ambientHumiditySensors"]):
                 humInputIndex = self._getHumiditySensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["ambientHumiditySensors"])) + 1
-                thermostatDev.updateStateOnServer(u"humidityInput" + str(humInputIndex), sensorDev.sensorValue, uiValue="%d" % sensorDev.sensorValue)
+                thermostatDev.updateStateOnServer(u"humidityInput" + str(humInputIndex), sensorDev.sensorValue, uiValue="* %.1f%%" % sensorDev.sensorValue)
 
 
     def deviceUpdated(self, origDev, newDev):
@@ -770,8 +794,8 @@ class Plugin(indigo.PluginBase):
                     totalTemp += float(indigo.variables[int(sens)].value)
             else:
                 #TODO Display Error in ui value, would be nice if it could be shown in red, NO: http://forums.indigodomo.com/viewtopic.php?f=108&t=12752
-                #virDev.updateStateOnServer(u"temperatureInput" + str(count + 1), -1000.0, uiValue="* %d °C" % indigo.devices[int(sens)].sensorValue)
-                #virDev.updateStateOnServer(u"temperatureInput" + str(count + 1), indigo.devices[int(sens)].sensorValue, uiValue="* %d °C" % indigo.devices[int(sens)].sensorValue)
+                virDev.updateStateOnServer(u"temperatureInput" + str(count + 1), -999, uiValue="-999")
+                #virDev.updateStateOnServer(u"temperatureInput" + str(count + 1), indigo.devices[int(sens)].sensorValue, uiValue="%.1f°" % indigo.devices[int(sens)].sensorValue)
                 pass
 
         if count > 0:
