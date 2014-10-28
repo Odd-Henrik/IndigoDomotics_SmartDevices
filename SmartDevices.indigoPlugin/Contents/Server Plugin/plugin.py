@@ -13,6 +13,9 @@ import sys
 import random
 import datetime
 
+import indigoPluginUpdateChecker
+
+
 # Note the "indigo" module is automatically imported and made available inside
 # our global name space by the host process.
 
@@ -47,6 +50,10 @@ class Plugin(indigo.PluginBase):
     ########################################
     def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
         indigo.PluginBase.__init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs)
+
+        #Updatecheker
+        self.updater = indigoPluginUpdateChecker.updateChecker(self, "http://odd-henrik.com/smartdevices/versionInfoFile.html", 1)
+
         #del valuesDict["enableDebug"]
         if pluginPrefs.get("enableDebug", ""):
             self.debug = True
@@ -257,6 +264,8 @@ class Plugin(indigo.PluginBase):
             while True:
                 for dev in indigo.devices.iter("self"):
                     if not dev.enabled or not dev.configured:
+                        #Updatechecker
+                        self.updater.checkVersionPoll()
                         continue
 
                     # Plugins that need to poll out the status from the thermostat
@@ -590,6 +599,7 @@ class Plugin(indigo.PluginBase):
 
     def deviceUpdated(self, origDev, newDev):
         indigo.PluginBase.deviceUpdated(self, origDev, newDev)
+
 
         for dev in indigo.devices.iter("self"):
             if not dev.enabled or not dev.configured:
@@ -1109,3 +1119,7 @@ class Plugin(indigo.PluginBase):
         valuesDict["fanDevice"] = ""
         return valuesDict
 
+    #Updatecheker
+    def checkForUpdates(self):
+        indigo.server.log(u"Manually checking for updates")
+        self.updater.checkVersionNow()

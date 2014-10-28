@@ -7,6 +7,10 @@
 -->
 <!--suppress XmlUnboundNsPrefix -->
 <MenuItems>
+    <MenuItem id="menu1">
+        <Name>Check for Updates</Name>
+        <CallbackMethod>checkForUpdates</CallbackMethod>
+    </MenuItem>
 <!--	<MenuItem id="menuConfigure">
 		<Name>Configure...</Name>
 		<CallbackMethod>changeDebugMode</CallbackMethod>

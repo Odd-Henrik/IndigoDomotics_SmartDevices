@@ -25,6 +25,20 @@ Invalid values will be displayed as -999 and ignored.
         <Label>
 Note that if you use variables to collect sensor data: Older Then check is not possible and will be ignored. </Label>
 	</Field>
+    <Field id='sep3' type='separator' />
+    <!-- Do NOT change the ids -->
+    <Field id="updaterEmail" type="textfield">
+       <Label>Email:</Label>
+    </Field>
+    <Field id="updaterEmailNote" type="label" fontColor="darkgray" fontSize="small" alignWithControl="true">
+       <Label>Email sending must be configured in Indigo's preferences.</Label>
+    </Field>
+
+    <!-- Optionally a checkbox can also be used. -->
+    <Field id="updaterEmailsEnabled" type="checkbox" defaultValue="true">
+       <Label>Email Update Notifications:</Label>
+    </Field>
+
 	<Field id='sep2' type='separator' />
 	<Field id="midLabel" type="label">
 		<Label>If you are having problems, wants to closely monitor Smart Devices or you are instructed by support, you can enable extra logging in the Event Log window by checking the button below.
