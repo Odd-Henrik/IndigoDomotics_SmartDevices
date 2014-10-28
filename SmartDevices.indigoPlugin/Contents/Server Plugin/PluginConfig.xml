@@ -4,9 +4,20 @@
 	<Field id="topLabel" type="label">
         <Label>Welcome and thank you for using Smart Devices!
 Most configuration is done in the Smart Devices you create and are related to that specific Smart Device.
+Default values are based on degrees Celsius. If you are using Fahrenheit, please update your values accordingly.
         </Label>
 	</Field>
-	<Field id='sep1' type='separator' />
+	<Field id='sep4' type='separator' />
+    <Field id="setpointConfigLabel" type="label">
+        <Label>For safety reasons the Simple Smart Thermostat will not allow you to select extreme setpoint values. Configure the maximum and minimum allowed setpoint values here:</Label>
+    </Field>
+     <Field id="maxSetpointValue" type="textfield" defaultValue="50">
+        <Label>Maximum allowed Setpoint Value (degrees):</Label>
+    </Field>
+    <Field id="minSetpointValue" type="textfield" defaultValue="0">
+        <Label>Minimum allowed Setpoint Value (degrees):</Label>
+    </Field>
+    <Field id='sep1' type='separator' />
 	<Field id="ignoreLabel" type="label">
         <Label>Some sensors, especially in battery operated devices, may fail to send up to date values or sometimes out of bounds values.
 Invalid values will be displayed as -999 and ignored.
@@ -26,17 +37,17 @@ Invalid values will be displayed as -999 and ignored.
 Note that if you use variables to collect sensor data: Older Then check is not possible and will be ignored. </Label>
 	</Field>
     <Field id='sep3' type='separator' />
-    <!-- Do NOT change the ids -->
-    <Field id="updaterEmail" type="textfield">
-       <Label>Email:</Label>
-    </Field>
-    <Field id="updaterEmailNote" type="label" fontColor="darkgray" fontSize="small" alignWithControl="true">
-       <Label>Email sending must be configured in Indigo's preferences.</Label>
-    </Field>
 
     <!-- Optionally a checkbox can also be used. -->
-    <Field id="updaterEmailsEnabled" type="checkbox" defaultValue="true">
+    <Field id="updaterEmailsEnabled" type="checkbox" defaultValue="false">
        <Label>Email Update Notifications:</Label>
+    </Field>
+    <!-- Do NOT change the ids -->
+    <Field id="updaterEmail" type="textfield" visibleBindingId='updaterEmailsEnabled' visibleBindingValue='true'>
+       <Label>Email:</Label>
+    </Field>
+    <Field id="updaterEmailNote" type="label" fontColor="darkgray" fontSize="small" alignWithControl="true" visibleBindingId='updaterEmailsEnabled' visibleBindingValue='true'>
+       <Label>Email sending must be configured in Indigo's preferences.</Label>
     </Field>
 
 	<Field id='sep2' type='separator' />

@@ -193,10 +193,28 @@ class Plugin(indigo.PluginBase):
     ######################
     # Process action request from Indigo Server to change a cool/heat setpoint.
     def _handleChangeSetpointAction(self, dev, newSetpoint, logActionName, stateKey):
-        if newSetpoint < 0.0:
-            newSetpoint = 0.0		# Arbitrary -- set to whatever hardware minimum setpoint value is.
-        elif newSetpoint > 50.0:
-            newSetpoint = 50.0		# Arbitrary -- set to whatever hardware maximum setpoint value is.
+        #Setting defaults for min and max setpoint value (C)
+        maxSetpointValue = 50
+        minSetpointValue = 0
+
+        #Getting configuration for min and max setpoint values
+        if self.pluginPrefs.get("maxSetpointValue", ""):
+            try:
+                maxSetpointValue = float(self.pluginPrefs.get("maxSetpointValue", ""))
+            except Exception, err:
+                self.errorLog("ERROR in setting Maximum allowed Setpoint Value: %s. Using defaults: %s" % (str(err), str(maxSetpointValue)))
+
+        if self.pluginPrefs.get("minSetpointValue", ""):
+            try:
+                minSetpointValue = float(self.pluginPrefs.get("minSetpointValue", ""))
+            except Exception, err:
+                self.errorLog("ERROR in setting Minimum allowed Setpoint Value: %s. Using defaults: %s" % (str(err), str(minSetpointValue)))
+
+        #Testng to see if new setpoint value is in range.
+        if newSetpoint < minSetpointValue:
+            newSetpoint = minSetpointValue
+        elif newSetpoint > maxSetpointValue:
+            newSetpoint = maxSetpointValue
 
         sendSuccess = False
 
