@@ -38,6 +38,10 @@ Note that if you use variables to collect sensor data: Older Then check is not p
 	</Field>
     <Field id='sep3' type='separator' />
 
+    <Field id="notificationLabel" type="label">
+		<Label>The plugin will automatically check for updates and write a new version notification to the log. If you want to receive notifications by email, please configure this below.
+        </Label>
+	</Field>
     <!-- Optionally a checkbox can also be used. -->
     <Field id="updaterEmailsEnabled" type="checkbox" defaultValue="false">
        <Label>Email Update Notifications:</Label>
