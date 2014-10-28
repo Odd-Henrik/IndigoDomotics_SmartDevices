@@ -13,6 +13,9 @@ import sys
 import random
 import datetime
 
+import indigoPluginUpdateChecker
+
+
 # Note the "indigo" module is automatically imported and made available inside
 # our global name space by the host process.
 
@@ -47,6 +50,10 @@ class Plugin(indigo.PluginBase):
     ########################################
     def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
         indigo.PluginBase.__init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs)
+
+        #Updatecheker
+        self.updater = indigoPluginUpdateChecker.updateChecker(self, "http://odd-henrik.com/smartdevices/versionInfoFile.html", 1)
+
         #del valuesDict["enableDebug"]
         if pluginPrefs.get("enableDebug", ""):
             self.debug = True
@@ -186,10 +193,28 @@ class Plugin(indigo.PluginBase):
     ######################
     # Process action request from Indigo Server to change a cool/heat setpoint.
     def _handleChangeSetpointAction(self, dev, newSetpoint, logActionName, stateKey):
-        if newSetpoint < 0.0:
-            newSetpoint = 0.0		# Arbitrary -- set to whatever hardware minimum setpoint value is.
-        elif newSetpoint > 50.0:
-            newSetpoint = 50.0		# Arbitrary -- set to whatever hardware maximum setpoint value is.
+        #Setting defaults for min and max setpoint value (C)
+        maxSetpointValue = 50
+        minSetpointValue = 0
+
+        #Getting configuration for min and max setpoint values
+        if self.pluginPrefs.get("maxSetpointValue", ""):
+            try:
+                maxSetpointValue = float(self.pluginPrefs.get("maxSetpointValue", ""))
+            except Exception, err:
+                self.errorLog("ERROR in setting Maximum allowed Setpoint Value: %s. Using defaults: %s" % (str(err), str(maxSetpointValue)))
+
+        if self.pluginPrefs.get("minSetpointValue", ""):
+            try:
+                minSetpointValue = float(self.pluginPrefs.get("minSetpointValue", ""))
+            except Exception, err:
+                self.errorLog("ERROR in setting Minimum allowed Setpoint Value: %s. Using defaults: %s" % (str(err), str(minSetpointValue)))
+
+        #Testng to see if new setpoint value is in range.
+        if newSetpoint < minSetpointValue:
+            newSetpoint = minSetpointValue
+        elif newSetpoint > maxSetpointValue:
+            newSetpoint = maxSetpointValue
 
         sendSuccess = False
 
@@ -257,6 +282,8 @@ class Plugin(indigo.PluginBase):
             while True:
                 for dev in indigo.devices.iter("self"):
                     if not dev.enabled or not dev.configured:
+                        #Updatechecker
+                        self.updater.checkVersionPoll()
                         continue
 
                     # Plugins that need to poll out the status from the thermostat
@@ -590,6 +617,7 @@ class Plugin(indigo.PluginBase):
 
     def deviceUpdated(self, origDev, newDev):
         indigo.PluginBase.deviceUpdated(self, origDev, newDev)
+
 
         for dev in indigo.devices.iter("self"):
             if not dev.enabled or not dev.configured:
@@ -1109,3 +1137,7 @@ class Plugin(indigo.PluginBase):
         valuesDict["fanDevice"] = ""
         return valuesDict
 
+    #Updatecheker
+    def checkForUpdates(self):
+        indigo.server.log(u"Manually checking for updates")
+        self.updater.checkVersionNow()
