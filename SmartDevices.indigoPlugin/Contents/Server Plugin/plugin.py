@@ -1150,8 +1150,8 @@ class Plugin(indigo.PluginBase):
         self.noBatteryTriggersDict[trigger.id] = {'process':True}
 
         devList = []
-        for devId in  trigger.pluginProps['exceptBatteryTriggerDevices']:
-            self.debugLog(u"<<-- Device name: " + str(indigo.devices[int(devID)].name))
+        for devId in trigger.pluginProps['exceptBatteryTriggerDevices']:
+            self.debugLog(u"<<-- Device name: " + str(indigo.devices[int(devId)].name))
             devList.append(devId)
 
         self.noBatteryTriggersDevDict[trigger.id] = devList
