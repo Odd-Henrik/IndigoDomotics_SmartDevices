@@ -9,7 +9,7 @@
 <!-- Triggering _ ON -->
 			<Field id='sep1' type='separator' />
 
-			<Field id='metaDevLabel_1' type='label' visibleBindingId='metaDevOnResponse' visibleBindingValue='1,2,3' >
+			<Field id='batteryDevices' type='label'>
 				<Label>Select the Indigo Device(s)</Label>
 			</Field>
 <!--    Devces       -->
