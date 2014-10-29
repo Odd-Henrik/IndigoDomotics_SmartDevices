@@ -51,6 +51,10 @@ class Plugin(indigo.PluginBase):
     def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
         indigo.PluginBase.__init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs)
 
+        #For trigger handling
+        self.noBatteryTriggersDict = {} #List of trigger on all except battery triggers
+        self.noBatteryTriggersDevDict = {} #List of devices in all except battery trigger for trigger
+
         #Updatecheker
         self.updater = indigoPluginUpdateChecker.updateChecker(self, "http://odd-henrik.com/smartdevices/versionInfoFile.html", 1)
 
@@ -310,7 +314,7 @@ class Plugin(indigo.PluginBase):
         if validatedOk:
             return True, valuesDict
         else:
-            return (False, valuesDict, errorsDict)
+            return False, valuesDict, errorsDict
 
 
     ########################################
@@ -1140,11 +1144,24 @@ class Plugin(indigo.PluginBase):
 #---------------------- Triggers ------------------------------------
     def triggerStartProcessing(self, trigger):
         self.debugLog('Trigger Startup') # Found: %s\n' % (trigger))
+        self.debugLog(u"<<-- Trigger name: " + trigger.name)
+        self.debugLog(u"<<-- For Devices:")
+
+        self.noBatteryTriggersDict[trigger.id] = {'process':True}
+
+        devList = []
+        for devId in  trigger.pluginProps['batteryDevices']:
+            self.debugLog(u"<<-- Device name: " + str(indigo.devices[int(devID)].name))
+            devList.append(devId)
+
+        self.noBatteryTriggersDevDict[trigger.id] = devList
+
 
     def triggerStopProcessing(self, trigger):
         self.debugLog(u"<<-- entering deviceStopComm: %s, %d" % (trigger.name, trigger.id))
+        self.triggersDict[trigger.id]['process'] = False
 
-#---------------------- Updatecheker --------------------------
+#---------------------- Updatechecker --------------------------
     def checkForUpdates(self):
         indigo.server.log(u"Manually checking for updates")
         self.updater.checkVersionNow()
