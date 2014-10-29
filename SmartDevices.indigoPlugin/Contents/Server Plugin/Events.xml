@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<Events>
+	<Event type="custom" id="exceptBattery">
+		<Name>All Except Battery Update</Name>
+		<ConfigUI>
+			<Field id="label1" type="label" >
+				<Label>This will create a trigger that triggers on all events except battery update for the selected devices.</Label>
+			</Field>
+<!-- Triggering _ ON -->
+			<Field id='sep1' type='separator' />
+
+			<Field id='metaDevLabel_1' type='label' visibleBindingId='metaDevOnResponse' visibleBindingValue='1,2,3' >
+				<Label>Select the Indigo Device(s)</Label>
+			</Field>
+<!--    Devces       -->
+			<Field id='exceptBatteryTriggerDevices' type='list'>
+				<Label>Devices:</Label>
+                <List class="indigo.devices"/>
+				<!--<List class="self" method="getDeviceList"/>-->
+			</Field>
+	    </ConfigUI>
+		<UiDisplayStateId>state</UiDisplayStateId>
+		<States>
+			<State id="state">
+				<ValueType boolType='OnOff'>Boolean</ValueType>
+				<TriggerLabel>On/Off</TriggerLabel>
+				<ControlPageLabel>On/Off</ControlPageLabel>
+			</State>
+		</States>
+	</Event>
+</Events>

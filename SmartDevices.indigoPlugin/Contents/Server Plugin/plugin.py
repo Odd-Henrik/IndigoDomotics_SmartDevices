@@ -1137,7 +1137,14 @@ class Plugin(indigo.PluginBase):
         valuesDict["fanDevice"] = ""
         return valuesDict
 
-    #Updatecheker
+#---------------------- Triggers ------------------------------------
+    def triggerStartProcessing(self, trigger):
+        self.debugLog('Trigger Startup') # Found: %s\n' % (trigger))
+
+    def triggerStopProcessing(self, trigger):
+        self.debugLog(u"<<-- entering deviceStopComm: %s, %d" % (trigger.name, trigger.id))
+
+#---------------------- Updatecheker --------------------------
     def checkForUpdates(self):
         indigo.server.log(u"Manually checking for updates")
         self.updater.checkVersionNow()
