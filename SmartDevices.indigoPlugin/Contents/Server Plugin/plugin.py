@@ -260,6 +260,7 @@ class Plugin(indigo.PluginBase):
         indigo.devices.subscribeToChanges()
         indigo.variables.subscribeToChanges()
 
+
     def shutdown(self):
         self.debugLog(u"shutdown called")
 
@@ -618,10 +619,48 @@ class Plugin(indigo.PluginBase):
                 humInputIndex = self._getHumiditySensorsIdsInVirtualDevice(thermostatDev).index(int(thermostatDev.pluginProps["ambientHumiditySensors"])) + 1
                 thermostatDev.updateStateOnServer(u"humidityInput" + str(humInputIndex), sensorDev.sensorValue, uiValue="* %.1f%%" % sensorDev.sensorValue)
 
+    def _getRootDevice(self, dev):
+        groupList = indigo.device.getGroupList(dev)
+        rootDevice = indigo.devices[groupList[0]]
+        indigo.server.log("ROOT DEVICE is: " + rootDevice.name)
+        indigo.server.log("battery level is: " + str(rootDevice.batteryLevel))
+        return rootDevice
+
+    def _checkIfBatteryUpdate(self, origDev, newDev):
+        if origDev.batteryLevel != newDev.batteryLevel:
+            #battery update
+            indigo.server.log(u"<<-- Battery level origDev is: " + str(origDev.batteryLevel) + u" Batter level newDev is: " + str(newDev.batteryLevel))
+            return True
+
+        return False
+
 
     def deviceUpdated(self, origDev, newDev):
         indigo.PluginBase.deviceUpdated(self, origDev, newDev)
 
+        #if newDev.name == "TEST BRYTER - Remote Double Switch (ZME-WCD2)":
+        #    self.debugLog(str(newDev.displayStateId))
+        #self.debugLog(str(newDev))
+
+        if newDev.deviceTypeId != "timer":
+            if origDev.batteryLevel is not None:
+                self.debugLog(u"-----" + newDev.name + u"----Orig:" + str(origDev.batteryLevel))#["supportsBatteryLevel"]))
+                self.debugLog(str(newDev.displayStateId))
+        #         self.debugLog(u"-----" + newDev.name + u"----New:" + str(newDev.batteryLevel))
+        #         self.debugLog(str(newDev.states))
+        #          self.debugLog(u"<<<--- DeviceUpdate for device:" + newDev.name + " Of Type: " + newDev.deviceTypeId)
+        #         self.debugLog(u"<<<--- origDev Battery level:" + str(origDev.batteryLevel))
+        #         self.debugLog(str(origDev))
+        #         self.debugLog(u"<<<--- newDev Battery level:" + str(newDev.batteryLevel))
+        #         self.debugLog(str(newDev))
+
+                #if self._checkIfBatteryUpdate(origDev, newDev):
+                #if self._checkIfBatteryUpdate(self._getRootDevice(origDev), self._getRootDevice(newDev)):
+                #    self.debugLog(u"<<<--- Battery update for device: " + newDev.name + u" --->>>")
+
+
+        #if self._checkIfBatteryUpdate(self._getRootDevice(origDev), self._getRootDevice(newDev)):
+        #    self.debugLog(u"<<<--- Battery update for device: " + newDev.name)
 
         for dev in indigo.devices.iter("self"):
             if not dev.enabled or not dev.configured:
@@ -1159,7 +1198,7 @@ class Plugin(indigo.PluginBase):
 
     def triggerStopProcessing(self, trigger):
         self.debugLog(u"<<-- entering deviceStopComm: %s, %d" % (trigger.name, trigger.id))
-        self.triggersDict[trigger.id]['process'] = False
+        self.noBatteryTriggersDict[trigger.id]['process'] = False
 
 #---------------------- Updatechecker --------------------------
     def checkForUpdates(self):
