@@ -646,13 +646,16 @@ class Plugin(indigo.PluginBase):
             if origDev.batteryLevel is not None:
                 self.debugLog(u"-----" + newDev.name + u"----Orig:" + str(origDev.batteryLevel))#["supportsBatteryLevel"]))
                 self.debugLog(str(newDev.displayStateId))
+                self.debugLog(u"<<<--- origDev Battery level:" + str(origDev.batteryLevel))
+                self.debugLog(str(origDev))
+                self.debugLog(u"<<<--- newDev Battery level:" + str(newDev.batteryLevel))
+                self.debugLog(str(newDev))
+
+
         #         self.debugLog(u"-----" + newDev.name + u"----New:" + str(newDev.batteryLevel))
         #         self.debugLog(str(newDev.states))
         #          self.debugLog(u"<<<--- DeviceUpdate for device:" + newDev.name + " Of Type: " + newDev.deviceTypeId)
-        #         self.debugLog(u"<<<--- origDev Battery level:" + str(origDev.batteryLevel))
-        #         self.debugLog(str(origDev))
-        #         self.debugLog(u"<<<--- newDev Battery level:" + str(newDev.batteryLevel))
-        #         self.debugLog(str(newDev))
+        #
 
                 #if self._checkIfBatteryUpdate(origDev, newDev):
                 #if self._checkIfBatteryUpdate(self._getRootDevice(origDev), self._getRootDevice(newDev)):
