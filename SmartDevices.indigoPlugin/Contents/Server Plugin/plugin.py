@@ -638,33 +638,6 @@ class Plugin(indigo.PluginBase):
     def deviceUpdated(self, origDev, newDev):
         indigo.PluginBase.deviceUpdated(self, origDev, newDev)
 
-        #if newDev.name == "TEST BRYTER - Remote Double Switch (ZME-WCD2)":
-        #    self.debugLog(str(newDev.displayStateId))
-        #self.debugLog(str(newDev))
-
-        if newDev.deviceTypeId != "timer":
-            if origDev.batteryLevel is not None:
-                self.debugLog(u"-----" + newDev.name + u"----Orig:" + str(origDev.batteryLevel))#["supportsBatteryLevel"]))
-                self.debugLog(str(newDev.displayStateId))
-                self.debugLog(u"<<<--- origDev Battery level:" + str(origDev.batteryLevel))
-                self.debugLog(str(origDev))
-                self.debugLog(u"<<<--- newDev Battery level:" + str(newDev.batteryLevel))
-                self.debugLog(str(newDev))
-
-
-        #         self.debugLog(u"-----" + newDev.name + u"----New:" + str(newDev.batteryLevel))
-        #         self.debugLog(str(newDev.states))
-        #          self.debugLog(u"<<<--- DeviceUpdate for device:" + newDev.name + " Of Type: " + newDev.deviceTypeId)
-        #
-
-                #if self._checkIfBatteryUpdate(origDev, newDev):
-                #if self._checkIfBatteryUpdate(self._getRootDevice(origDev), self._getRootDevice(newDev)):
-                #    self.debugLog(u"<<<--- Battery update for device: " + newDev.name + u" --->>>")
-
-
-        #if self._checkIfBatteryUpdate(self._getRootDevice(origDev), self._getRootDevice(newDev)):
-        #    self.debugLog(u"<<<--- Battery update for device: " + newDev.name)
-
         for dev in indigo.devices.iter("self"):
             if not dev.enabled or not dev.configured:
                 continue
