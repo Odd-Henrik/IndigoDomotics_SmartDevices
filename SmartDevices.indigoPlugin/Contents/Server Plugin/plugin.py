@@ -941,6 +941,10 @@ class Plugin(indigo.PluginBase):
         self.debugLog("Check if all dev in list is on:")
 
         for dev in deviceIdList:
+            self.debugLog(indigo.devices[int(dev)].name)
+            self.debugLog(u"TypeId: " + indigo.devices[int(dev)].deviceTypeId)
+            self.debugLog(u"Model: " + indigo.devices[int(dev)].model)
+            
             self.debugLog(indigo.devices[int(dev)].name + " On State: " + str(indigo.devices[int(dev)].onState))
             if indigo.devices[int(dev)].onState:
                 isOn = True
