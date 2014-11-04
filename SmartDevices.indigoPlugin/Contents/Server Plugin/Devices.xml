@@ -32,7 +32,7 @@ Select the devices you want to use for heating. The device must be an On/Off dev
 			</Field>
 			<Field id="primaryHeaterDevices" type="list">
 				<Label>Select Heater Device(s):</Label>
-				<List class="indigo.devices" filter="indigo.relay"/>
+				<List class="indigo.devices" filter="indigo.relay,indigo.thermostat"/>
 			</Field>
 			<Field id="clearHVACDevices"
 				type="button"

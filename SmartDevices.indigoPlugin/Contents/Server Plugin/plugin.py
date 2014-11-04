@@ -952,6 +952,8 @@ class Plugin(indigo.PluginBase):
 
         for dev in deviceIdList:
             self.debugLog(indigo.devices[int(dev)].name)
+            self.debugLog(u"TypeId: " + indigo.devices[int(dev)].deviceTypeId)
+            self.debugLog(u"Model: " + indigo.devices[int(dev)].model)
             indigo.device.turnOff(int(dev))
 
 
