@@ -942,12 +942,17 @@ class Plugin(indigo.PluginBase):
 
         for dev in deviceIdList:
             self.debugLog(indigo.devices[int(dev)].name)
-            self.debugLog(u"TypeId: " + indigo.devices[int(dev)].deviceTypeId)
-            self.debugLog(u"Model: " + indigo.devices[int(dev)].model)
-            
-            self.debugLog(indigo.devices[int(dev)].name + " On State: " + str(indigo.devices[int(dev)].onState))
-            if indigo.devices[int(dev)].onState:
-                isOn = True
+
+            # self.debugLog(u"type: " + str(type(indigo.devices[int(dev)])))
+            if type(indigo.devices[int(dev)]) is indigo.ThermostatDevice:
+                #self.debugLog(u"IS Thermostat!")
+                if indigo.devices[int(dev)].heatIsOn:
+                    isOn = True
+
+            else:
+                self.debugLog(indigo.devices[int(dev)].name + " On State: " + str(indigo.devices[int(dev)].onState))
+                if indigo.devices[int(dev)].onState:
+                    isOn = True
 
         return isOn
 
@@ -956,9 +961,11 @@ class Plugin(indigo.PluginBase):
 
         for dev in deviceIdList:
             self.debugLog(indigo.devices[int(dev)].name)
-            self.debugLog(u"TypeId: " + indigo.devices[int(dev)].deviceTypeId)
-            self.debugLog(u"Model: " + indigo.devices[int(dev)].model)
-            indigo.device.turnOff(int(dev))
+
+            if type(indigo.devices[int(dev)]) is indigo.ThermostatDevice:
+                indigo.thermostat.setHvacMode(int(dev), value=indigo.kHvacMode.Off)
+            else:
+                indigo.device.turnOff(int(dev))
 
 
     def _turnOnDevicesInDeviceIdList(self, deviceIdList):
@@ -966,7 +973,10 @@ class Plugin(indigo.PluginBase):
 
         for dev in deviceIdList:
             self.debugLog(indigo.devices[int(dev)].name)
-            indigo.device.turnOn(int(dev))
+            if type(indigo.devices[int(dev)]) is indigo.ThermostatDevice:
+                indigo.thermostat.setHvacMode(int(dev), value=indigo.kHvacMode.HeatCool)
+            else:
+                indigo.device.turnOn(int(dev))
 
 
     def _turnOffAllHVACDevices(self, virDev):
