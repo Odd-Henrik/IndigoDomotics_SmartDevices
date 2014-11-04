@@ -261,6 +261,19 @@ class Plugin(indigo.PluginBase):
 
     ########################################
 
+    # noinspection PyShadowingBuiltins
+    def heaterDevicesList(self, filter="", valuesDict=None, typeId="", targetId=0):
+        myArray = []
+
+        for dev in indigo.devices:
+            try:
+                if (type(dev) is indigo.ThermostatDevice) or (type(dev) is indigo.RelayDevice):
+                    myArray.append((dev.id, dev.name))
+            except:
+                pass
+        return myArray
+
+
     def closedPrefsConfigUi (self, valuesDict, UserCancelled):
         if UserCancelled is False:
             logLevel = valuesDict["enableDebug"]
@@ -310,7 +323,7 @@ class Plugin(indigo.PluginBase):
         if validatedOk:
             return True, valuesDict
         else:
-            return (False, valuesDict, errorsDict)
+            return False, valuesDict, errorsDict
 
 
     ########################################
