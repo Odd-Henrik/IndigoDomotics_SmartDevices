@@ -987,7 +987,7 @@ class Plugin(indigo.PluginBase):
         for dev in deviceIdList:
             self.debugLog(indigo.devices[int(dev)].name)
             if type(indigo.devices[int(dev)]) is indigo.ThermostatDevice:
-                indigo.thermostat.setHvacMode(int(dev), value=indigo.kHvacMode.HeatCool)
+                indigo.thermostat.setHvacMode(int(dev), value=indigo.kHvacMode.Heat)
             else:
                 indigo.device.turnOn(int(dev))
 
