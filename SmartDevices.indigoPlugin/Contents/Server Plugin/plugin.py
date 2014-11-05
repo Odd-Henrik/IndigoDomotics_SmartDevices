@@ -961,7 +961,7 @@ class Plugin(indigo.PluginBase):
                 #self.debugLog(u"IS Thermostat!")
 
                 #if indigo.devices[int(dev)].heatIsOn: #This is the bug, this only checks if the other thermostat is heating not if its mode is on/Heat
-                if not indigo.devices[int(dev)].hvacOperationModeIsOff: #This is better check that checks on the actual mode, not what the thermostat is doing.
+                if not indigo.devices[int(dev)].states["hvacOperationModeIsOff"]: #This is better check that checks on the actual mode, not what the thermostat is doing.
                     isOn = True
                     self.debugLog(u"isOn")
 
