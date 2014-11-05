@@ -977,6 +977,8 @@ class Plugin(indigo.PluginBase):
 
             if type(indigo.devices[int(dev)]) is indigo.ThermostatDevice:
                 indigo.thermostat.setHvacMode(int(dev), value=indigo.kHvacMode.Off)
+                indigo.devices[int(dev)].updateStateOnServer("hvacOperationMode", indigo.kHvacMode.Off)
+                indigo.devices[int(dev)].updateStateOnServer("hvacHeaterIsOn", False)
             else:
                 indigo.device.turnOff(int(dev))
 
