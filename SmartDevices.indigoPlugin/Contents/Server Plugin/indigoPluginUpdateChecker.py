@@ -88,6 +88,7 @@ import time
 from urllib2 import urlopen
 
 
+# noinspection PyBroadException
 class updateChecker(object):
 
 	def __init__(self, plugin, fileUrl, daysBetweenChecks=1):
@@ -140,7 +141,7 @@ class updateChecker(object):
 				self.errorLog(u"versionCheck: There was an error parsing the server's version file.")
 				return
 		except:
-			self.errorLog(u"versionCheck: Error parsing the server's verson file.")
+			self.errorLog(u"versionCheck: Error parsing the server's version file.")
 			return
 
 
@@ -205,5 +206,5 @@ class updateChecker(object):
 				self.plugin.debugLog(u'versionCheck: The "EmailSubject:" and "EmailBody:" lines were not found.')
 				self.errorLog(u"versionCheck: There was an error parsing email data from the server's version file.")
 		except:
-			self.errorLog(u"versionCheck: Error parsing the email portion of the server's verson file.")
+			self.errorLog(u"versionCheck: Error parsing the email portion of the server's version file.")
 			return
