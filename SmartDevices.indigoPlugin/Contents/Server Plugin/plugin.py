@@ -773,9 +773,9 @@ class Plugin(indigo.PluginBase):
         if not sensorAvgTemp:
             # No valid sensor data, turning off all heaters'
             # TODO: Notifications
-            self.errorLog(virDev.name + ": NO VALID SENSOR DATA: Turning Off ALL Heaters and Thermostat!")
+            self.errorLog(virDev.name + u": NO VALID SENSOR DATA: Turning Off ALL Heaters and Thermostat!")
             self._turnOffDevicesInDeviceIdList(heaters)
-            self.debugLog("Heaters Off")
+            self.debugLog(u"Heaters Off")
 
             virDev.updateStateOnServer("hvacHeaterIsOn", False)
             indigo.thermostat.setHvacMode(virDev, value=indigo.kHvacMode.Off)
@@ -785,22 +785,22 @@ class Plugin(indigo.PluginBase):
         setTemp = virDev.heatSetpoint
         deltaTemp = float(virDev.states["temperatureDelta"])
 
-        self.debugLog("********* Heat Logic Run for: " + virDev.name)
-        self.debugLog("Number of Heaters: " + str(len(heaters)))
-        self.debugLog("sensorAvgTemp: " + str(sensorAvgTemp))
-        self.debugLog("Set Temp: " + str(setTemp))
-        self.debugLog("Delta Temp: " + str(deltaTemp))
+        self.debugLog(u"********* Heat Logic Run for: " + virDev.name)
+        self.debugLog(u"Number of Heaters: " + str(len(heaters)))
+        self.debugLog(u"sensorAvgTemp: " + str(sensorAvgTemp))
+        self.debugLog(u"Set Temp: " + str(setTemp))
+        self.debugLog(u"Delta Temp: " + str(deltaTemp))
 
         if (sensorAvgTemp < (setTemp - deltaTemp)) and not self._isAllDevicesInDeviceIdListOn(heaters):
             self._turnOnDevicesInDeviceIdList(heaters)
-            self.debugLog("Heaters On")
+            self.debugLog(u"Heaters On")
             virDev.updateStateOnServer("hvacHeaterIsOn", True)
         elif (sensorAvgTemp > (setTemp + deltaTemp)) and self._isAllDevicesInDeviceIdListOn(heaters):
             self._turnOffDevicesInDeviceIdList(heaters)
-            self.debugLog("Heaters Off")
+            self.debugLog(u"Heaters Off")
             virDev.updateStateOnServer("hvacHeaterIsOn", False)
         else:
-            self.debugLog("In delta or set")
+            self.debugLog(u"In delta or set")
             if self._isAllDevicesInDeviceIdListOn(heaters):
                 virDev.updateStateOnServer("hvacHeaterIsOn", True)
             else:
@@ -808,14 +808,14 @@ class Plugin(indigo.PluginBase):
 
         #Saftey check
         if sensorAvgTemp > (setTemp + deltaTemp + 1):
-            self.debugLog("Too warm, turning off heaters")
+            self.debugLog(u"Too warm, turning off heaters")
             self._turnOffDevicesInDeviceIdList(heaters)
-            self.debugLog("Heaters Off")
+            self.debugLog(u"Heaters Off")
             virDev.updateStateOnServer("hvacHeaterIsOn", False)
         elif sensorAvgTemp < (setTemp - deltaTemp - 1):
-            self.debugLog("Too cold, turning on heaters")
+            self.debugLog(u"Too cold, turning on heaters")
             self._turnOnDevicesInDeviceIdList(heaters)
-            self.debugLog("Heaters On")
+            self.debugLog(u"Heaters On")
             virDev.updateStateOnServer("hvacHeaterIsOn", True)
 
     def _avgSensorValues(self, virDev, sensors):
@@ -855,14 +855,14 @@ class Plugin(indigo.PluginBase):
         self.debugLog(u"===============> sensorId=" + str(sensorId) + u" Type=" + str(type(sensorId)))
 
         if sensorId in indigo.devices:
-            self.debugLog(str(indigo.devices[sensorId].name) + " Value: " + str(indigo.devices[sensorId].sensorValue) + " Last changed:" + str(indigo.devices[sensorId].lastChanged))
+            self.debugLog(str(indigo.devices[sensorId].name) + u" Value: " + str(indigo.devices[sensorId].sensorValue) + u" Last changed:" + str(indigo.devices[sensorId].lastChanged))
             #Getting sensor values
             sensorLastChanged = indigo.devices[sensorId].lastChanged
             sensorValue = indigo.devices[sensorId].sensorValue
             sensorName = str(indigo.devices[sensorId].name)
 
         if sensorId in indigo.variables:
-            self.debugLog(str(indigo.variables[sensorId].name) + " Value: " + str(indigo.variables[sensorId].value) + " Last changed:" + "Variables DO NOT HAVE a last changed value!")
+            self.debugLog(str(indigo.variables[sensorId].name) + u" Value: " + str(indigo.variables[sensorId].value) + u" Last changed:" + u"Variables DO NOT HAVE a last changed value!")
             #Getting sensor values
             #TODO: Document: Variables do not have a last changed value so cannot check this.
             #NOTE: Variables do not have a last changed value so cannot check this.
@@ -876,8 +876,8 @@ class Plugin(indigo.PluginBase):
             sensorName = str(indigo.variables[sensorId].name)
 
 
-        self.debugLog("Sensor to validate last updated on: " + str(sensorLastChanged))
-        self.debugLog("Sensor to validate value: " + str(sensorValue))
+        self.debugLog(u"Sensor to validate last updated on: " + str(sensorLastChanged))
+        self.debugLog(u"Sensor to validate value: " + str(sensorValue))
 
         #Defining validation variables with defaults
         notOlderThenMinutes = 120
@@ -891,9 +891,9 @@ class Plugin(indigo.PluginBase):
             try:
                 notOlderThenMinutes = int(self.pluginPrefs.get("ignoreValuesOlderThen", ""))
             except Exception, err:
-                self.errorLog("ERROR in ignore Values Older Then: %s. Using defaults: %s" % (str(err), str(notOlderThenMinutes)))
+                self.errorLog(u"ERROR in ignore Values Older Then: %s. Using defaults: %s" % (str(err), str(notOlderThenMinutes)))
 
-        self.debugLog("ignoreValuesOlderThen Set To: " + str(notOlderThenMinutes))
+        self.debugLog(u"ignoreValuesOlderThen Set To: " + str(notOlderThenMinutes))
 
         lastChangedMaxAge = datetime.datetime.now() - datetime.timedelta(minutes = notOlderThenMinutes)
         self.debugLog(str(lastChangedMaxAge))
@@ -901,10 +901,10 @@ class Plugin(indigo.PluginBase):
         #Validating sensor last changed timeout.
         if sensorLastChanged < lastChangedMaxAge:
             self.errorLog(str(sensorName) + " Value: " + str(sensorValue) + " Last changed:" + str(sensorLastChanged))
-            self.errorLog("OLD Value! Sensor value is older then " + str(notOlderThenMinutes) + " Minutes")
+            self.errorLog(u"OLD Value! Sensor value is older then " + str(notOlderThenMinutes) + " Minutes")
             timeoutValidationOk = False
         else:
-            self.debugLog("sensor last changed newer then two hours")
+            self.debugLog(u"sensor last changed newer then two hours")
             timeoutValidationOk = True
 
         #Getting max value from configuration prefs
@@ -912,9 +912,9 @@ class Plugin(indigo.PluginBase):
             try:
                 ignoreValuesLargerThen = float(self.pluginPrefs.get("ignoreValuesLargerThen", ""))
             except Exception, err:
-                self.errorLog("ERROR in ignore Values Larger Then: %s. Using defaults: %s" % (str(err), str(ignoreValuesLargerThen)))
+                self.errorLog(u"ERROR in ignore Values Larger Then: %s. Using defaults: %s" % (str(err), str(ignoreValuesLargerThen)))
 
-        self.debugLog("ignoreValuesLargerThen Set To: " + str(ignoreValuesLargerThen) )
+        self.debugLog(u"ignoreValuesLargerThen Set To: " + str(ignoreValuesLargerThen) )
 
         #Validating max value boundary.
         if sensorValue > ignoreValuesLargerThen:
@@ -922,7 +922,7 @@ class Plugin(indigo.PluginBase):
             self.errorLog("OUT OF BOUNDS Value! Sensor value is larger then " + str(ignoreValuesLargerThen) + "!")
             maxValueValidationOk = False
         else:
-            self.debugLog("Sensor value is less then max allowed value, Ok")
+            self.debugLog(u"Sensor value is less then max allowed value, Ok")
             maxValueValidationOk = True
 
 
@@ -931,17 +931,17 @@ class Plugin(indigo.PluginBase):
             try:
                 ignoreValuesLessThen = float(self.pluginPrefs.get("ignoreValuesLessThen", ""))
             except Exception, err:
-                self.errorLog("ERROR in ignore Values Less Then: %s. Using defaults: %s" % (str(err), str(ignoreValuesLessThen)))
+                self.errorLog(u"ERROR in ignore Values Less Then: %s. Using defaults: %s" % (str(err), str(ignoreValuesLessThen)))
 
-        self.debugLog("ignoreValuesLessThen Set To: " + str(ignoreValuesLessThen) )
+        self.debugLog(u"ignoreValuesLessThen Set To: " + str(ignoreValuesLessThen) )
 
         #Validating min value boundary.
         if sensorValue < ignoreValuesLessThen:
-            self.errorLog(str(sensorName) + " Value: " + str(sensorValue) + " Last changed:" + str(sensorLastChanged))
-            self.errorLog("OUT OF BOUNDS Value! Sensor value is less then " + str(ignoreValuesLessThen) + "!")
+            self.errorLog(str(sensorName) + u" Value: " + str(sensorValue) + u" Last changed:" + str(sensorLastChanged))
+            self.errorLog(u"OUT OF BOUNDS Value! Sensor value is less then " + str(ignoreValuesLessThen) + "!")
             minValueValidationOk = False
         else:
-            self.debugLog("Sensor value is larger then minimum allowed value, Ok")
+            self.debugLog(u"Sensor value is larger then minimum allowed value, Ok")
             minValueValidationOk = True
 
         #TODO: Implement comparison check. If one of multiple values is very different from the others, its probably wrong.
@@ -951,7 +951,7 @@ class Plugin(indigo.PluginBase):
 
     def _isAllDevicesInDeviceIdListOn(self, deviceIdList):
         isOn = False
-        self.debugLog("Check if all dev in list is on:")
+        self.debugLog(u"Check if all dev in list is on:")
 
         for dev in deviceIdList:
             self.debugLog(indigo.devices[int(dev)].name)
@@ -959,26 +959,31 @@ class Plugin(indigo.PluginBase):
             # self.debugLog(u"type: " + str(type(indigo.devices[int(dev)])))
             if type(indigo.devices[int(dev)]) is indigo.ThermostatDevice:
                 #self.debugLog(u"IS Thermostat!")
-                if indigo.devices[int(dev)].heatIsOn:
+
+                #if indigo.devices[int(dev)].heatIsOn: #This is the bug, this only checks if the other thermostat is heating not if its mode is on/Heat
+                if not indigo.devices[int(dev)].hvacOperationModeIsOff: #This is better check that checks on the actual mode, not what the thermostat is doing.
                     isOn = True
+                    self.debugLog(u"isOn")
 
             else:
-                self.debugLog(indigo.devices[int(dev)].name + " On State: " + str(indigo.devices[int(dev)].onState))
+                self.debugLog(indigo.devices[int(dev)].name + u" On State: " + str(indigo.devices[int(dev)].onState))
                 if indigo.devices[int(dev)].onState:
                     isOn = True
+                    self.debugLog(u"isOn")
 
+        self.debugLog(u"isOn: " + str(isOn))
         return isOn
 
     def _turnOffDevicesInDeviceIdList(self, deviceIdList):
-        self.debugLog("Turning Off:")
+        self.debugLog(u"Turning Off:")
 
         for dev in deviceIdList:
             self.debugLog(indigo.devices[int(dev)].name)
 
             if type(indigo.devices[int(dev)]) is indigo.ThermostatDevice:
                 indigo.thermostat.setHvacMode(int(dev), value=indigo.kHvacMode.Off)
-                indigo.devices[int(dev)].updateStateOnServer("hvacOperationMode", indigo.kHvacMode.Off)
-                indigo.devices[int(dev)].updateStateOnServer("hvacHeaterIsOn", False)
+                #indigo.devices[int(dev)].updateStateOnServer("hvacOperationMode", indigo.kHvacMode.Off) #Private
+                #indigo.devices[int(dev)].updateStateOnServer("hvacHeaterIsOn", False)
             else:
                 indigo.device.turnOff(int(dev))
 
