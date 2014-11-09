@@ -1018,6 +1018,21 @@ class Plugin(indigo.PluginBase):
     ######################
     # Main thermostat action bottleneck called by Indigo Server.
     def actionControlThermostat(self, action, dev):
+        value = None
+        try:
+            value = action.actionValue
+        except Exception, err:
+            pass
+
+        self.debugLog(u"ACTION ===========> " + str(action))
+        self.debugLog(u"Action Value===========> " + str(value))
+
+        # I want to be able to change the setpoint in 0.5 increments with the UI arrows. So here is the hack
+        # This hack will influence others trying to increment by 1. e.g. by using actions. But only for 1.
+        # TODO: Figure out how to identify arrow clicks only
+        if value == 1:
+            value = 0.5
+
         ###### SET HVAC MODE ######
         if action.thermostatAction == indigo.kThermostatAction.SetHvacMode:
             self._handleChangeHvacModeAction(dev, action.actionMode)
@@ -1028,30 +1043,38 @@ class Plugin(indigo.PluginBase):
 
         ###### SET COOL SETPOINT ######
         elif action.thermostatAction == indigo.kThermostatAction.SetCoolSetpoint:
-            newSetpoint = action.actionValue
+            newSetpoint = value
             self._handleChangeSetpointAction(dev, newSetpoint, u"change cool setpoint", u"setpointCool")
 
         ###### SET HEAT SETPOINT ######
         elif action.thermostatAction == indigo.kThermostatAction.SetHeatSetpoint:
-            newSetpoint = action.actionValue
+            newSetpoint = value
             self._handleChangeSetpointAction(dev, newSetpoint, u"change heat setpoint", u"setpointHeat")
 
         ###### DECREASE/INCREASE COOL SETPOINT ######
         elif action.thermostatAction == indigo.kThermostatAction.DecreaseCoolSetpoint:
-            newSetpoint = dev.coolSetpoint - 0.5 #action.actionValue
+            #newSetpoint = dev.coolSetpoint - 0.5 #action.actionValue
+            newSetpoint = dev.coolSetpoint - value
+            #newSetpoint = action.actionValue
             self._handleChangeSetpointAction(dev, newSetpoint, u"decrease cool setpoint", u"setpointCool")
 
         elif action.thermostatAction == indigo.kThermostatAction.IncreaseCoolSetpoint:
-            newSetpoint = dev.coolSetpoint + 0.5 #action.actionValue
+            #newSetpoint = dev.coolSetpoint + 0.5 #action.actionValue
+            newSetpoint = dev.coolSetpoint + value
+            #newSetpoint = action.actionValue
             self._handleChangeSetpointAction(dev, newSetpoint, u"increase cool setpoint", u"setpointCool")
 
         ###### DECREASE/INCREASE HEAT SETPOINT ######
         elif action.thermostatAction == indigo.kThermostatAction.DecreaseHeatSetpoint:
-            newSetpoint = dev.heatSetpoint - 0.5 #action.actionValue
+            #newSetpoint = dev.heatSetpoint - 0.5 #action.actionValue
+            #newSetpoint = action.actionValue
+            newSetpoint = dev.heatSetpoint - value
             self._handleChangeSetpointAction(dev, newSetpoint, u"decrease heat setpoint", u"setpointHeat")
 
         elif action.thermostatAction == indigo.kThermostatAction.IncreaseHeatSetpoint:
-            newSetpoint = dev.heatSetpoint + 0.5 #action.actionValue
+            #newSetpoint = dev.heatSetpoint + 0.5 #action.actionValue
+            #newSetpoint = action.actionValue
+            newSetpoint = dev.heatSetpoint + value
             self._handleChangeSetpointAction(dev, newSetpoint, u"increase heat setpoint", u"setpointHeat")
 
         ###### REQUEST STATE UPDATES ######
