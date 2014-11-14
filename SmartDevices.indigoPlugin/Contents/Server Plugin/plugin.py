@@ -40,6 +40,12 @@ kFanModeEnumToStrMap = {
 def _lookupActionStrFromHvacMode(hvacMode):
     return kHvacModeEnumToStrMap.get(hvacMode, u"unknown")
 
+def _lookupHvacModeFromActionStr(actionStr):
+    for mode in kHvacModeEnumToStrMap:
+        if kHvacModeEnumToStrMap.get(mode) == actionStr:
+            indigo.server.log(u"Val Key: " + str(mode))
+            return mode
+    return False
 
 def _lookupActionStrFromFanMode(fanMode):
     return kFanModeEnumToStrMap.get(fanMode, u"unknown")
@@ -265,12 +271,49 @@ class Plugin(indigo.PluginBase):
     def heaterDevicesList(self, filter="", valuesDict=None, typeId="", targetId=0):
         myArray = []
 
+        if "useThermostatsAsPrimaryHeater" in valuesDict:
+            self.debugLog(u"heaterDevicesList Run, use thermostats: " + str(valuesDict["useThermostatsAsPrimaryHeater"]))
+            if valuesDict["useThermostatsAsPrimaryHeater"]:
+                for dev in indigo.devices:
+                    try:
+                        if type(dev) is indigo.ThermostatDevice:
+                            myArray.append((dev.id, dev.name))
+                    except:
+                        pass
+                return myArray
+
         for dev in indigo.devices:
             try:
                 if (type(dev) is indigo.ThermostatDevice) or (type(dev) is indigo.RelayDevice):
                     myArray.append((dev.id, dev.name))
             except:
                 pass
+
+        return myArray
+
+    # noinspection PyShadowingBuiltins
+    def thermostatOnOptionsList(self, filter="", valuesDict=None, typeId="", targetId=0):
+        myArray = []
+
+        for mode in kHvacModeEnumToStrMap:
+            myArray.append((_lookupActionStrFromHvacMode(mode), _lookupActionStrFromHvacMode(mode)))
+            #self.debugLog(u"kHvacMode: " + str(mode))
+
+        # TODO: Cant seem to figure out how to set a default value for this?
+        # if "thermostatOnOptions" not in valuesDict:
+        #     valuesDict["thermostatOnOptions"] = "heat"
+        #     self.debugLog("XXXXXXXXXXXXXXX")
+        #
+        # if "thermostatOffOptions" not in valuesDict:
+        #     valuesDict["thermostatOffOptions"] = "off"
+        #     self.debugLog("YYYYYYYYYYYYY")
+        #
+        # try:
+        #     self.debugLog("============> thermostatOnOption: " + str(valuesDict["thermostatOnOptions"]))
+        #     self.debugLog("============> thermostatOffOption: " + str(valuesDict["thermostatOffOptions"]))
+        # except Exception, err:
+        #     pass
+
         return myArray
 
 
@@ -315,6 +358,9 @@ class Plugin(indigo.PluginBase):
         validatedOk = True
         errorsDict = indigo.Dict()
 
+        self.debugLog(u"Selected on mode: " + valuesDict["thermostatOnOptions"])
+        self.debugLog(u"Selected on Key: " + str(_lookupHvacModeFromActionStr(valuesDict["thermostatOnOptions"])))
+
         indigo.server.log("Number of primaryHeaterDevices selected: " + str(len(valuesDict["primaryHeaterDevices"])))
         if len(valuesDict["primaryHeaterDevices"]) < 1:
             errorsDict["primaryHeaterDevices"] = "You have to select minimum one heater"
@@ -335,9 +381,12 @@ class Plugin(indigo.PluginBase):
         # consider adding that to runConcurrentThread() above.
 
         #self._refreshStatesFromHardware(dev, True, True)
-        self.debugLog(u"-- deviceStartComm V:002.1--")
+        self.debugLog(u"-- deviceStartComm V:002.33--")
 
         newProps = dev.pluginProps
+
+        self.debugLog(u"khvacmode for thermostat:" + newProps.get("thermostatOnOptions", ""))
+        self.debugLog(u"khvacmode for thermostat:" + _lookupActionStrFromHvacMode(newProps.get("thermostatOnOptions", "")))
 
         #Handling backwards compatibility setting new prop to default: Devices.
         try:
@@ -743,7 +792,7 @@ class Plugin(indigo.PluginBase):
             self._turnOffAllHVACDevices(virDev)
             virDev.updateStateOnServer("hvacHeaterIsOn", False)
         elif virDev.hvacMode == indigo.kHvacMode.Heat:
-            self._turnOnDevicesInDeviceIdList(primaryHeaterDevices)
+            self._turnOnDevicesInDeviceIdList(primaryHeaterDevices, virDev)
             # TODO For booster functionality, must implement
             #self._turnOnDevicesInDeviceIdList(secondaryHeaterDevices)
             virDev.updateStateOnServer("hvacHeaterIsOn", True)
@@ -774,7 +823,7 @@ class Plugin(indigo.PluginBase):
             # No valid sensor data, turning off all heaters'
             # TODO: Notifications
             self.errorLog(virDev.name + u": NO VALID SENSOR DATA: Turning Off ALL Heaters and Thermostat!")
-            self._turnOffDevicesInDeviceIdList(heaters)
+            self._turnOffDevicesInDeviceIdList(heaters, virDev)
             self.debugLog(u"Heaters Off")
 
             virDev.updateStateOnServer("hvacHeaterIsOn", False)
@@ -791,17 +840,17 @@ class Plugin(indigo.PluginBase):
         self.debugLog(u"Set Temp: " + str(setTemp))
         self.debugLog(u"Delta Temp: " + str(deltaTemp))
 
-        if (sensorAvgTemp < (setTemp - deltaTemp)) and not self._isAllDevicesInDeviceIdListOn(heaters):
-            self._turnOnDevicesInDeviceIdList(heaters)
+        if (sensorAvgTemp < (setTemp - deltaTemp)) and not self._isAllDevicesInDeviceIdListOn(heaters, virDev):
+            self._turnOnDevicesInDeviceIdList(heaters, virDev)
             self.debugLog(u"Heaters On")
             virDev.updateStateOnServer("hvacHeaterIsOn", True)
-        elif (sensorAvgTemp > (setTemp + deltaTemp)) and self._isAllDevicesInDeviceIdListOn(heaters):
-            self._turnOffDevicesInDeviceIdList(heaters)
+        elif (sensorAvgTemp > (setTemp + deltaTemp)) and self._isAllDevicesInDeviceIdListOn(heaters, virDev):
+            self._turnOffDevicesInDeviceIdList(heaters, virDev)
             self.debugLog(u"Heaters Off")
             virDev.updateStateOnServer("hvacHeaterIsOn", False)
         else:
             self.debugLog(u"In delta or set")
-            if self._isAllDevicesInDeviceIdListOn(heaters):
+            if self._isAllDevicesInDeviceIdListOn(heaters, virDev):
                 virDev.updateStateOnServer("hvacHeaterIsOn", True)
             else:
                 virDev.updateStateOnServer("hvacHeaterIsOn", False)
@@ -809,12 +858,12 @@ class Plugin(indigo.PluginBase):
         #Saftey check
         if sensorAvgTemp > (setTemp + deltaTemp + 1):
             self.debugLog(u"Too warm, turning off heaters")
-            self._turnOffDevicesInDeviceIdList(heaters)
+            self._turnOffDevicesInDeviceIdList(heaters, virDev)
             self.debugLog(u"Heaters Off")
             virDev.updateStateOnServer("hvacHeaterIsOn", False)
         elif sensorAvgTemp < (setTemp - deltaTemp - 1):
             self.debugLog(u"Too cold, turning on heaters")
-            self._turnOnDevicesInDeviceIdList(heaters)
+            self._turnOnDevicesInDeviceIdList(heaters, virDev)
             self.debugLog(u"Heaters On")
             virDev.updateStateOnServer("hvacHeaterIsOn", True)
 
@@ -949,7 +998,7 @@ class Plugin(indigo.PluginBase):
 
         return  timeoutValidationOk and maxValueValidationOk and minValueValidationOk
 
-    def _isAllDevicesInDeviceIdListOn(self, deviceIdList):
+    def _isAllDevicesInDeviceIdListOn(self, deviceIdList ,virDev):
         isOn = False
         self.debugLog(u"Check if all dev in list is on:")
 
@@ -960,8 +1009,12 @@ class Plugin(indigo.PluginBase):
             if type(indigo.devices[int(dev)]) is indigo.ThermostatDevice:
                 #self.debugLog(u"IS Thermostat!")
 
+                self.debugLog("------------->>>>>>>> hvacOperationMode of controlled thermostat: " + str(_lookupActionStrFromHvacMode(indigo.devices[int(dev)].states["hvacOperationMode"])))
+
                 #if indigo.devices[int(dev)].heatIsOn: #This is the bug, this only checks if the other thermostat is heating not if its mode is on/Heat
-                if not indigo.devices[int(dev)].states["hvacOperationModeIsOff"]: #This is better check that checks on the actual mode, not what the thermostat is doing.
+                #if not indigo.devices[int(dev)].states["hvacOperationModeIsOff"]: #This is better check that checks on the actual mode, not what the thermostat is doing.
+                #Above new bug when using custom states for on/off
+                if indigo.devices[int(dev)].states["hvacOperationMode"] == _lookupHvacModeFromActionStr(virDev.pluginProps.get("thermostatOnOptions", "on")):
                     isOn = True
                     self.debugLog(u"isOn")
 
@@ -974,43 +1027,45 @@ class Plugin(indigo.PluginBase):
         self.debugLog(u"isOn: " + str(isOn))
         return isOn
 
-    def _turnOffDevicesInDeviceIdList(self, deviceIdList):
+    def _turnOffDevicesInDeviceIdList(self, deviceIdList, virDev):
         self.debugLog(u"Turning Off:")
 
         for dev in deviceIdList:
             self.debugLog(indigo.devices[int(dev)].name)
 
             if type(indigo.devices[int(dev)]) is indigo.ThermostatDevice:
-                indigo.thermostat.setHvacMode(int(dev), value=indigo.kHvacMode.Off)
-                #indigo.devices[int(dev)].updateStateOnServer("hvacOperationMode", indigo.kHvacMode.Off) #Private
-                #indigo.devices[int(dev)].updateStateOnServer("hvacHeaterIsOn", False)
+                #indigo.thermostat.setHvacMode(int(dev), value=indigo.kHvacMode.Off)
+                indigo.thermostat.setHvacMode(int(dev), value=_lookupHvacModeFromActionStr(virDev.pluginProps.get("thermostatOffOptions", "off")))
             else:
                 indigo.device.turnOff(int(dev))
 
 
-    def _turnOnDevicesInDeviceIdList(self, deviceIdList):
+    def _turnOnDevicesInDeviceIdList(self, deviceIdList, virDev):
         self.debugLog("Turning On:")
 
         for dev in deviceIdList:
             self.debugLog(indigo.devices[int(dev)].name)
             if type(indigo.devices[int(dev)]) is indigo.ThermostatDevice:
-                indigo.thermostat.setHvacMode(int(dev), value=indigo.kHvacMode.Heat)
+                #if virDev.pluginProps.get("thermostatOnOptions", ""):
+                indigo.thermostat.setHvacMode(int(dev), value=_lookupHvacModeFromActionStr(virDev.pluginProps.get("thermostatOnOptions", "heat")))
+                #else:
+                #    indigo.thermostat.setHvacMode(int(dev), value=indigo.kHvacMode.Heat)
             else:
                 indigo.device.turnOn(int(dev))
 
 
     def _turnOffAllHVACDevices(self, virDev):
         if virDev.pluginProps.get("acHeatPumpDevices", ""):
-            self._turnOffDevicesInDeviceIdList(virDev.pluginProps.get("acHeatPumpDevices"))
+            self._turnOffDevicesInDeviceIdList(virDev.pluginProps.get("acHeatPumpDevices"), virDev)
             
         if virDev.pluginProps.get("primaryHeaterDevices", ""):
-             self._turnOffDevicesInDeviceIdList(virDev.pluginProps.get("primaryHeaterDevices"))
+             self._turnOffDevicesInDeviceIdList(virDev.pluginProps.get("primaryHeaterDevices"), virDev)
 
         if virDev.pluginProps.get("secondaryHeaterDevices", ""):
-           self._turnOffDevicesInDeviceIdList(virDev.pluginProps.get("secondaryHeaterDevices"))
+           self._turnOffDevicesInDeviceIdList(virDev.pluginProps.get("secondaryHeaterDevices"), virDev)
 
         if virDev.pluginProps.get("ventilationDevices", ""):
-             self._turnOffDevicesInDeviceIdList(virDev.pluginProps.get("ventilationDevices"))
+             self._turnOffDevicesInDeviceIdList(virDev.pluginProps.get("ventilationDevices"), virDev)
 
 
     ########################################
@@ -1164,6 +1219,9 @@ class Plugin(indigo.PluginBase):
         valuesDict["secondaryHeaterDevices"] = ""
         valuesDict["ventilationDevices"] = ""
         valuesDict["acHeatPumpDevices"] = ""
+        valuesDict["autoLabel21"] = u"Test"
+        self.debugLog(u"Clear pushed")
+
         return valuesDict
 
 
@@ -1194,6 +1252,11 @@ class Plugin(indigo.PluginBase):
     def ClearFanDevicesPressed(self, valuesDict, typeId, devId):
         #self.debugLog(u"Values Dict: " + str(valuesDict))
         valuesDict["fanDevice"] = ""
+        return valuesDict
+
+    def useThermostatsAsPrimaryHeater(self, valuesDict, typeId, devId):
+        #valuesDict["autoLabel21"] = u"test"
+        self.debugLog(u"heaterOptionsSelected")
         return valuesDict
 
     #Updatecheker
