@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <!--suppress XmlUnboundNsPrefix -->
 <PluginConfig>
-	<Field id="topLabel" type="label">
+	<Field id="topLabel" type="label" fontSize="small">
         <Label>Welcome and thank you for using Smart Devices!
 Most configuration is done in the Smart Devices you create and are related to that specific Smart Device.
 Default values are based on degrees Celsius. If you are using Fahrenheit, please update your values accordingly.
         </Label>
 	</Field>
 	<Field id='sep4' type='separator' />
-    <Field id="setpointConfigLabel" type="label">
+    <Field id="setpointConfigLabel" type="label" fontSize="small">
         <Label>For safety reasons the Simple Smart Thermostat will not allow you to select extreme setpoint values. Configure the maximum and minimum allowed setpoint values here:</Label>
     </Field>
      <Field id="maxSetpointValue" type="textfield" defaultValue="50">
@@ -18,7 +18,7 @@ Default values are based on degrees Celsius. If you are using Fahrenheit, please
         <Label>Minimum allowed Setpoint Value (degrees):</Label>
     </Field>
     <Field id='sep1' type='separator' />
-	<Field id="ignoreLabel" type="label">
+	<Field id="ignoreLabel" type="label" fontSize="small">
         <Label>Some sensors, especially in battery operated devices, may fail to send up to date values or sometimes out of bounds values.
 Invalid values will be displayed as -999 and ignored.
         </Label>
@@ -32,13 +32,13 @@ Invalid values will be displayed as -999 and ignored.
     <Field id="ignoreValuesLessThen" type="textfield" defaultValue="-40.0">
         <Label>Ignore Values Less Then (in degrees):</Label>
     </Field>
-    <Field id="ignoreLabel2" type="label">
+    <Field id="ignoreLabel2" type="label" fontSize="small">
         <Label>
 Note that if you use variables to collect sensor data: Older Then check is not possible and will be ignored. </Label>
 	</Field>
     <Field id='sep3' type='separator' />
 
-    <Field id="notificationLabel" type="label">
+    <Field id="notificationLabel" type="label" fontSize="small">
 		<Label>The plugin will automatically check for updates and write a new version notification to the log. If you want to receive notifications by email, please configure this below.
         </Label>
 	</Field>
@@ -55,7 +55,7 @@ Note that if you use variables to collect sensor data: Older Then check is not p
     </Field>
 
 	<Field id='sep2' type='separator' />
-	<Field id="midLabel" type="label">
+	<Field id="midLabel" type="label" fontSize="small">
 		<Label>If you are having problems, wants to closely monitor Smart Devices or you are instructed by support, you can enable extra logging in the Event Log window by checking the button below.
         </Label>
 	</Field>
@@ -64,7 +64,7 @@ Note that if you use variables to collect sensor data: Older Then check is not p
 	    <Label>Enable Debugging:</Label>
 	</Field>
 
-	<Field id="v3" type="label" visibleBindingId="enableDebug" visibleBindingValue="true">
+	<Field id="v3" type="label" visibleBindingId="enableDebug" visibleBindingValue="true" fontSize="small">
 		<Label>
     Debugging will use resource's and clog up your Event Log window.
     This is not recommended if you don't need it.
