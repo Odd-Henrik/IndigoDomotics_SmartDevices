@@ -364,8 +364,38 @@ class Plugin(indigo.PluginBase):
 
         indigo.server.log("Number of primaryHeaterDevices selected: " + str(len(valuesDict["primaryHeaterDevices"])))
         if len(valuesDict["primaryHeaterDevices"]) < 1:
-            errorsDict["primaryHeaterDevices"] = "You have to select minimum one heater"
+            errorsDict["primaryHeaterDevices"] = u"You have to select minimum one heater"
             validatedOk = False
+
+        if valuesDict["useThermostatsAsPrimaryHeater"]:
+            if not valuesDict["thermostatOffOptions"]:
+                errorsDict["thermostatOffOptions"] = u"You have to select an Off Mode for the controlled thermostat."
+                validatedOk = False
+
+            if not valuesDict["thermostatOnOptions"]:
+                errorsDict["thermostatOnOptions"] = u"You have to select an On Mode for the controlled thermostat."
+                validatedOk = False
+
+        if valuesDict["useVariableSetPoint"]:
+            if not valuesDict["SetPointVariable"]:
+                errorsDict["SetPointVariable"] = u"You have to select an Setpoint Link Variable."
+                validatedOk = False
+
+        try:
+            value = float(valuesDict["configTemperatureDelta"])
+        except Exception, err:
+            errorsDict["configTemperatureDelta"] = u"You have to specify a valid temperature delta."
+            validatedOk = False
+
+        if int(valuesDict["sensorInputOptions"]) == 0 or int(valuesDict["sensorInputOptions"]) == 2: #Devices
+            if len(valuesDict["primaryTemperatureSensors"]) < 1:
+                errorsDict["primaryTemperatureSensors"] = u"You have to select minimum one temperature sensor."
+                validatedOk = False
+
+        if int(valuesDict["sensorInputOptions"]) == 1 or int(valuesDict["sensorInputOptions"]) == 2: #Variables
+            if len(valuesDict["primaryTemperatureVariables"]) < 1:
+                errorsDict["primaryTemperatureVariables"] = u"You have to select minimum one temperature variable."
+                validatedOk = False
 
         if validatedOk:
             return True, valuesDict
@@ -1256,10 +1286,10 @@ class Plugin(indigo.PluginBase):
         valuesDict["fanDevice"] = ""
         return valuesDict
 
-    def useThermostatsAsPrimaryHeater(self, valuesDict, typeId, devId):
-        #valuesDict["autoLabel21"] = u"test"
-        self.debugLog(u"heaterOptionsSelected")
-        return valuesDict
+    # def useThermostatsAsPrimaryHeater(self, valuesDict, typeId, devId):
+    #     #valuesDict["autoLabel21"] = u"test"
+    #     self.debugLog(u"heaterOptionsSelected")
+    #     return valuesDict
 
     #Updatecheker
     def checkForUpdates(self):

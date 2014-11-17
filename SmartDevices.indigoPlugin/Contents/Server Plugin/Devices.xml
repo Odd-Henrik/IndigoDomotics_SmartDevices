@@ -37,7 +37,7 @@
             <Field id="useThermostatsAsPrimaryHeater" type="checkbox" defaultValue="false" tooltip="To controll other thermostats selected as Heater Device(s)">
 	            <Label>Use Other Thermostats:</Label>
                 <Title>Use Other Thermostats</Title>
-                <CallbackMethod>useThermostatsAsPrimaryHeater</CallbackMethod>
+                <CallbackMethod>ClearHVACDevicesPressed</CallbackMethod>
             </Field>
 
 			<Field id="primaryHeaterDevices" type="list">
