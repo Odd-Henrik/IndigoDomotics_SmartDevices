@@ -41,7 +41,7 @@ def _lookupActionStrFromHvacMode(hvacMode):
     return kHvacModeEnumToStrMap.get(hvacMode, u"unknown")
 
 def _lookupHvacModeFromActionStr(actionStr):
-    self.debugLog(u" _lookupHvacModeFromActionStr: " + str(actionStr))
+    indigo.server.log((u"SMART DEVICES:  _lookupHvacModeFromActionStr: " + str(actionStr))
     for mode in kHvacModeEnumToStrMap:
         if kHvacModeEnumToStrMap.get(mode) == actionStr:
             indigo.server.log(u"Val Key: " + str(mode))
