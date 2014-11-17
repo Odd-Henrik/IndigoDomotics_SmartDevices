@@ -41,11 +41,12 @@ def _lookupActionStrFromHvacMode(hvacMode):
     return kHvacModeEnumToStrMap.get(hvacMode, u"unknown")
 
 def _lookupHvacModeFromActionStr(actionStr):
+    self.debugLog(u" _lookupHvacModeFromActionStr: " + str(actionStr))
     for mode in kHvacModeEnumToStrMap:
         if kHvacModeEnumToStrMap.get(mode) == actionStr:
             indigo.server.log(u"Val Key: " + str(mode))
             return mode
-    return False
+    return indigo.kHvacMode.Off
 
 def _lookupActionStrFromFanMode(fanMode):
     return kFanModeEnumToStrMap.get(fanMode, u"unknown")
@@ -1032,6 +1033,7 @@ class Plugin(indigo.PluginBase):
 
         for dev in deviceIdList:
             self.debugLog(indigo.devices[int(dev)].name)
+            self.debugLog(str(type(indigo.devices[int(dev)])))
 
             if type(indigo.devices[int(dev)]) is indigo.ThermostatDevice:
                 #indigo.thermostat.setHvacMode(int(dev), value=indigo.kHvacMode.Off)
