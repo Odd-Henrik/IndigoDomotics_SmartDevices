@@ -34,7 +34,7 @@
 				<Label>Select the devices you want to use for heating. The device must be an On/Off device like a relay switch or another thermostat device. All the devices selected will be turned On when heating is required and Off when temperature is adequate.</Label>
 			</Field>
 
-            <Field id="useThermostatsAsPrimaryHeater" type="checkbox" defaultValue="false" tooltip="To controll other thermostats selected as Heater Device(s)">
+            <Field id="useThermostatsAsPrimaryHeater" type="checkbox" defaultValue="false" tooltip="To control other thermostats selected as Heater Device(s)">
 	            <Label>Use Other Thermostats:</Label>
                 <Title>Use Other Thermostats</Title>
                 <CallbackMethod>ClearHVACDevicesPressed</CallbackMethod>

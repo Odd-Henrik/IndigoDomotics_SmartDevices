@@ -41,10 +41,10 @@ def _lookupActionStrFromHvacMode(hvacMode):
     return kHvacModeEnumToStrMap.get(hvacMode, u"unknown")
 
 def _lookupHvacModeFromActionStr(actionStr):
-    indigo.server.log(u"_lookupHvacModeFromActionStr: " + str(actionStr))
+    #indigo.server.log(u"_lookupHvacModeFromActionStr: " + str(actionStr))
     for mode in kHvacModeEnumToStrMap:
         if kHvacModeEnumToStrMap.get(mode) == actionStr:
-            indigo.server.log(u"Val Key: " + str(mode))
+            #indigo.server.log(u"Val Key: " + str(mode))
             return mode
     return indigo.kHvacMode.Off
 
@@ -69,7 +69,7 @@ class Plugin(indigo.PluginBase):
             self.debug = False
             indigo.server.log("debug disabled")
 
-        self.debugLog("debug: " + str(self.debug))
+        #self.debugLog("debug: " + str(self.debug))
 
     def __del__(self):
         indigo.PluginBase.__del__(self)
@@ -359,10 +359,11 @@ class Plugin(indigo.PluginBase):
         validatedOk = True
         errorsDict = indigo.Dict()
 
-        self.debugLog(u"Selected on mode: " + valuesDict["thermostatOnOptions"])
-        self.debugLog(u"Selected on Key: " + str(_lookupHvacModeFromActionStr(valuesDict["thermostatOnOptions"])))
+        #self.debugLog(u"Selected on mode: " + valuesDict["thermostatOnOptions"])
+        #self.debugLog(u"Selected on Key: " + str(_lookupHvacModeFromActionStr(valuesDict["thermostatOnOptions"])))
 
         indigo.server.log("Number of primaryHeaterDevices selected: " + str(len(valuesDict["primaryHeaterDevices"])))
+
         if len(valuesDict["primaryHeaterDevices"]) < 1:
             errorsDict["primaryHeaterDevices"] = u"You have to select minimum one heater"
             validatedOk = False
@@ -412,12 +413,12 @@ class Plugin(indigo.PluginBase):
         # consider adding that to runConcurrentThread() above.
 
         #self._refreshStatesFromHardware(dev, True, True)
-        self.debugLog(u"-- deviceStartComm V:002.33--")
+        #self.debugLog(u"-- deviceStartComm V:002.33--")
 
         newProps = dev.pluginProps
 
-        self.debugLog(u"khvacmode for thermostat:" + newProps.get("thermostatOnOptions", ""))
-        self.debugLog(u"khvacmode for thermostat:" + _lookupActionStrFromHvacMode(newProps.get("thermostatOnOptions", "")))
+        #self.debugLog(u"khvacmode for thermostat:" + newProps.get("thermostatOnOptions", ""))
+        #self.debugLog(u"khvacmode for thermostat:" + _lookupActionStrFromHvacMode(newProps.get("thermostatOnOptions", "")))
 
         #Handling backwards compatibility setting new prop to default: Devices.
         try:
@@ -593,7 +594,7 @@ class Plugin(indigo.PluginBase):
 
         if self._usePrimaryTemperatureSensors(dev): #dev.pluginProps.get("primaryTemperatureSensors", ""):
             for sens in (dev.pluginProps["primaryTemperatureSensors"]):
-                self.debugLog("TemperatureSensor ID: " + sens)
+                #self.debugLog("TemperatureSensor ID: " + sens)
                 sensorDevices.append(int(sens))
             #sensorDevices.append(int(dev.pluginProps["temperatureSensor"]))
 
@@ -932,7 +933,7 @@ class Plugin(indigo.PluginBase):
         sensorValue = False
         sensorName = ""
 
-        self.debugLog(u"===============> sensorId=" + str(sensorId) + u" Type=" + str(type(sensorId)))
+        self.debugLog(u"<============== validateSensorValue ===============> sensorId=" + str(sensorId) + u" Type=" + str(type(sensorId)))
 
         if sensorId in indigo.devices:
             self.debugLog(str(indigo.devices[sensorId].name) + u" Value: " + str(indigo.devices[sensorId].sensorValue) + u" Last changed:" + str(indigo.devices[sensorId].lastChanged))
@@ -1040,7 +1041,7 @@ class Plugin(indigo.PluginBase):
             if type(indigo.devices[int(dev)]) is indigo.ThermostatDevice:
                 #self.debugLog(u"IS Thermostat!")
 
-                self.debugLog("------------->>>>>>>> hvacOperationMode of controlled thermostat: " + str(_lookupActionStrFromHvacMode(indigo.devices[int(dev)].states["hvacOperationMode"])))
+                #self.debugLog(u"------------->>>>>>>> hvacOperationMode of controlled thermostat: " + str(_lookupActionStrFromHvacMode(indigo.devices[int(dev)].states["hvacOperationMode"])))
 
                 #if indigo.devices[int(dev)].heatIsOn: #This is the bug, this only checks if the other thermostat is heating not if its mode is on/Heat
                 #if not indigo.devices[int(dev)].states["hvacOperationModeIsOff"]: #This is better check that checks on the actual mode, not what the thermostat is doing.
@@ -1077,6 +1078,8 @@ class Plugin(indigo.PluginBase):
 
         for dev in deviceIdList:
             self.debugLog(indigo.devices[int(dev)].name)
+            self.debugLog(str(type(indigo.devices[int(dev)])))
+
             if type(indigo.devices[int(dev)]) is indigo.ThermostatDevice:
                 #if virDev.pluginProps.get("thermostatOnOptions", ""):
                 indigo.thermostat.setHvacMode(int(dev), value=_lookupHvacModeFromActionStr(virDev.pluginProps.get("thermostatOnOptions", "heat")))
