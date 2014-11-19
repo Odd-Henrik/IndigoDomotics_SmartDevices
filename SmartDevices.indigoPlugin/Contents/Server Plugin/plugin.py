@@ -732,12 +732,12 @@ class Plugin(indigo.PluginBase):
                 self._handleChangeTemperatureSensors(dev, newVar)
                 self._runHVACLogic(dev)
 
-            self.debugLog(u"useVariableSetPoint: " + str(dev.pluginProps.get(u"useVariableSetPoint", "")))
-            self.debugLog(u"SetPointVariable: " + str(dev.pluginProps.get(u"SetPointVariable", "")))
-
+            #self.debugLog(u"useVariableSetPoint: " + str(dev.pluginProps.get(u"useVariableSetPoint", "")))
+           
             if self._validateAndGetSetPointVariable(dev):
             #if dev.pluginProps.get(u"useVariableSetPoint", "") and dev.pluginProps.get(u"SetPointVariable", ""):
                 self.debugLog("Use variable setpoint link is true and variable selected")
+                self.debugLog(u"SetPointVariable: " + str(dev.pluginProps.get(u"SetPointVariable", "")))
                 setpointVar = self._validateAndGetSetPointVariable(dev)
                 if newVar.id == setpointVar.id: #int(dev.pluginProps.get(u"SetPointVariable", "")):
                     newSetpoint = float(setpointVar.value)
