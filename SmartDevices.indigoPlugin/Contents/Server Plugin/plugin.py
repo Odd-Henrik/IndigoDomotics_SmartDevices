@@ -251,7 +251,7 @@ class Plugin(indigo.PluginBase):
                         indigo.variable.updateValue(setpointVariable, str(newSetpoint))
                         setpointVariable.refreshFromServer()
 
-                self._runHVACLogic(indigo.devices[dev.id])
+                self._runHVACLogic(indigo.devices[dev.id], False) #Not running safety when updating manually
         else:
             # Else log failure but do NOT update state on Indigo Server.
             indigo.server.log(u"send \"%s\" %s to %.1f° failed" % (dev.name, logActionName, newSetpoint), isError=True)
@@ -476,7 +476,7 @@ class Plugin(indigo.PluginBase):
         if self._validateAndGetSetPointVariable(dev):
             self.debugLog("Use variable setpoint link is true and variable selected")
             self._handleChangeSetpointAction(dev, float(self._validateAndGetSetPointVariable(dev).value), u"set heat setpoint from variable", u"setpointHeat")
-                
+
         self._runHVACLogic(indigo.devices[dev.id])
         pass
 
@@ -773,7 +773,7 @@ class Plugin(indigo.PluginBase):
 
         return devList
 
-    def _runHVACLogic(self, virDev):
+    def _runHVACLogic(self, virDev, runSafety=True):
         # Getting all the devices
         self.debugLog("=============== Running HVAC Logic ================")
         self.debugLog("Getting all the devices")
@@ -830,7 +830,7 @@ class Plugin(indigo.PluginBase):
             virDev.updateStateOnServer("hvacHeaterIsOn", True)
         elif virDev.hvacMode == indigo.kHvacMode.HeatCool:
             self._heat(virDev, primaryHeaterDevices, primaryTemperatureSensors, secondaryHeaterDevices,
-                       floorTemperatureSensors, outsideTemperatureSensors)
+                       floorTemperatureSensors, outsideTemperatureSensors, runSafety)
             #self._heat(virDev, primaryHeaterDevices, temperatureSensor, None, None, None)
 
         return True
@@ -846,7 +846,7 @@ class Plugin(indigo.PluginBase):
             #indigo.kHvacMode.ProgramHeatCool
 
     def _heat(self, virDev, primaryHeaterDevices, primaryTemperatureSensors, secondaryHeaterDevices,
-              floorTemperatureSensors, outsideTemperatureSensors):
+              floorTemperatureSensors, outsideTemperatureSensors, runSafety=True):
         # Heater logic
         heaters = primaryHeaterDevices
         sensorAvgTemp = self._avgSensorValues(virDev, primaryTemperatureSensors)
@@ -888,16 +888,17 @@ class Plugin(indigo.PluginBase):
                 virDev.updateStateOnServer("hvacHeaterIsOn", False)
 
         #Saftey check
-        if sensorAvgTemp > (setTemp + deltaTemp + 1):
-            self.debugLog(u"Too warm, turning off heaters")
-            self._turnOffDevicesInDeviceIdList(heaters, virDev)
-            self.debugLog(u"Heaters Off")
-            virDev.updateStateOnServer("hvacHeaterIsOn", False)
-        elif sensorAvgTemp < (setTemp - deltaTemp - 1):
-            self.debugLog(u"Too cold, turning on heaters")
-            self._turnOnDevicesInDeviceIdList(heaters, virDev)
-            self.debugLog(u"Heaters On")
-            virDev.updateStateOnServer("hvacHeaterIsOn", True)
+        if runSafety:
+            if sensorAvgTemp > (setTemp + deltaTemp + 1):
+                self.debugLog(u"Too warm, turning off heaters")
+                self._turnOffDevicesInDeviceIdList(heaters, virDev)
+                self.debugLog(u"Heaters Off")
+                virDev.updateStateOnServer("hvacHeaterIsOn", False)
+            elif sensorAvgTemp < (setTemp - deltaTemp - 1):
+                self.debugLog(u"Too cold, turning on heaters")
+                self._turnOnDevicesInDeviceIdList(heaters, virDev)
+                self.debugLog(u"Heaters On")
+                virDev.updateStateOnServer("hvacHeaterIsOn", True)
 
     def _avgSensorValues(self, virDev, sensors):
         count = 0
