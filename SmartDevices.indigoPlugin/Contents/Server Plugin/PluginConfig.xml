@@ -7,17 +7,35 @@ Most configuration is done in the Smart Devices you create and are related to th
 Default values are based on degrees Celsius. If you are using Fahrenheit, please update your values accordingly.
         </Label>
 	</Field>
-	<Field id='sep4' type='separator' />
+    <Field id="setpointOptionsHeader" type="label" fontColor="darkGray">
+        <Label>SETPOINT OPTIONS</Label>
+    </Field>
+	<Field id='setpointOptionsSeparator' type='separator' />
+    <Field id="defaultHeatSetpointValue" type="textfield" defaultValue="22">
+        <Label>Default Heat Setpoint:</Label>
+    </Field>
+<!--    <Field id="defaultCoolSetpointValue" type="textfield" defaultValue="25">
+        <Label>Default Cool Setpoint:</Label>
+    </Field>-->
+    <Field id="setpointSteppingValue" type="textfield" defaultValue="1">
+        <Label>Setpoint stepping value:</Label>
+    </Field>
+    <Field id="setpontSteppingValueNote" type="label" fontColor="darkgray" fontSize="small" alignWithControl="true">
+        <Label>This changes the value of the step done by the setpoint arrows. This affects anything trying to change the setpoint by a value of 1, using above value instead.</Label>
+    </Field>
     <Field id="setpointConfigLabel" type="label" fontSize="small">
         <Label>For safety reasons the Simple Smart Thermostat will not allow you to select extreme setpoint values. Configure the maximum and minimum allowed setpoint values here:</Label>
     </Field>
-     <Field id="maxSetpointValue" type="textfield" defaultValue="50">
+    <Field id="maxSetpointValue" type="textfield" defaultValue="50">
         <Label>Maximum allowed Setpoint Value (degrees):</Label>
     </Field>
     <Field id="minSetpointValue" type="textfield" defaultValue="0">
         <Label>Minimum allowed Setpoint Value (degrees):</Label>
     </Field>
-    <Field id='sep1' type='separator' />
+    <Field id="validationSafetyOptionsHeader" type="label" fontColor="darkGray">
+        <Label>VALIDATION AND SAFETY OPTIONS</Label>
+    </Field>
+    <Field id='validationSafetyOptionsSeparator' type='separator' />
 	<Field id="ignoreLabel" type="label" fontSize="small">
         <Label>Some sensors, especially in battery operated devices, may fail to send up to date values or sometimes out of bounds values.
 Invalid values will be displayed as -999 and ignored.
