@@ -859,7 +859,9 @@ class Plugin(indigo.PluginBase):
             self.debugLog(u"Heaters Off")
 
             virDev.updateStateOnServer("hvacHeaterIsOn", False)
-            indigo.thermostat.setHvacMode(virDev, value=indigo.kHvacMode.Off)
+
+            # Bug nr. 32. It is not a good idea to shut down the thermostat so removing this:
+            #indigo.thermostat.setHvacMode(virDev, value=indigo.kHvacMode.Off)
             return False
 
 
@@ -899,6 +901,8 @@ class Plugin(indigo.PluginBase):
                 self._turnOnDevicesInDeviceIdList(heaters, virDev)
                 self.debugLog(u"Heaters On")
                 virDev.updateStateOnServer("hvacHeaterIsOn", True)
+
+        return True
 
     def _avgSensorValues(self, virDev, sensors):
         count = 0
