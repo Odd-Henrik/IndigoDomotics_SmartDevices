@@ -332,6 +332,96 @@ class Plugin(indigo.PluginBase):
             if self.debug: indigo.server.log ("Smart Devices plugin preferences have been updated.")
 
             #TODO Implement validation of out of bounds and timeout values in Config Prefs Dialog
+            errorsDict = indigo.Dict()
+            validatedOk = False
+
+            defaultHeatSetpoint = False
+            setpointStep = False
+            maxSetpoint = False
+            minSetpoint = False
+            valuesOlderThen = False
+            valuesLargerThen = False
+            valuesLessThen = False
+            safetyKickInn = False
+
+            #Validating maxSetpointValue
+            try:
+                maxSetpoint = float(valuesDict["maxSetpointValue"])
+                if maxSetpoint > 150 or maxSetpoint < -60:
+                    errorsDict["maxSetpointValue"] = u"You have to specify a valid number between -60 and 150."
+                    maxSetpoint = False
+            except Exception, err:
+                maxSetpoint = False
+                errorsDict["maxSetpointValue"] = u"You have to specify a valid number."
+
+            #Validating minSetpointValue
+            try:
+                minSetpoint = float(valuesDict["minSetpointValue"])
+                if minSetpoint > 150 or minSetpoint < -60:
+                    errorsDict["minSetpointValue"] = u"You have to specify a valid number between -60 and 150."
+                    minSetpoint = False
+            except Exception, err:
+                minSetpoint = False
+                errorsDict["minSetpointValue"] = u"You have to specify a valid number."
+
+            #Validating defaultHeatSetpointValue
+            try:
+                defaultHeatSetpoint = float(valuesDict["defaultHeatSetpointValue"])
+                if defaultHeatSetpoint > maxSetpoint or defaultHeatSetpoint < minSetpoint:
+                    errorsDict["defaultHeatSetpointValue"] = u"You have to specify a valid number between Maximum and Minimum allowed setpoint values."
+                    defaultHeatSetpoint = False
+            except Exception, err:
+                defaultHeatSetpoint = False
+                errorsDict["defaultHeatSetpointValue"] = u"You have to specify a valid number."
+
+            #Validating setpointSteppingValue
+            try:
+                setpointStep = float(valuesDict["setpointSteppingValue"])
+                if setpointStep > 30 or setpointStep <= 0:
+                    errorsDict["setpointSteppingValue"] = u"You have to specify a valid number between 30 and 0.1."
+                    setpointStep = False
+            except Exception, err:
+                setpointStep = False
+                errorsDict["setpointSteppingValue"] = u"You have to specify a valid number."
+
+            #Validating ignoreValuesOlderThen
+            try:
+                valuesOlderThen = int(valuesDict["ignoreValuesOlderThen"])
+                if valuesOlderThen > 2880 or valuesOlderThen < 10:
+                    errorsDict["ignoreValuesOlderThen"] = u"You have to specify a valid number of minutes between 10 and 2880 (48h)."
+                    valuesOlderThen = False
+            except Exception, err:
+                valuesOlderThen = False
+                errorsDict["ignoreValuesOlderThen"] = u"You have to specify a valid number of minutes."
+
+            #Validating ignoreValuesLargerThen
+            try:
+                valuesLargerThen = float(valuesDict["ignoreValuesLargerThen"])
+            except Exception, err:
+                valuesLargerThen = False
+                errorsDict["ignoreValuesLargerThen"] = u"You have to specify a valid number of degrees."
+
+            #Validating ignoreValuesLessThen
+            try:
+                valuesLessThen = float(valuesDict["ignoreValuesLessThen"])
+            except Exception, err:
+                valuesLessThen = False
+                errorsDict["ignoreValuesLessThen"] = u"You have to specify a valid number of degrees."
+
+            #Validating safetyModeValue
+            try:
+                safetyKickInn = float(valuesDict["safetyModeValue"])
+                if safetyKickInn != 0 or safetyKickInn >= 1:
+                    errorsDict["safetyModeValue"] = u"You have to specify 0 or a valid number of degrees grater then or equal to 1."
+                    safetyKickInn = False
+            except Exception, err:
+                safetyKickInn = False
+                errorsDict["safetyModeValue"] = u"You have to specify a valid number of degrees."
+
+            if defaultHeatSetpoint and setpointStep and maxSetpoint and minSetpoint and valuesOlderThen and valuesLargerThen and valuesLessThen and safetyKickInn:
+                return True, valuesDict
+            else:
+                return False, valuesDict, errorsDict
 
 
     def runConcurrentThread(self):
