@@ -1140,7 +1140,7 @@ class Plugin(indigo.PluginBase):
         setpointSteppingValue = 1
         try:
             if self.pluginPrefs.get("setpointSteppingValue", ""):
-                setpointSteppingValue = float(self.pluginPrefs.get("defaultHeatSetpointValue", "1"))
+                setpointSteppingValue = float(self.pluginPrefs.get("setpointSteppingValue", "1"))
         except Exception, err:
             self.debugLog(u"WARNING: NOT ABLE TO SET DEFAULT SETPOINT STEPPING VALUE")
             pass
