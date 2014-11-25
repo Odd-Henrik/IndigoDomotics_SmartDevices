@@ -399,11 +399,13 @@ class Plugin(indigo.PluginBase):
                 validatedOk = False
 
         #31 Setting default setpoint
-        if indigo.devices[devId].heatSetpoint == 0:
+        self.debugLog(u"Current heat setpoint: " + str(indigo.devices[devId].heatSetpoint))
+        if indigo.devices[devId].heatSetpoint == 0.0:
             try:
                 defaultSetpoint = float(defaultHeatSetpointValue)
                 indigo.devices[devId].updateStateOnServer("setpointHeat", defaultSetpoint, uiValue="SetP: %.1f°" % defaultSetpoint)
             except Exception, err:
+                self.debugLog(u"WARNING: NOT ABLE TO SET DEFAULT SETPOINT")
                 pass
 
         if validatedOk:
