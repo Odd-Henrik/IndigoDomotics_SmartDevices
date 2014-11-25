@@ -906,17 +906,16 @@ class Plugin(indigo.PluginBase):
             if self.pluginPrefs.get("safetyModeValue", ""):
                 safetyModeValue = float(self.pluginPrefs.get("safetyModeValue", "1"))
         except Exception, err:
-            self.debugLog(u"WARNING: NOT ABLE TO SET SAFETY MODE KICK INN VALUE, USING DEFUALT VALUE OF 1")
+            self.debugLog(u"WARNING: NOT ABLE TO SET SAFETY MODE KICK INN VALUE, USING DEFAULT VALUE OF 1")
             pass
 
-
         if runSafety and safetyModeValue != 0:
-            if sensorAvgTemp > (setTemp + deltaTemp + 1):
+            if sensorAvgTemp > (setTemp + deltaTemp + safetyModeValue):
                 self.debugLog(u"Too warm, turning off heaters")
                 self._turnOffDevicesInDeviceIdList(heaters, virDev)
                 self.debugLog(u"Heaters Off")
                 virDev.updateStateOnServer("hvacHeaterIsOn", False)
-            elif sensorAvgTemp < (setTemp - deltaTemp - 1):
+            elif sensorAvgTemp < (setTemp - deltaTemp - safetyModeValue):
                 self.debugLog(u"Too cold, turning on heaters")
                 self._turnOnDevicesInDeviceIdList(heaters, virDev)
                 self.debugLog(u"Heaters On")
