@@ -1136,8 +1136,17 @@ class Plugin(indigo.PluginBase):
         # I want to be able to change the setpoint in 0.5 increments with the UI arrows. So here is the hack
         # This hack will influence others trying to increment by 1. e.g. by using actions. But only for 1.
         # TODO: Figure out how to identify arrow clicks only
-        if value == 1:
-            value = 0.5
+        #30 implementation of custom step value
+        setpointSteppingValue = 1
+        try:
+            if self.pluginPrefs.get("setpointSteppingValue", ""):
+                setpointSteppingValue = float(self.pluginPrefs.get("defaultHeatSetpointValue", "1"))
+        except Exception, err:
+            self.debugLog(u"WARNING: NOT ABLE TO SET DEFAULT SETPOINT STEPPING VALUE")
+            pass
+
+        if value == 1 and ((setpointSteppingValue != 1) or (setpointSteppingValue <= 0)):
+            value = setpointSteppingValue
 
         ###### SET HVAC MODE ######
         if action.thermostatAction == indigo.kThermostatAction.SetHvacMode:
