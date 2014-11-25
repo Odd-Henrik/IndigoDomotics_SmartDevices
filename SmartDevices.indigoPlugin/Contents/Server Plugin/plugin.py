@@ -409,10 +409,17 @@ class Plugin(indigo.PluginBase):
             valuesLessThen = False
             errorsDict["ignoreValuesLessThen"] = u"You have to specify a valid number of degrees."
 
+        if valuesLessThen and valuesLargerThen:
+            if valuesLessThen > valuesLargerThen:
+                valuesLessThen = False
+                valuesLargerThen = False
+                errorsDict["ignoreValuesLargerThen"] = u"Ignore values larger then has to be larger the Ignore Values Less then."
+                errorsDict["ignoreValuesLessThen"] = u"Ignore values Less then has to be smaller the Ignore Values Larger then."
+
         #Validating safetyModeValue
         try:
             safetyKickInn = float(valuesDict["safetyModeValue"])
-            if safetyKickInn != 0 or safetyKickInn >= 1:
+            if safetyKickInn != 0 or safetyKickInn < 1:
                 errorsDict["safetyModeValue"] = u"You have to specify 0 or a valid number of degrees grater then or equal to 1."
                 safetyKickInn = False
         except Exception, err:
