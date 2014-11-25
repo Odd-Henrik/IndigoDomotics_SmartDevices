@@ -398,6 +398,14 @@ class Plugin(indigo.PluginBase):
                 errorsDict["primaryTemperatureVariables"] = u"You have to select minimum one temperature variable."
                 validatedOk = False
 
+        #31 Setting default setpoint
+        if indigo.devices[devId].heatSetpoint == 0:
+            try:
+                defaultSetpoint = float(defaultHeatSetpointValue)
+                indigo.devices[devId].updateStateOnServer("heatSetpoint", defaultSetpoint, uiValue="SetP: %.1f°" % defaultSetpoint)
+            except Exception, err:
+                pass
+
         if validatedOk:
             return True, valuesDict
         else:

@@ -20,7 +20,7 @@ Default values are based on degrees Celsius. If you are using Fahrenheit, please
     <Field id="setpointSteppingValue" type="textfield" defaultValue="1">
         <Label>Setpoint stepping value:</Label>
     </Field>
-    <Field id="setpontSteppingValueNote" type="label" fontColor="darkgray" fontSize="small" alignWithControl="true">
+    <Field id="setpointSteppingValueNote" type="label" fontColor="darkgray" fontSize="small"> <!-- alignWithControl="true"-->
         <Label>This changes the value of the step done by the setpoint arrows. This affects anything trying to change the setpoint by a value of 1, using above value instead.</Label>
     </Field>
     <Field id="setpointConfigLabel" type="label" fontSize="small">
