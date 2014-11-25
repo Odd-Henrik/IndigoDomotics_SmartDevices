@@ -50,7 +50,17 @@ Invalid values will be displayed as -999 and ignored.
     <Field id="ignoreValuesLessThen" type="textfield" defaultValue="-40.0">
         <Label>Ignore Values Less Then (in degrees):</Label>
     </Field>
-    <Field id="ignoreLabel2" type="label" fontSize="small">
+
+    <Field id="safetyModeValue" type="textfield" defaultValue="1.0">
+        <Label>Safety mode offset kick inn value (in degrees):</Label>
+    </Field>
+    <Field id="safetyModeValueDescription" type="label" fontSize="small">
+        <Label>
+The thermostat has a built in safety feature that start working when the average sensed temperature + the delta value is grater then +/- the kick inn value above. Setting the kick inn value to 0 turns off the safety feature. When thermostat is in safety mode it will repeatedly try to sett controlled devices to correct state.</Label>
+	</Field>
+
+
+    <Field id="ignoreLabelVariablesInfo" type="label" fontSize="small">
         <Label>
 Note that if you use variables to collect sensor data: Older Then check is not possible and will be ignored. </Label>
 	</Field>
