@@ -402,7 +402,7 @@ class Plugin(indigo.PluginBase):
         if indigo.devices[devId].heatSetpoint == 0:
             try:
                 defaultSetpoint = float(defaultHeatSetpointValue)
-                indigo.devices[devId].updateStateOnServer("heatSetpoint", defaultSetpoint, uiValue="SetP: %.1f°" % defaultSetpoint)
+                indigo.devices[devId].updateStateOnServer("setpointHeat", defaultSetpoint, uiValue="SetP: %.1f°" % defaultSetpoint)
             except Exception, err:
                 pass
 
