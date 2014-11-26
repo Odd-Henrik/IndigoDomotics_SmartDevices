@@ -428,10 +428,16 @@ class Plugin(indigo.PluginBase):
             safetyKickInn = False
             errorsDict["safetyModeValue"] = u"You have to specify a valid number of degrees."
 
-        if defaultHeatSetpoint and setpointStep and maxSetpoint and minSetpoint and valuesOlderThen and valuesLargerThen and valuesLessThen and safetyKickInn:
-            return True, valuesDict
-        else:
+        if defaultHeatSetpoint == False or setpointStep == False or maxSetpoint == False or minSetpoint == False or \
+                        valuesOlderThen == False or valuesLargerThen == False or valuesLessThen == False or safetyKickInn == False:
             return False, valuesDict, errorsDict
+
+        return True, valuesDict
+
+        # if defaultHeatSetpoint and setpointStep and maxSetpoint and minSetpoint and valuesOlderThen and valuesLargerThen and valuesLessThen and safetyKickInn:
+        #     return True, valuesDict
+        # else:
+        #     return False, valuesDict, errorsDict
 
     def runConcurrentThread(self):
         try:
