@@ -428,8 +428,8 @@ class Plugin(indigo.PluginBase):
             safetyKickInn = False
             errorsDict["safetyModeValue"] = u"You have to specify a valid number of degrees."
 
-        if defaultHeatSetpoint == False or setpointStep == False or maxSetpoint == False or minSetpoint == False or \
-                        valuesOlderThen == False or valuesLargerThen == False or valuesLessThen == False or safetyKickInn == False:
+        if defaultHeatSetpoint is False or setpointStep is False or maxSetpoint is False or minSetpoint is False or \
+                        valuesOlderThen is False or valuesLargerThen is False or valuesLessThen is False or safetyKickInn is False:
             return False, valuesDict, errorsDict
 
         return True, valuesDict
