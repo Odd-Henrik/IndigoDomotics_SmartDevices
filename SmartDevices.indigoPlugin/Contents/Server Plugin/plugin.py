@@ -419,7 +419,9 @@ class Plugin(indigo.PluginBase):
         #Validating safetyModeValue
         try:
             safetyKickInn = float(valuesDict["safetyModeValue"])
-            if safetyKickInn != 0 or safetyKickInn < 1:
+            if safetyKickInn == 0:
+                pass
+            elif safetyKickInn < 1:
                 errorsDict["safetyModeValue"] = u"You have to specify 0 or a valid number of degrees grater then or equal to 1."
                 safetyKickInn = False
         except Exception, err:
