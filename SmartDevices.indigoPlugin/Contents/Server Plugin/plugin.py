@@ -409,12 +409,19 @@ class Plugin(indigo.PluginBase):
             valuesLessThen = False
             errorsDict["ignoreValuesLessThen"] = u"You have to specify a valid number of degrees."
 
-        if valuesLessThen and valuesLargerThen:
+        if valuesLessThe is not False and valuesLargerThen is not False:
             if valuesLessThen > valuesLargerThen:
                 valuesLessThen = False
                 valuesLargerThen = False
                 errorsDict["ignoreValuesLargerThen"] = u"Ignore values larger then has to be larger the Ignore Values Less then."
                 errorsDict["ignoreValuesLessThen"] = u"Ignore values Less then has to be smaller the Ignore Values Larger then."
+
+        if maxSetpoint is not False and minSetpoint is not False:
+            if minSetpoint > maxSetpoint:
+                minSetpoint = False
+                maxSetpoint = False
+                errorsDict["maxSetpointValue"] = u"Maximum allowed Setpoint has to be larger then Minimum allowed Setpoint."
+                errorsDict["minSetpointValue"] = u"Minimum allowed Setpoint has to be smaller then Maximum allowed Setpoint."
 
         #Validating safetyModeValue
         try:
