@@ -409,7 +409,7 @@ class Plugin(indigo.PluginBase):
             valuesLessThen = False
             errorsDict["ignoreValuesLessThen"] = u"You have to specify a valid number of degrees."
 
-        if valuesLessThe is not False and valuesLargerThen is not False:
+        if valuesLessThen is not False and valuesLargerThen is not False:
             if valuesLessThen > valuesLargerThen:
                 valuesLessThen = False
                 valuesLargerThen = False
