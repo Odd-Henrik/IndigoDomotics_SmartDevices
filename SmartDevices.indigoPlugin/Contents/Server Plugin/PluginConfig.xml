@@ -52,11 +52,11 @@ Invalid values will be displayed as -999 and ignored.
     </Field>
 
     <Field id="safetyModeValue" type="textfield" defaultValue="1.0">
-        <Label>Safety mode offset kick inn value (in degrees):</Label>
+        <Label>Safety mode offset kick in value (in degrees):</Label>
     </Field>
     <Field id="safetyModeValueDescription" type="label" fontSize="small">
         <Label>
-The thermostat has a built in safety feature that start working when the difference between average sensed temperature + the delta value and the setpoint is grater then the kick inn value above. Setting the kick inn value to 0 turns off the safety feature. When thermostat is in safety mode it will repeatedly try to sett controlled devices to correct state until a "normal" temperature range is achieved.</Label>
+The thermostat has a built in safety feature that start working when the difference between average sensed temperature + the delta value and the setpoint is grater then the kick in value above. Setting the kick in value to 0 turns off the safety feature. When thermostat is in safety mode it will repeatedly try to sett controlled devices to correct state until a "normal" temperature range is achieved.</Label>
 	</Field>
 
 
