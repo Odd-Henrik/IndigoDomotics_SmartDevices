@@ -977,7 +977,7 @@ class Plugin(indigo.PluginBase):
         if not sensorAvgTemp:
             # No valid sensor data, turning off all heaters'
             # TODO: Notifications
-            self.errorLog(virDev.name + u": NO VALID SENSOR DATA: Turning Off ALL Heaters and Thermostat!")
+            self.errorLog(virDev.name + u": NO VALID SENSOR DATA: Turning Off ALL Heaters!")
             self._turnOffDevicesInDeviceIdList(heaters, virDev)
             self.debugLog(u"Heaters Off")
 
